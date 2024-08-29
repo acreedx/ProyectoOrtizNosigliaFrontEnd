@@ -38,7 +38,7 @@ export default function PersoNavBar() {
           </li>
           <li>
             <Link
-              href="/pages/login"
+              href="/paginaweb/registro"
               className="rounded-xl border-2 border-orange-400 p-2 text-lg text-orange-400   no-underline hover:text-orange-400"
             >
               Crear Cuenta

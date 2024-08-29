@@ -17,9 +17,8 @@ export default function Footer() {
                   />
                 </a>
                 <p>
-                  Lorem ipsum dolor serit amet, consetetur sadipscing elitr, sed
-                  diam nonumy eirmod tempor invidunt ut labore dolore magna
-                  aliquyam erat diam voluptua.
+                  El centro odontológico Ortiz Nosiglia es un centro dedicado a
+                  brindar servicios de odontología a toda la población
                 </p>
                 <div className="footer-social-links">
                   <ul>
@@ -44,36 +43,21 @@ export default function Footer() {
             </div>
             <div className="col-xl-2 col-lg-3 col-md-6">
               <div className="footer-widget mb-30">
-                <h4>Quick Link</h4>
+                <h4>Links</h4>
                 <ul className="footer-links">
                   <li>
                     <a className="no-underline" href="#">
-                      Home
+                      Inicio
                     </a>
                   </li>
                   <li>
                     <a className="no-underline" href="#">
-                      About
+                      Servicios
                     </a>
                   </li>
                   <li>
                     <a className="no-underline" href="#">
-                      Services
-                    </a>
-                  </li>
-                  <li>
-                    <a className="no-underline" href="#">
-                      Doctor
-                    </a>
-                  </li>
-                  <li>
-                    <a className="no-underline" href="#">
-                      Blog
-                    </a>
-                  </li>
-                  <li>
-                    <a className="no-underline" href="#">
-                      Contact
+                      Contacto
                     </a>
                   </li>
                 </ul>
@@ -81,36 +65,21 @@ export default function Footer() {
             </div>
             <div className="col-xl-2 col-lg-3 col-md-5">
               <div className="footer-widget mb-30">
-                <h4>Quick Link</h4>
+                <h4>Reservas</h4>
                 <ul className="footer-links">
                   <li>
                     <a className="no-underline" href="#">
-                      Cardiology
+                      Implantes
                     </a>
                   </li>
                   <li>
                     <a className="no-underline" href="#">
-                      Neurology
+                      Ortodoncia
                     </a>
                   </li>
                   <li>
                     <a className="no-underline" href="#">
-                      Gastroenterology
-                    </a>
-                  </li>
-                  <li>
-                    <a className="no-underline" href="#">
-                      Routine Checkup
-                    </a>
-                  </li>
-                  <li>
-                    <a className="no-underline" href="#">
-                      Orthopedics
-                    </a>
-                  </li>
-                  <li>
-                    <a className="no-underline" href="#">
-                      Dental Surgery
+                      Tratamiento de caries
                     </a>
                   </li>
                 </ul>
@@ -118,7 +87,7 @@ export default function Footer() {
             </div>
             <div className="col-xl-4 col-lg-12 col-md-7">
               <div className="footer-widget mb-30">
-                <h4>Medical Location</h4>
+                <h4>Ubicación del centro</h4>
                 <div className="map-canvas">
                   <iframe
                     className="map"
