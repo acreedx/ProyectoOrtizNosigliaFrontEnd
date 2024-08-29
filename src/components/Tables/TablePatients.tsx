@@ -186,7 +186,7 @@ const TableThree = () => {
                       </Link>
                     </button>
                     <button className="hover:text-primary">
-                      <Link href={"/dashboard/pacientes"}>
+                      <Link href={"/dashboard/pacientes/odontograma"}>
                         <svg
                           className="fill-current"
                           width="18"
