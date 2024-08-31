@@ -30,7 +30,7 @@ export default function PersoNavBar() {
         <div className="flex items-center gap-4">
           <li>
             <Link
-              href="/dashboard"
+              href="/dashboard/pacientes"
               className="rounded-xl bg-orange-400 p-2 text-lg text-white   no-underline hover:text-orange-400"
             >
               Iniciar Sesión

@@ -16,11 +16,11 @@ export default function Main() {
           <div className="row">
             <div className="col-xl-8 mx-auto">
               <div className="section-title mb-55 text-center">
-                <span className="wow fadeInDown" data-wow-delay=".2s">
-                  What We Do
+                <span className="wow fadeInDown " data-wow-delay=".2s">
+                  Que hacemos
                 </span>
                 <h2 className="wow fadeInUp mb-15" data-wow-delay=".4s">
-                  What We Provide for Your Health
+                  Proveemos para tu salud
                 </h2>
                 <p className="wow fadeInUp" data-wow-delay=".6s">
                   Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed
@@ -90,7 +90,7 @@ export default function Main() {
                     </g>
                   </svg>
                 </div>
-                <h5>Specialist Doctors</h5>
+                <h5>Doctores especialistas</h5>
               </div>
             </div>
             <div className="col-lg-3">
@@ -161,7 +161,7 @@ export default function Main() {
                     </g>
                   </svg>
                 </div>
-                <h5>Frequent Visits</h5>
+                <h5>Visitas Frecuentes</h5>
               </div>
             </div>
             <div className="col-lg-3">
@@ -191,7 +191,7 @@ export default function Main() {
                     </g>
                   </svg>
                 </div>
-                <h5>Cordial Administration</h5>
+                <h5>Administración cordial</h5>
               </div>
             </div>
             <div className="col-lg-3">
@@ -235,7 +235,7 @@ export default function Main() {
                     </g>
                   </svg>
                 </div>
-                <h5>Specialized Pharmacy</h5>
+                <h5>Tratamientos especializados</h5>
               </div>
             </div>
           </div>
@@ -256,10 +256,10 @@ export default function Main() {
               <div className="about-content mb-55 text-center">
                 <div className="section-title mb-30">
                   <span className="wow fadeInDown" data-wow-delay=".2s">
-                    About Us
+                    Acerca de nosotros
                   </span>
                   <h2 className="wow fadeInUp mb-15" data-wow-delay=".4s">
-                    Welcome to Our Clinic
+                    Bienvenido a nuestra clínica
                   </h2>
                 </div>
                 <p className="wow fadeInUp mb-35" data-wow-delay=".6s">
@@ -276,7 +276,7 @@ export default function Main() {
                   className="btn theme-btn wow fadeInUp"
                   data-wow-delay=".8s"
                 >
-                  Learn More
+                  Aprender más
                 </a>
               </div>
             </div>
@@ -305,10 +305,10 @@ export default function Main() {
             <div className="col-xl-8 mx-auto">
               <div className="section-title mb-55 text-center">
                 <span className="wow fadeInDown" data-wow-delay=".2s">
-                  Services
+                  Servicios
                 </span>
                 <h2 className="wow fadeInUp mb-15" data-wow-delay=".4s">
-                  Our Healthcare Services
+                  Nuestros servicios dentales
                 </h2>
                 <p className="wow fadeInUp" data-wow-delay=".6s">
                   Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed
@@ -368,8 +368,8 @@ export default function Main() {
                     Lorem ipsum dolor sit amet, consetet sadipscing elitr, sed
                     dinonumy eirmod tempor invidunt.
                   </p>
-                  <a href="#" className="read-more">
-                    Read More <i className="lni lni-arrow-right"></i>
+                  <a href="#" className="read-more no-underline">
+                    Aprender más <i className="lni lni-arrow-right"></i>
                   </a>
                 </div>
                 <div className="service-overlay img-bg"></div>
@@ -425,8 +425,8 @@ export default function Main() {
                     Lorem ipsum dolor sit amet, consetet sadipscing elitr, sed
                     dinonumy eirmod tempor invidunt.
                   </p>
-                  <a href="#" className="read-more">
-                    Read More <i className="lni lni-arrow-right"></i>
+                  <a href="#" className="read-more no-underline">
+                    Aprender más <i className="lni lni-arrow-right"></i>
                   </a>
                 </div>
                 <div className="service-overlay img-bg"></div>
@@ -474,8 +474,8 @@ export default function Main() {
                     Lorem ipsum dolor sit amet, consetet sadipscing elitr, sed
                     dinonumy eirmod tempor invidunt.
                   </p>
-                  <a href="#" className="read-more">
-                    Read More <i className="lni lni-arrow-right"></i>
+                  <a href="#" className="read-more no-underline">
+                    Aprender más <i className="lni lni-arrow-right"></i>
                   </a>
                 </div>
                 <div className="service-overlay img-bg"></div>
@@ -511,13 +511,13 @@ export default function Main() {
                   </svg>
                 </div>
                 <div className="service-content">
-                  <h4>Orthopedics</h4>
+                  <h4>Ortodoncia</h4>
                   <p>
                     Lorem ipsum dolor sit amet, consetet sadipscing elitr, sed
                     dinonumy eirmod tempor invidunt.
                   </p>
-                  <a href="#" className="read-more">
-                    Read More <i className="lni lni-arrow-right"></i>
+                  <a href="#" className="read-more no-underline">
+                    Aprender más <i className="lni lni-arrow-right"></i>
                   </a>
                 </div>
                 <div className="service-overlay img-bg"></div>
@@ -565,8 +565,8 @@ export default function Main() {
                     Lorem ipsum dolor sit amet, consetet sadipscing elitr, sed
                     dinonumy eirmod tempor invidunt.
                   </p>
-                  <a href="#" className="read-more">
-                    Read More <i className="lni lni-arrow-right"></i>
+                  <a href="#" className="read-more no-underline">
+                    Aprender más <i className="lni lni-arrow-right"></i>
                   </a>
                 </div>
                 <div className="service-overlay img-bg"></div>
@@ -602,13 +602,13 @@ export default function Main() {
                   </svg>
                 </div>
                 <div className="service-content">
-                  <h4>Dental Surgery</h4>
+                  <h4>Cirujía dental</h4>
                   <p>
                     Lorem ipsum dolor sit amet, consetet sadipscing elitr, sed
                     dinonumy eirmod tempor invidunt.
                   </p>
-                  <a href="#" className="read-more">
-                    Read More <i className="lni lni-arrow-right"></i>
+                  <a href="#" className="read-more no-underline">
+                    Aprender más <i className="lni lni-arrow-right"></i>
                   </a>
                 </div>
                 <div className="service-overlay img-bg"></div>
@@ -1037,7 +1037,7 @@ export default function Main() {
                     elitr, sedqw dinoumy eirmod tempor invidunt sedrsu.
                   </p>
                   <a className="read-more no-underline" href="#">
-                    Read More <i className="lni lni-arrow-right"></i>
+                    Aprender más <i className="lni lni-arrow-right"></i>
                   </a>
                 </div>
               </div>
@@ -1068,7 +1068,7 @@ export default function Main() {
                     elitr, sedqw dinoumy eirmod tempor invidunt sedrsu.
                   </p>
                   <a className="read-more no-underline" href="#">
-                    Read More <i className="lni lni-arrow-right"></i>
+                    Aprender más <i className="lni lni-arrow-right"></i>
                   </a>
                 </div>
               </div>
@@ -1099,7 +1099,7 @@ export default function Main() {
                     elitr, sedqw dinoumy eirmod tempor invidunt sedrsu.
                   </p>
                   <a className="read-more no-underline" href="#">
-                    Read More <i className="lni lni-arrow-right"></i>
+                    Aprender más <i className="lni lni-arrow-right"></i>
                   </a>
                 </div>
               </div>
@@ -1144,7 +1144,7 @@ export default function Main() {
                   rel="nofollow"
                   className="btn theme-btn"
                 >
-                  Purchase Now
+                  Reserva tu cita ahora!
                 </a>
               </div>
             </div>

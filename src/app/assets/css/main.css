@@ -292,7 +292,7 @@ p {
   font-size: 25px;
   font-weight: 600;
   display: block;
-  color: #00adb5;
+  color: #fb5d28;
   margin-bottom: 15px;
 }
 
@@ -1763,8 +1763,8 @@ p {
   margin-left: auto;
   margin-right: auto;
   border-radius: 50%;
-  -webkit-box-shadow: 0 0 25px rgba(0, 173, 181, 0.15);
-  box-shadow: 0 0 25px rgba(0, 173, 181, 0.15);
+  -webkit-box-shadow: 0 0 25px rgba(239, 115, 0, 0.15);
+  box-shadow: 0 0 25px rgba(239, 115, 0, 0.15);
 }
 
 /*===========================

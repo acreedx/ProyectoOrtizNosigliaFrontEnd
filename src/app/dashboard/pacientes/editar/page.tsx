@@ -66,11 +66,8 @@ export default function Pacientes() {
   };
   return (
     <DefaultLayout>
-      <Breadcrumb pageName="Editar pacientes" />
+      <Breadcrumb pageName="Editar paciente" />
       <div className="mx-12 my-4  rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-        <h3 className="my-10 flex w-full justify-center font-medium text-black dark:text-white">
-          Editar Paciente
-        </h3>
         <form
           onSubmit={handleSubmit}
           className="flex w-full flex-col items-center p-10 pt-0"
@@ -184,6 +181,8 @@ export default function Pacientes() {
                 required
               />
             </div>
+          </div>
+          <div className="flex flex-row gap-5.5 p-6.5">
             <div>
               <label className="mb-3 block text-sm font-medium text-black dark:text-white">
                 Dirección/Zona:
@@ -197,8 +196,6 @@ export default function Pacientes() {
                 required
               />
             </div>
-          </div>
-          <div className="flex flex-row gap-5.5 p-6.5">
             <div>
               <label className="mb-3 block text-sm font-medium text-black dark:text-white">
                 Teléfono:
@@ -224,6 +221,8 @@ export default function Pacientes() {
                 required
               />
             </div>
+          </div>
+          <div className="flex flex-row gap-5.5 p-6.5">
             <div>
               <label className="mb-3 block text-sm font-medium text-black dark:text-white">
                 Email:

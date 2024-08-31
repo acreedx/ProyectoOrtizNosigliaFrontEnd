@@ -4,8 +4,8 @@ export default function Header() {
   return (
     <>
       <header id="home">
-        <div className="header-wrapper">
-          <div className="header-top theme-bg">
+        <div className="header-wrapper ">
+          <div className="header-top bg-orange-500">
             <div className="container">
               <div className="row">
                 <div className="col-md-8">
@@ -55,7 +55,7 @@ export default function Header() {
       <div className="slider-wrapper">
         <section className="slider-section">
           <div className="slider-active slick-style">
-            <div className="single-slider img-bg">
+            <div className="single-slider img-bg bg-orange-400">
               <div className="container">
                 <div className="row">
                   <div className="col-xl-7 col-lg-8 col-md-10">
@@ -65,17 +65,16 @@ export default function Header() {
                         data-duration="1.5s"
                         data-delay=".5s"
                       >
-                        Complete Healthcare Solution
+                        Cuida tu salud dental
                       </h1>
                       <p
                         data-animation="fadeInLeft"
                         data-duration="1.5s"
                         data-delay=".7s"
                       >
-                        Lorem ipsum dolor sit amet, consetetur sadipscing elitr,
-                        sed dinonumy eirmod tempor invidunt ut labore et dolore
-                        magna aliquyam erat. Lorem ipsum dolor sit amet,
-                        consetetur sadipscing elitr.
+                        El centro odontológico Ortiz Nosilgia es un centro
+                        dedicado a brindar servicios de odontología general a
+                        toda la población
                       </p>
                       <a
                         href="#about"
@@ -84,14 +83,14 @@ export default function Header() {
                         data-duration="1.5s"
                         data-delay=".9s"
                       >
-                        Learn More
+                        Aprender más
                       </a>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-            <div className="single-slider img-bg">
+            <div className="single-slider img-bg bg-orange-400">
               <div className="container">
                 <div className="row">
                   <div className="col-xl-7 col-lg-8 col-md-10">
@@ -101,7 +100,7 @@ export default function Header() {
                         data-duration="1.5s"
                         data-delay=".5s"
                       >
-                        Best Doctors and Equipments in Town
+                        Los mejores dentistas de la ciudad
                       </h1>
                       <p
                         data-animation="fadeInLeft"
@@ -120,14 +119,14 @@ export default function Header() {
                         data-duration="1.5s"
                         data-delay=".9s"
                       >
-                        Make Appoinment
+                        Aprender más
                       </a>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-            <div className="single-slider img-bg">
+            <div className="single-slider img-bg bg-orange-400">
               <div className="container">
                 <div className="row">
                   <div className="col-xl-7 col-lg-8 col-md-10">
@@ -137,7 +136,7 @@ export default function Header() {
                         data-duration="1.5s"
                         data-delay=".5s"
                       >
-                        Your Health is Our Top Priority
+                        Tu salud es nuestra prioridad
                       </h1>
                       <p
                         data-animation="fadeInLeft"
@@ -156,7 +155,7 @@ export default function Header() {
                         data-duration="1.5s"
                         data-delay=".9s"
                       >
-                        Our Services
+                        Aprender más
                       </a>
                     </div>
                   </div>

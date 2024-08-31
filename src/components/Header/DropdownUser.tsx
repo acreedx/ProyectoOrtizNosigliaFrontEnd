@@ -80,7 +80,7 @@ const DropdownUser = () => {
                     fill=""
                   />
                 </svg>
-                My Profile
+                Mi perfil
               </Link>
             </li>
             <li>
@@ -101,7 +101,7 @@ const DropdownUser = () => {
                     fill=""
                   />
                 </svg>
-                My Contacts
+                Mis contactos
               </Link>
             </li>
             <li>
@@ -126,7 +126,7 @@ const DropdownUser = () => {
                     fill=""
                   />
                 </svg>
-                Account Settings
+                Configuraciones
               </Link>
             </li>
           </ul>
@@ -148,7 +148,7 @@ const DropdownUser = () => {
                 fill=""
               />
             </svg>
-            Log Out
+            Cerrar Sesión
           </button>
         </div>
       )}

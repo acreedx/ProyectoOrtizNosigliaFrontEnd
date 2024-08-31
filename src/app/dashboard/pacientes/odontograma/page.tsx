@@ -2,6 +2,7 @@
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import { useState } from "react";
+import Swal from "sweetalert2";
 interface OdontogramaRow {
   msc: string;
   temp: number | string;
@@ -269,21 +270,36 @@ const odontogramaData: OdontogramaRow[] = [
   },
   // ... continua con el resto de los datos
 ];
-
+const deletePatientAlert = () => {
+  Swal.fire({
+    title: "Confirmación",
+    text: "Confirmas la edición de este Odontograma?",
+    icon: "question",
+    showCancelButton: true,
+    confirmButtonText: "Sí",
+    cancelButtonText: "No, cancelar",
+    confirmButtonColor: "#28a745", // Verde
+    cancelButtonColor: "#dc3545",
+  }).then((result) => {
+    if (result.isConfirmed) {
+    } else if (result.dismiss === Swal.DismissReason.cancel) {
+    }
+  });
+};
 const Odontograma: React.FC = () => {
   const [data, setData] = useState<OdontogramaRow[]>(odontogramaData);
   const handleInputChange = (
     index: number,
     field: keyof OdontogramaRow,
-    value: any,
+    value: string | number,
   ) => {
     const newData = [...data];
-    newData[index][field] = value;
+    newData[index][field] = value.toString();
     setData(newData);
   };
   return (
     <DefaultLayout>
-      <Breadcrumb pageName="Editar pacientes" />
+      <Breadcrumb pageName="Editar odontograma" />
       <div className="overflow-x-auto">
         <table className="block min-w-full border-collapse md:table">
           <thead className="block md:table-header-group">
@@ -354,6 +370,15 @@ const Odontograma: React.FC = () => {
             ))}
           </tbody>
         </table>
+      </div>
+      <div className="flex w-full justify-end">
+        <button
+          onClick={deletePatientAlert}
+          className=" mt-10 flex w-56 justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90"
+          type="submit"
+        >
+          Actualizar
+        </button>
       </div>
     </DefaultLayout>
   );

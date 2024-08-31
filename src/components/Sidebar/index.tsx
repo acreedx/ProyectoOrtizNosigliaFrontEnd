@@ -17,6 +17,7 @@ const menuGroups = [
   {
     name: "MENU",
     menuItems: [
+      /*
       {
         icon: (
           <svg
@@ -48,7 +49,7 @@ const menuGroups = [
         label: "Dashboard",
         route: "#",
         children: [{ label: "eCommerce", route: "/" }],
-      },
+      },*/
       {
         icon: (
           <svg
@@ -87,6 +88,7 @@ const menuGroups = [
           { label: "Listado de pacientes", route: "/dashboard/pacientes" },
         ],
       },
+      /*
       {
         icon: (
           <svg
@@ -355,7 +357,7 @@ const menuGroups = [
           { label: "Sign In", route: "/auth/signin" },
           { label: "Sign Up", route: "/auth/signup" },
         ],
-      },
+      },*/
     ],
   },
 ];

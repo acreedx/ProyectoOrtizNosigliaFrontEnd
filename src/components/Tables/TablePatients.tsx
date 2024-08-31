@@ -1,5 +1,6 @@
 import { Package } from "@/types/package";
 import Link from "next/link";
+import Swal from "sweetalert2";
 
 const personalData = [
   {
@@ -21,6 +22,22 @@ const personalData = [
 ];
 
 const TableThree = () => {
+  const deletePatientAlert = () => {
+    Swal.fire({
+      title: "Advertencia",
+      text: "Estas seguro de inhabilitar este usuario?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Sí, hazlo!",
+      cancelButtonText: "No, cancelar",
+      confirmButtonColor: "#28a745", // Verde
+      cancelButtonColor: "#dc3545",
+    }).then((result) => {
+      if (result.isConfirmed) {
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+      }
+    });
+  };
   return (
     <div className="rounded-sm border border-stroke bg-white px-5 pb-2.5 pt-6 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
       <div className="max-w-full overflow-x-auto">
@@ -37,34 +54,13 @@ const TableThree = () => {
                 Primer Nombre
               </th>
               <th className="min-w-[150px] px-4 py-4 font-medium text-black dark:text-white">
-                Segundo Nombre
-              </th>
-              <th className="min-w-[150px] px-4 py-4 font-medium text-black dark:text-white">
                 Fecha de Nacimiento
-              </th>
-              <th className="min-w-[150px] px-4 py-4 font-medium text-black dark:text-white">
-                Lugar de Nacimiento
               </th>
               <th className="min-w-[100px] px-4 py-4 font-medium text-black dark:text-white">
                 Sexo
               </th>
               <th className="min-w-[150px] px-4 py-4 font-medium text-black dark:text-white">
                 Carnet de Identidad
-              </th>
-              <th className="min-w-[200px] px-4 py-4 font-medium text-black dark:text-white">
-                Dirección/Zona
-              </th>
-              <th className="min-w-[150px] px-4 py-4 font-medium text-black dark:text-white">
-                Teléfono
-              </th>
-              <th className="min-w-[150px] px-4 py-4 font-medium text-black dark:text-white">
-                Celular
-              </th>
-              <th className="min-w-[200px] px-4 py-4 font-medium text-black dark:text-white">
-                Email
-              </th>
-              <th className="min-w-[200px] px-4 py-4 font-medium text-black dark:text-white">
-                Alergia a algún medicamento
               </th>
               <th className="px-4 py-4 font-medium text-black dark:text-white">
                 Acciones
@@ -91,17 +87,7 @@ const TableThree = () => {
                 </td>
                 <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
                   <p className="text-black dark:text-white">
-                    {person.segundoNombre}
-                  </p>
-                </td>
-                <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
-                  <p className="text-black dark:text-white">
                     {person.fechaNacimiento}
-                  </p>
-                </td>
-                <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
-                  <p className="text-black dark:text-white">
-                    {person.lugarNacimiento}
                   </p>
                 </td>
                 <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
@@ -110,27 +96,6 @@ const TableThree = () => {
                 <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
                   <p className="text-black dark:text-white">
                     {person.carnetIdentidad}
-                  </p>
-                </td>
-                <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
-                  <p className="text-black dark:text-white">
-                    {person.direccionZona}
-                  </p>
-                </td>
-                <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
-                  <p className="text-black dark:text-white">
-                    {person.telefono}
-                  </p>
-                </td>
-                <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
-                  <p className="text-black dark:text-white">{person.celular}</p>
-                </td>
-                <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
-                  <p className="text-black dark:text-white">{person.email}</p>
-                </td>
-                <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
-                  <p className="text-black dark:text-white">
-                    {person.alergiaMedicamento}
                   </p>
                 </td>
                 <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
@@ -156,8 +121,11 @@ const TableThree = () => {
                         </svg>
                       </Link>
                     </button>
-                    <button className="hover:text-primary">
-                      <Link href={"/dashboard/pacientes"}>
+                    <button
+                      className="hover:text-primary"
+                      onClick={deletePatientAlert}
+                    >
+                      <Link href={""}>
                         <svg
                           className="fill-current"
                           width="18"
