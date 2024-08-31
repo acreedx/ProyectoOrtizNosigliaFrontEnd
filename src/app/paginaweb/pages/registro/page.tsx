@@ -1,54 +1,29 @@
 "use client";
-import DefaultLayout from "@/app/dashboard/components/Layouts/DefaultLayout";
-import React, { useState } from "react";
-import Breadcrumb from "@/app/dashboard/components/Breadcrumbs/Breadcrumb";
-import CheckboxFive from "@/app/dashboard/components/Checkboxes/CheckboxFive";
-import CheckboxFour from "@/app/dashboard/components/Checkboxes/CheckboxFour";
-import CheckboxOne from "@/app/dashboard/components/Checkboxes/CheckboxOne";
-import CheckboxThree from "@/app/dashboard/components/Checkboxes/CheckboxThree";
-import CheckboxTwo from "@/app/dashboard/components/Checkboxes/CheckboxTwo";
-import SwitcherFour from "@/app/dashboard/components/Switchers/SwitcherFour";
-import SwitcherOne from "@/app/dashboard/components/Switchers/SwitcherOne";
-import SwitcherThree from "@/app/dashboard/components/Switchers/SwitcherThree";
-import SwitcherTwo from "@/app/dashboard/components/Switchers/SwitcherTwo";
-import DatePickerTwo from "@/app/dashboard/components/FormElements/DatePicker/DatePickerTwo";
-import DatePickerOne from "@/app/dashboard/components/FormElements/DatePicker/DatePickerOne";
-import MultiSelect from "@/app/dashboard/components/FormElements/MultiSelect";
-import SelectGroupTwo from "@/app/dashboard/components/SelectGroup/SelectGroupTwo";
-import TablePatients from "@/app/dashboard/components/Tables/TablePatients";
-export default function Pacientes() {
-  const personalData = {
-    apellidoPaterno: "Pérez",
-    apellidoMaterno: "González",
-    primerNombre: "Juan",
-    segundoNombre: "Carlos",
-    fechaNacimiento: "15/08/1990",
-    lugarNacimiento: "La Paz",
-    sexo: "Masculino",
-    carnetIdentidad: "12345678",
-    direccionZona: "Zona Sur",
-    telefono: "1234567",
-    celular: "76543210",
-    email: "juan@example.com",
-    alergiaMedicamento: "No",
-  };
+import PersoNavBar from "@/app/paginaweb/components/PersoNavBar";
+import "../assets/css/animate.css";
+import "../assets/css/LineIcons.css";
+import "../assets/css/main.css";
+import "../assets/css/tiny-slider.css";
+import React, { useEffect, useState } from "react";
+
+export default function Registro() {
   const [formData, setFormData] = useState({
     fechaFiliacion: "",
-    apellidoPaterno: personalData.apellidoPaterno,
-    apellidoMaterno: personalData.apellidoMaterno,
-    primerNombre: personalData.primerNombre,
-    segundoNombre: personalData.segundoNombre,
-    fechaNacimiento: personalData.fechaNacimiento,
-    lugarNacimiento: personalData.lugarNacimiento,
-    sexo: personalData.sexo,
-    carnetIdentidad: personalData.carnetIdentidad,
-    direccionZona: personalData.direccionZona,
-    telefono: personalData.telefono,
-    celular: personalData.celular,
-    email: personalData.email,
+    apellidoPaterno: "",
+    apellidoMaterno: "",
+    primerNombre: "",
+    segundoNombre: "",
+    fechaNacimiento: "",
+    lugarNacimiento: "",
+    sexo: "",
+    carnetIdentidad: "",
+    direccionZona: "",
+    telefono: "",
+    celular: "",
+    email: "",
     referidoPor: "",
     motivoConsulta: "",
-    alergiaMedicamento: personalData.alergiaMedicamento,
+    alergiaMedicamento: "",
   });
 
   const handleChange = (e: any) => {
@@ -64,12 +39,13 @@ export default function Pacientes() {
     console.log("Datos del formulario:", formData);
     // Aquí puedes enviar los datos a tu backend o realizar alguna otra acción
   };
+
   return (
-    <DefaultLayout>
-      <Breadcrumb pageName="Editar pacientes" />
+    <>
+      <PersoNavBar />
       <div className="mx-12 my-4  rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
         <h3 className="my-10 flex w-full justify-center font-medium text-black dark:text-white">
-          Editar Paciente
+          Formulario de registro
         </h3>
         <form
           onSubmit={handleSubmit}
@@ -102,6 +78,8 @@ export default function Pacientes() {
                 required
               />
             </div>
+          </div>
+          <div className="flex flex-row gap-5.5 p-6.5">
             <div>
               <label className="mb-3 block text-sm font-medium text-black dark:text-white">
                 Primer Nombre:
@@ -171,6 +149,8 @@ export default function Pacientes() {
                 <option value="Femenino">Femenino</option>
               </select>
             </div>
+          </div>
+          <div className="flex flex-row gap-5.5 p-6.5">
             <div>
               <label className="mb-3 block text-sm font-medium text-black dark:text-white">
                 Carnet de Identidad:
@@ -224,6 +204,9 @@ export default function Pacientes() {
                 required
               />
             </div>
+          </div>
+
+          <div className="flex flex-row gap-5.5 p-6.5">
             <div>
               <label className="mb-3 block text-sm font-medium text-black dark:text-white">
                 Email:
@@ -257,6 +240,6 @@ export default function Pacientes() {
           </button>
         </form>
       </div>
-    </DefaultLayout>
+    </>
   );
 }

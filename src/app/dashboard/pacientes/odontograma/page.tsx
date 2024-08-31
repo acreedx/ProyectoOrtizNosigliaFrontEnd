@@ -1,6 +1,6 @@
 "use client";
-import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
-import DefaultLayout from "@/components/Layouts/DefaultLayout";
+import Breadcrumb from "@/app/dashboard/components/Breadcrumbs/Breadcrumb";
+import DefaultLayout from "@/app/dashboard/components/Layouts/DefaultLayout";
 import { useState } from "react";
 interface OdontogramaRow {
   msc: string;
