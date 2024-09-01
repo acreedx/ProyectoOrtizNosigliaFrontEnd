@@ -9,7 +9,7 @@ const NavBarLink: React.FC<NavBarLinkProps> = ({ linkName, linkUrl }) => {
     <li className="flex items-center">
       <a
         href={linkUrl}
-        className="text-lg text-graydark no-underline transition duration-150 ease-in-out hover:text-orange-400"
+        className="text-lg text-graydark no-underline drop-shadow-md transition duration-150 ease-in-out hover:text-orange-400"
       >
         {linkName}
       </a>

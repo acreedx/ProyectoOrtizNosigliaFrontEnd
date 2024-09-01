@@ -6,20 +6,20 @@ import Link from "next/link";
 export default function PersoNavBar() {
   return (
     <nav className="border-b-1 sticky flex w-full flex-row justify-center">
-      <ul className="mb-0  flex w-full justify-around px-0 py-2 align-middle">
+      <ul className="mb-0  flex w-full flex-wrap justify-around px-0 py-2 align-middle">
         <div>
           <li className="">
-            <a
-              href=""
+            <Link
+              href="/paginaweb"
               className="text-gray-900 no-underline hover:text-orange-400"
             >
               <Image
-                src={"/paginawebimages/logo/logo.png"}
+                src={"/images/logo/logo.png"}
                 alt="Ortiz Nosiglia Logo"
                 width={60}
                 height={60}
               />
-            </a>
+            </Link>
           </li>
         </div>
         <div className="flex gap-10">
@@ -31,15 +31,15 @@ export default function PersoNavBar() {
           <li>
             <Link
               href="/dashboard/pacientes"
-              className="rounded-xl bg-orange-400 p-2 text-lg text-white   no-underline hover:text-orange-400"
+              className="rounded-xl bg-orange-400 p-2 text-lg text-white no-underline  hover:text-orange-700 hover:drop-shadow-md "
             >
               Iniciar Sesión
             </Link>
           </li>
           <li>
             <Link
-              href="/paginaweb/registro"
-              className="rounded-xl border-2 border-orange-400 p-2 text-lg text-orange-400   no-underline hover:text-orange-400"
+              href="/paginaweb/pages/registro"
+              className="rounded-xl border-2 border-orange-400 p-2 text-lg text-orange-400 no-underline hover:bg-orange-400 hover:text-white hover:drop-shadow-md"
             >
               Crear Cuenta
             </Link>

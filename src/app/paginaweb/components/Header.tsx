@@ -4,11 +4,11 @@ export default function Header() {
   return (
     <>
       <header id="home">
-        <div className="header-wrapper ">
+        <div className="header-wrapper">
           <div className="header-top bg-orange-500">
-            <div className="container">
-              <div className="row">
-                <div className="col-md-8">
+            <div className="mx-auto w-full px-[calc(1.5rem*0.5)] sm:max-w-[540px] md:max-w-[720px] lg:max-w-[960px] xl:max-w-[1140px] 2xl:max-w-[1320px]">
+              <div className="-mx-[calc(1.5rem*0.5)] -mt-[0rem] flex flex-wrap">
+                <div className="md:w-2/3">
                   <div className="header-top-left text-md-left text-center">
                     <ul className="mb-0">
                       <li>
@@ -25,7 +25,7 @@ export default function Header() {
                     </ul>
                   </div>
                 </div>
-                <div className="col-md-4">
+                <div className="md:w-1/3">
                   <div className="header-top-right d-none d-md-block">
                     <ul className="mb-0">
                       <li>
@@ -56,11 +56,12 @@ export default function Header() {
         <section className="slider-section">
           <div className="slider-active slick-style">
             <div className="single-slider img-bg bg-orange-400">
-              <div className="container">
-                <div className="row">
-                  <div className="col-xl-7 col-lg-8 col-md-10">
+              <div className="mx-auto w-full px-[calc(1.5rem*0.5)] sm:max-w-[540px] md:max-w-[720px] lg:max-w-[960px] xl:max-w-[1140px] 2xl:max-w-[1320px]">
+                <div className="-mx-[calc(1.5rem*0.5)] -mt-[0rem] flex flex-wrap">
+                  <div className="md:w-10/12 lg:w-2/3 xl:w-7/12">
                     <div className="slider-content">
                       <h1
+                        className="mb-2 mt-0 text-[calc(1.375rem+1.5vw)] font-medium leading-tight text-[color:var(--bs-heading-color)] xl:text-[2.5rem]"
                         data-animation="fadeInDown"
                         data-duration="1.5s"
                         data-delay=".5s"
@@ -78,7 +79,7 @@ export default function Header() {
                       </p>
                       <a
                         href="#about"
-                        className="btn theme-btn page-scroll"
+                        className="inline-block  rounded-md border border-transparent  bg-slate-50 px-3 py-1.5 text-base font-normal leading-6 text-current text-orange-500 no-underline shadow-md transition-colors hover:text-orange-700 disabled:pointer-events-none disabled:opacity-65"
                         data-animation="fadeInUp"
                         data-duration="1.5s"
                         data-delay=".9s"
@@ -91,11 +92,12 @@ export default function Header() {
               </div>
             </div>
             <div className="single-slider img-bg bg-orange-400">
-              <div className="container">
-                <div className="row">
-                  <div className="col-xl-7 col-lg-8 col-md-10">
+              <div className="mx-auto w-full px-[calc(1.5rem*0.5)] sm:max-w-[540px] md:max-w-[720px] lg:max-w-[960px] xl:max-w-[1140px] 2xl:max-w-[1320px]">
+                <div className="-mx-[calc(1.5rem*0.5)] -mt-[0rem] flex flex-wrap">
+                  <div className="md:w-10/12 lg:w-2/3 xl:w-7/12">
                     <div className="slider-content">
                       <h1
+                        className="mb-2 mt-0 text-[calc(1.375rem+1.5vw)] font-medium leading-tight text-[color:var(--bs-heading-color)] xl:text-[2.5rem]"
                         data-animation="fadeInDown"
                         data-duration="1.5s"
                         data-delay=".5s"
@@ -114,7 +116,7 @@ export default function Header() {
                       </p>
                       <a
                         href="#contact"
-                        className="btn theme-btn page-scroll"
+                        className="inline-block  rounded-md border border-transparent  bg-slate-50 px-3 py-1.5 text-base font-normal leading-6 text-current text-orange-500 no-underline shadow-md transition-colors hover:text-orange-700 disabled:pointer-events-none disabled:opacity-65"
                         data-animation="fadeInUp"
                         data-duration="1.5s"
                         data-delay=".9s"
@@ -127,11 +129,12 @@ export default function Header() {
               </div>
             </div>
             <div className="single-slider img-bg bg-orange-400">
-              <div className="container">
-                <div className="row">
-                  <div className="col-xl-7 col-lg-8 col-md-10">
+              <div className="mx-auto w-full px-[calc(1.5rem*0.5)] sm:max-w-[540px] md:max-w-[720px] lg:max-w-[960px] xl:max-w-[1140px] 2xl:max-w-[1320px]">
+                <div className="-mx-[calc(1.5rem*0.5)] -mt-[0rem] flex flex-wrap">
+                  <div className="md:w-10/12 lg:w-2/3 xl:w-7/12">
                     <div className="slider-content">
                       <h1
+                        className="mb-2 mt-0 text-[calc(1.375rem+1.5vw)] font-medium leading-tight text-[color:var(--bs-heading-color)] xl:text-[2.5rem]"
                         data-animation="fadeInDown"
                         data-duration="1.5s"
                         data-delay=".5s"
@@ -150,7 +153,7 @@ export default function Header() {
                       </p>
                       <a
                         href="#services"
-                        className="btn theme-btn page-scroll"
+                        className="inline-block  rounded-md border border-transparent  bg-slate-50  px-3 py-1.5 text-base font-normal leading-6 text-current text-orange-500 no-underline shadow-md transition-colors hover:text-orange-700 disabled:pointer-events-none disabled:opacity-65"
                         data-animation="fadeInUp"
                         data-duration="1.5s"
                         data-delay=".9s"

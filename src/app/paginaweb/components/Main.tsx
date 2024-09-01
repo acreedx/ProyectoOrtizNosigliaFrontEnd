@@ -3,7 +3,7 @@ import Image from "next/image";
 export default function Main() {
   return (
     <main>
-      <section className="we-do-section pt-150">
+      <section className="we-do-section bg-white pt-150">
         <div className="shape shape-1">
           <Image
             src="/images/paginaweb/shapes/shape-1.svg"
@@ -12,14 +12,17 @@ export default function Main() {
             height={400}
           />
         </div>
-        <div className="container">
-          <div className="row">
-            <div className="col-xl-8 mx-auto">
+        <div className="mx-auto w-full px-[calc(1.5rem*0.5)] sm:max-w-[540px] md:max-w-[720px] lg:max-w-[960px] xl:max-w-[1140px] 2xl:max-w-[1320px]">
+          <div className="-mx-[calc(1.5rem*0.5)] -mt-[0rem] flex flex-wrap">
+            <div className="mx-auto xl:w-2/3">
               <div className="section-title mb-55 text-center">
                 <span className="wow fadeInDown " data-wow-delay=".2s">
                   Que hacemos
                 </span>
-                <h2 className="wow fadeInUp mb-15" data-wow-delay=".4s">
+                <h2
+                  className="wow fadeInUp mb-2 mt-0 text-[calc(1.325rem+0.9vw)] font-medium leading-[1.2] md:text-[2rem]"
+                  data-wow-delay=".4s"
+                >
                   Proveemos para tu salud
                 </h2>
                 <p className="wow fadeInUp" data-wow-delay=".6s">
@@ -30,8 +33,8 @@ export default function Main() {
               </div>
             </div>
           </div>
-          <div className="row">
-            <div className="col-xl-12">
+          <div className="-mx-[calc(1.5rem*0.5)] -mt-[0rem] flex flex-wrap">
+            <div className="xl:w-full">
               <div className="graph mb-60">
                 <Image
                   src="/images/paginaweb/we-do/graph-img.svg"
@@ -41,7 +44,7 @@ export default function Main() {
                 />
               </div>
             </div>
-            <div className="col-lg-3">
+            <div className="lg:w-1/4">
               <div className="we-do-item mb-30">
                 <div className="we-do-icon mb-25 flex items-center justify-center">
                   <svg
@@ -93,7 +96,7 @@ export default function Main() {
                 <h5>Doctores especialistas</h5>
               </div>
             </div>
-            <div className="col-lg-3">
+            <div className="lg:w-1/4">
               <div className="we-do-item mb-30">
                 <div className="we-do-icon mb-25 flex items-center justify-center">
                   <svg
@@ -164,7 +167,7 @@ export default function Main() {
                 <h5>Visitas Frecuentes</h5>
               </div>
             </div>
-            <div className="col-lg-3">
+            <div className="lg:w-1/4">
               <div className="we-do-item mb-30">
                 <div className="we-do-icon mb-25 flex items-center justify-center">
                   <svg
@@ -194,7 +197,7 @@ export default function Main() {
                 <h5>Administración cordial</h5>
               </div>
             </div>
-            <div className="col-lg-3">
+            <div className="lg:w-1/4">
               <div className="we-do-item mb-30">
                 <div className="we-do-icon mb-25 flex items-center justify-center">
                   <svg
@@ -241,7 +244,7 @@ export default function Main() {
           </div>
         </div>
       </section>
-      <section id="about" className="about-section pt-120">
+      <section id="about" className="about-section pt-120 bg-white">
         <div className="shape shape-2">
           <Image
             src="/images/paginaweb/shapes/shape-2.svg"
@@ -250,15 +253,18 @@ export default function Main() {
             height={400}
           />
         </div>
-        <div className="container">
-          <div className="row">
-            <div className="col-xl-10 col-lg-11 mx-auto">
+        <div className="mx-auto w-full px-[calc(1.5rem*0.5)] sm:max-w-[540px] md:max-w-[720px] lg:max-w-[960px] xl:max-w-[1140px] 2xl:max-w-[1320px]">
+          <div className="-mx-[calc(1.5rem*0.5)] -mt-[0rem] flex flex-wrap">
+            <div className="mx-auto lg:w-11/12 xl:w-5/6">
               <div className="about-content mb-55 text-center">
                 <div className="section-title mb-30">
                   <span className="wow fadeInDown" data-wow-delay=".2s">
                     Acerca de nosotros
                   </span>
-                  <h2 className="wow fadeInUp mb-15" data-wow-delay=".4s">
+                  <h2
+                    className="wow fadeInUp mt-0 text-[calc(1.325rem+0.9vw)] font-medium leading-[1.2] md:text-[2rem]"
+                    data-wow-delay=".4s"
+                  >
                     Bienvenido a nuestra clínica
                   </h2>
                 </div>
@@ -273,7 +279,7 @@ export default function Main() {
                 </p>
                 <a
                   href="#"
-                  className="btn theme-btn wow fadeInUp"
+                  className="inline-block  rounded-md border  border-transparent bg-transparent px-3 py-1.5 text-base font-normal leading-6 text-current text-orange-500 no-underline shadow-md transition-colors  hover:text-orange-700 disabled:pointer-events-none disabled:opacity-65"
                   data-wow-delay=".8s"
                 >
                   Aprender más
@@ -291,7 +297,7 @@ export default function Main() {
           />
         </div>
       </section>
-      <section id="services" className="service-section pt-150">
+      <section id="services" className="service-section bg-white pt-150">
         <div className="shape shape-3">
           <Image
             src="/images/paginaweb/shapes/shape-3.svg"
@@ -300,14 +306,17 @@ export default function Main() {
             height={400}
           />
         </div>
-        <div className="container">
-          <div className="row">
-            <div className="col-xl-8 mx-auto">
+        <div className="mx-auto w-full px-[calc(1.5rem*0.5)] sm:max-w-[540px] md:max-w-[720px] lg:max-w-[960px] xl:max-w-[1140px] 2xl:max-w-[1320px]">
+          <div className="-mx-[calc(1.5rem*0.5)] -mt-[0rem] flex flex-wrap">
+            <div className="mx-auto xl:w-2/3">
               <div className="section-title mb-55 text-center">
                 <span className="wow fadeInDown" data-wow-delay=".2s">
                   Servicios
                 </span>
-                <h2 className="wow fadeInUp mb-15" data-wow-delay=".4s">
+                <h2
+                  className=" wow fadeInUp mb-2 mt-0 text-[calc(1.325rem+0.9vw)] font-medium leading-[1.2] md:text-[2rem]"
+                  data-wow-delay=".4s"
+                >
                   Nuestros servicios dentales
                 </h2>
                 <p className="wow fadeInUp" data-wow-delay=".6s">
@@ -319,8 +328,8 @@ export default function Main() {
               </div>
             </div>
           </div>
-          <div className="row">
-            <div className="col-lg-4 col-md-6">
+          <div className="-mx-[calc(1.5rem*0.5)] -mt-[0rem] flex flex-wrap">
+            <div className="md:w-1/2 lg:w-1/3">
               <div className="service-item mb-30">
                 <div className="service-icon mb-25">
                   <svg
@@ -368,14 +377,18 @@ export default function Main() {
                     Lorem ipsum dolor sit amet, consetet sadipscing elitr, sed
                     dinonumy eirmod tempor invidunt.
                   </p>
-                  <a href="#" className="read-more no-underline">
-                    Aprender más <i className="lni lni-arrow-right"></i>
+                  <a
+                    href="#"
+                    className="read-more text-orange-500  no-underline hover:text-orange-700"
+                  >
+                    Aprender más{" "}
+                    <i className="lni lni-arflex -mt-[0rem]-right -mx-[calc(1.5rem*0.5)] flex-wrap"></i>
                   </a>
                 </div>
                 <div className="service-overlay img-bg"></div>
               </div>
             </div>
-            <div className="col-lg-4 col-md-6">
+            <div className="md:w-1/2 lg:w-1/3">
               <div className="service-item mb-30">
                 <div className="service-icon mb-25">
                   <svg
@@ -425,14 +438,18 @@ export default function Main() {
                     Lorem ipsum dolor sit amet, consetet sadipscing elitr, sed
                     dinonumy eirmod tempor invidunt.
                   </p>
-                  <a href="#" className="read-more no-underline">
-                    Aprender más <i className="lni lni-arrow-right"></i>
+                  <a
+                    href="#"
+                    className="read-more text-orange-500  no-underline hover:text-orange-700"
+                  >
+                    Aprender más{" "}
+                    <i className="lni lni-arflex -mt-[0rem]-right -mx-[calc(1.5rem*0.5)] flex-wrap"></i>
                   </a>
                 </div>
                 <div className="service-overlay img-bg"></div>
               </div>
             </div>
-            <div className="col-lg-4 col-md-6">
+            <div className="md:w-1/2 lg:w-1/3">
               <div className="service-item mb-30">
                 <div className="service-icon mb-25">
                   <svg
@@ -474,14 +491,18 @@ export default function Main() {
                     Lorem ipsum dolor sit amet, consetet sadipscing elitr, sed
                     dinonumy eirmod tempor invidunt.
                   </p>
-                  <a href="#" className="read-more no-underline">
-                    Aprender más <i className="lni lni-arrow-right"></i>
+                  <a
+                    href="#"
+                    className="read-more text-orange-500  no-underline hover:text-orange-700"
+                  >
+                    Aprender más{" "}
+                    <i className="lni lni-arflex -mt-[0rem]-right -mx-[calc(1.5rem*0.5)] flex-wrap"></i>
                   </a>
                 </div>
                 <div className="service-overlay img-bg"></div>
               </div>
             </div>
-            <div className="col-lg-4 col-md-6">
+            <div className="md:w-1/2 lg:w-1/3">
               <div className="service-item mb-30">
                 <div className="service-icon mb-25">
                   <svg
@@ -517,13 +538,14 @@ export default function Main() {
                     dinonumy eirmod tempor invidunt.
                   </p>
                   <a href="#" className="read-more no-underline">
-                    Aprender más <i className="lni lni-arrow-right"></i>
+                    Aprender más{" "}
+                    <i className="lni lni-arflex -mt-[0rem]-right -mx-[calc(1.5rem*0.5)] flex-wrap"></i>
                   </a>
                 </div>
                 <div className="service-overlay img-bg"></div>
               </div>
             </div>
-            <div className="col-lg-4 col-md-6">
+            <div className="md:w-1/2 lg:w-1/3">
               <div className="service-item mb-30">
                 <div className="service-icon mb-25">
                   <svg
@@ -566,13 +588,14 @@ export default function Main() {
                     dinonumy eirmod tempor invidunt.
                   </p>
                   <a href="#" className="read-more no-underline">
-                    Aprender más <i className="lni lni-arrow-right"></i>
+                    Aprender más{" "}
+                    <i className="lni lni-arflex -mt-[0rem]-right -mx-[calc(1.5rem*0.5)] flex-wrap"></i>
                   </a>
                 </div>
                 <div className="service-overlay img-bg"></div>
               </div>
             </div>
-            <div className="col-lg-4 col-md-6">
+            <div className="md:w-1/2 lg:w-1/3">
               <div className="service-item mb-30">
                 <div className="service-icon mb-25">
                   <svg
@@ -608,7 +631,8 @@ export default function Main() {
                     dinonumy eirmod tempor invidunt.
                   </p>
                   <a href="#" className="read-more no-underline">
-                    Aprender más <i className="lni lni-arrow-right"></i>
+                    Aprender más{" "}
+                    <i className="lni lni-arflex -mt-[0rem]-right -mx-[calc(1.5rem*0.5)] flex-wrap"></i>
                   </a>
                 </div>
                 <div className="service-overlay img-bg"></div>
@@ -617,7 +641,7 @@ export default function Main() {
           </div>
         </div>
       </section>
-      <section id="testimonial" className="team-section pb-150 pt-150">
+      <section id="testimonial" className="team-section bg-white pb-150 pt-150">
         <div className="shape shape-5">
           <Image
             src="/images/paginaweb/shapes/shape-2.svg"
@@ -634,14 +658,17 @@ export default function Main() {
             height={400}
           />
         </div>
-        <div className="container">
-          <div className="row">
-            <div className="col-xl-8 mx-auto">
+        <div className="mx-auto w-full px-[calc(1.5rem*0.5)] sm:max-w-[540px] md:max-w-[720px] lg:max-w-[960px] xl:max-w-[1140px] 2xl:max-w-[1320px]">
+          <div className="-mx-[calc(1.5rem*0.5)] -mt-[0rem] flex flex-wrap">
+            <div className="mx-auto xl:w-2/3">
               <div className="section-title mb-55 text-center">
                 <span className="wow fadeInDown" data-wow-delay=".2s">
                   Your Using Free Lite Version of The Template
                 </span>
-                <h2 className="wow fadeInUp mb-15" data-wow-delay=".4s">
+                <h2
+                  className="wow fadeInUp mb-2 mt-0 text-[calc(1.325rem+0.9vw)] font-medium leading-[1.2] md:text-[2rem]"
+                  data-wow-delay=".4s"
+                >
                   Please, purchase full version
                 </h2>
                 <p className="wow fadeInUp" data-wow-delay=".6s">
@@ -652,7 +679,7 @@ export default function Main() {
                 <a
                   href="https://rebrand.ly/medic-ud"
                   rel="nofollow"
-                  className="btn theme-btn"
+                  className="inline-block  rounded-md border  border-transparent bg-transparent px-3 py-1.5 text-base font-normal leading-6 text-current text-orange-500 no-underline shadow-md transition-colors  hover:text-orange-700 disabled:pointer-events-none disabled:opacity-65"
                 >
                   Purchase Now
                 </a>
@@ -671,7 +698,10 @@ export default function Main() {
               height={400}
             />
             <div className="video-btn">
-              <a className="popup-video glightbox" href="#">
+              <a
+                className="popup-video glightbox text-orange-500  no-underline hover:text-orange-700"
+                href="#"
+              >
                 <i className="lni lni-play"></i>
               </a>
             </div>
@@ -686,9 +716,9 @@ export default function Main() {
             className="shape-faq"
           />
         </div>
-        <div className="container">
-          <div className="row">
-            <div className="col-xl-6 offset-xl-6 col-lg-8 col-md-10">
+        <div className="mx-auto w-full px-[calc(1.5rem*0.5)] sm:max-w-[540px] md:max-w-[720px] lg:max-w-[960px] xl:max-w-[1140px] 2xl:max-w-[1320px]">
+          <div className="-mx-[calc(1.5rem*0.5)] -mt-[0rem] flex flex-wrap">
+            <div className="mt-[0rem] w-full max-w-full flex-shrink-0 px-[calc(1.5rem*0.5)] md:w-10/12 lg:w-2/3 xl:ml-auto xl:w-1/2">
               <div className="faq-content-wrapper pb-90 pt-90">
                 <div className="section-title">
                   <span
@@ -698,7 +728,7 @@ export default function Main() {
                     Frequently Asked Questions
                   </span>
                   <h2
-                    className="wow fadeInUp mb-35 text-white"
+                    className="wow fadeInUp mb-2 mt-0 text-[calc(1.325rem+0.9vw)] font-medium leading-[1.2] text-white md:text-[2rem]"
                     data-wow-delay=".4s"
                   >
                     Get Every Single Answers There if you want
@@ -709,7 +739,7 @@ export default function Main() {
                     <div id="headingOne">
                       <h5 className="mb-0">
                         <button
-                          className="faq-btn btn"
+                          className="faq-btn hover:text-hover-color hover:bg-hover-bg hover:border-hover-border-color disabled:bg-disabled-bg disabled:border-disabled-border-color inline-block rounded-md border border-transparent bg-transparent px-3 py-1.5 text-base font-normal leading-6 text-current shadow-md transition-colors  disabled:pointer-events-none disabled:opacity-65"
                           type="button"
                           data-toggle="collapse"
                           data-target="#collapseOne"
@@ -741,7 +771,7 @@ export default function Main() {
                     <div id="headingTwo">
                       <h5 className="mb-0">
                         <button
-                          className="faq-btn btn collapsed"
+                          className="faq-btn hover:text-hover-color hover:bg-hover-bg hover:border-hover-border-color disabled:bg-disabled-bg disabled:border-disabled-border-color collapsed inline-block rounded-md border border-transparent bg-transparent px-3 py-1.5 text-base font-normal leading-6 text-current shadow-md transition-colors disabled:pointer-events-none disabled:opacity-65"
                           type="button"
                           data-toggle="collapse"
                           data-target="#collapseTwo"
@@ -773,7 +803,7 @@ export default function Main() {
                     <div id="headingThree">
                       <h5 className="mb-0">
                         <button
-                          className="faq-btn btn collapsed"
+                          className="faq-btn hover:text-hover-color hover:bg-hover-bg hover:border-hover-border-color disabled:bg-disabled-bg disabled:border-disabled-border-color collapsed inline-block rounded-md border border-transparent bg-transparent px-3 py-1.5 text-base font-normal leading-6 text-current shadow-md transition-colors disabled:pointer-events-none disabled:opacity-65"
                           type="button"
                           data-toggle="collapse"
                           data-target="#collapseThree"
@@ -804,7 +834,7 @@ export default function Main() {
                     <div id="headingFour">
                       <h5 className="mb-0">
                         <button
-                          className="faq-btn btn collapsed"
+                          className="faq-btn hover:text-hover-color hover:bg-hover-bg hover:border-hover-border-color disabled:bg-disabled-bg disabled:border-disabled-border-color collapsed inline-block rounded-md border border-transparent bg-transparent px-3 py-1.5 text-base font-normal leading-6 text-current shadow-md transition-colors disabled:pointer-events-none disabled:opacity-65"
                           type="button"
                           data-toggle="collapse"
                           data-target="#collapseFour"
@@ -837,7 +867,7 @@ export default function Main() {
           </div>
         </div>
       </section>
-      <section id="team" className="team-section pb-150 pt-150">
+      <section id="team" className="team-section bg-white pb-150 pt-150">
         <div className="shape shape-5">
           <Image
             src="/images/paginaweb/shapes/shape-2.svg"
@@ -854,14 +884,17 @@ export default function Main() {
             height={400}
           />
         </div>
-        <div className="container">
-          <div className="row">
-            <div className="col-xl-8 mx-auto">
+        <div className="mx-auto w-full px-[calc(1.5rem*0.5)] sm:max-w-[540px] md:max-w-[720px] lg:max-w-[960px] xl:max-w-[1140px] 2xl:max-w-[1320px]">
+          <div className="-mx-[calc(1.5rem*0.5)] -mt-[0rem] flex flex-wrap">
+            <div className="mx-auto xl:w-2/3">
               <div className="section-title mb-55 text-center">
                 <span className="wow fadeInDown" data-wow-delay=".2s">
                   Your Using Free Lite Version of The Template
                 </span>
-                <h2 className="wow fadeInUp mb-15" data-wow-delay=".4s">
+                <h2
+                  className="wow fadeInUp mb-2 mt-0 text-[calc(1.325rem+0.9vw)] font-medium leading-[1.2] md:text-[2rem]"
+                  data-wow-delay=".4s"
+                >
                   Please, purchase full version
                 </h2>
                 <p className="wow fadeInUp" data-wow-delay=".6s">
@@ -873,7 +906,7 @@ export default function Main() {
                 <a
                   href="https://rebrand.ly/medic-ud"
                   rel="nofollow"
-                  className="btn theme-btn"
+                  className="inline-block  rounded-md border  border-transparent bg-transparent px-3 py-1.5 text-base font-normal leading-6 text-current text-orange-500 no-underline shadow-md transition-colors  hover:text-orange-700 disabled:pointer-events-none disabled:opacity-65"
                 >
                   Purchase Now
                 </a>
@@ -884,13 +917,15 @@ export default function Main() {
       </section>
       <section
         id="emergency-section"
-        className="subscribe-section img-bg pb-100 pt-100"
+        className="subscribe-section img-bg bg-white pb-100 pt-100"
       >
-        <div className="container">
-          <div className="row">
-            <div className="col-xl-7">
+        <div className="mx-auto w-full px-[calc(1.5rem*0.5)] sm:max-w-[540px] md:max-w-[720px] lg:max-w-[960px] xl:max-w-[1140px] 2xl:max-w-[1320px]">
+          <div className="-mx-[calc(1.5rem*0.5)] -mt-[0rem] flex flex-wrap">
+            <div className="xl:w-7/12">
               <div className="section-title">
-                <h2 className="mb-15">Subscribe Our Newsletter</h2>
+                <h2 className="mb-2 mt-0 text-[calc(1.325rem+0.9vw)] font-medium leading-[1.2] md:text-[2rem]">
+                  Subscribe Our Newsletter
+                </h2>
                 <p className="mb-35">
                   Lorem ipsum dolor sit amet, consetetur sadiping elitr, sed
                   dinonumy
@@ -900,8 +935,8 @@ export default function Main() {
               </div>
             </div>
           </div>
-          <div className="row">
-            <div className="col-xl-8">
+          <div className="-mx-[calc(1.5rem*0.5)] -mt-[0rem] flex flex-wrap">
+            <div className="xl:w-2/3">
               <div className="subscribe-wrapper">
                 <form action="#" className="subscribe-from">
                   <input
@@ -910,7 +945,9 @@ export default function Main() {
                     id="subscribe"
                     placeholder="Enter Your Email"
                   />
-                  <button className="btn theme-btn">Subscribe</button>
+                  <button className="hover:text-hover-color hover:bg-hover-bg hover:border-hover-border-color disabled:bg-disabled-bg disabled:border-disabled-border-color theme-btn inline-block rounded-md border border-transparent bg-transparent px-3 py-1.5 text-base font-normal leading-6 text-current shadow-md transition-colors disabled:pointer-events-none disabled:opacity-65">
+                    Subscribe
+                  </button>
                 </form>
                 <div className="support d-flex">
                   <div className="support-icon">
@@ -948,7 +985,7 @@ export default function Main() {
                       </g>
                     </svg>
                   </div>
-                  <h2>
+                  <h2 className="mb-2 mt-0 text-[calc(1.325rem+0.9vw)] font-medium leading-[1.2] md:text-[2rem]">
                     {" "}
                     <span>Emergency Medical</span> Service 24/7
                   </h2>
@@ -983,7 +1020,7 @@ export default function Main() {
           </div>
         </div>
       </section>
-      <section id="blog" className="blog-section pt-150">
+      <section id="blog" className="blog-section bg-white pt-150">
         <div className="shape shape-7">
           <Image
             src="/images/paginaweb/shapes/shape-6.svg"
@@ -992,14 +1029,17 @@ export default function Main() {
             height={400}
           />
         </div>
-        <div className="container">
-          <div className="row">
-            <div className="col-xl-8 mx-auto">
+        <div className="mx-auto w-full px-[calc(1.5rem*0.5)] sm:max-w-[540px] md:max-w-[720px] lg:max-w-[960px] xl:max-w-[1140px] 2xl:max-w-[1320px]">
+          <div className="-mx-[calc(1.5rem*0.5)] -mt-[0rem] flex flex-wrap">
+            <div className="mx-auto xl:w-2/3">
               <div className="section-title mb-55 text-center">
                 <span className="wow fadeInDown" data-wow-delay=".2s">
                   Blog Post
                 </span>
-                <h2 className="wow fadeInUp mb-15" data-wow-delay=".4s">
+                <h2
+                  className="wow fadeInUp mb-2 mt-0 text-[calc(1.325rem+0.9vw)] font-medium leading-[1.2] md:text-[2rem]"
+                  data-wow-delay=".4s"
+                >
                   Latest News
                 </h2>
                 <p className="wow fadeInUp" data-wow-delay=".4s">
@@ -1010,8 +1050,8 @@ export default function Main() {
               </div>
             </div>
           </div>
-          <div className="row">
-            <div className="col-xl-4 col-lg-4 col-md-6">
+          <div className="-mx-[calc(1.5rem*0.5)] -mt-[0rem] flex flex-wrap">
+            <div className="mt-[0rem] w-full max-w-full flex-shrink-0 px-[calc(1.5rem*0.5)] md:w-1/2 lg:w-1/3 xl:w-1/3">
               <div
                 className="single-blog wow fadeInUp mb-30"
                 data-wow-delay=".2s"
@@ -1037,12 +1077,13 @@ export default function Main() {
                     elitr, sedqw dinoumy eirmod tempor invidunt sedrsu.
                   </p>
                   <a className="read-more no-underline" href="#">
-                    Aprender más <i className="lni lni-arrow-right"></i>
+                    Aprender más
+                    <i className="lni lni-arflex -mt-[0rem]-right -mx-[calc(1.5rem*0.5)] flex-wrap"></i>
                   </a>
                 </div>
               </div>
             </div>
-            <div className="col-xl-4 col-lg-4 col-md-6">
+            <div className="mt-[0rem] w-full max-w-full flex-shrink-0 px-[calc(1.5rem*0.5)] md:w-1/2 lg:w-1/3 xl:w-1/3">
               <div
                 className="single-blog wow fadeInUp mb-30"
                 data-wow-delay=".4s"
@@ -1068,12 +1109,13 @@ export default function Main() {
                     elitr, sedqw dinoumy eirmod tempor invidunt sedrsu.
                   </p>
                   <a className="read-more no-underline" href="#">
-                    Aprender más <i className="lni lni-arrow-right"></i>
+                    Aprender más{" "}
+                    <i className="lni lni-arflex -mt-[0rem]-right -mx-[calc(1.5rem*0.5)] flex-wrap"></i>
                   </a>
                 </div>
               </div>
             </div>
-            <div className="col-xl-4 col-lg-4 col-md-6">
+            <div className="mt-[0rem] w-full max-w-full flex-shrink-0 px-[calc(1.5rem*0.5)] md:w-1/2 lg:w-1/3 xl:w-1/3">
               <div
                 className="single-blog wow fadeInUp mb-30"
                 data-wow-delay=".6s"
@@ -1099,7 +1141,8 @@ export default function Main() {
                     elitr, sedqw dinoumy eirmod tempor invidunt sedrsu.
                   </p>
                   <a className="read-more no-underline" href="#">
-                    Aprender más <i className="lni lni-arrow-right"></i>
+                    Aprender más{" "}
+                    <i className="lni lni-arflex -mt-[0rem]-right -mx-[calc(1.5rem*0.5)] flex-wrap"></i>
                   </a>
                 </div>
               </div>
@@ -1107,7 +1150,7 @@ export default function Main() {
           </div>
         </div>
       </section>
-      <section id="contact" className="team-section pb-150 pt-150">
+      <section id="contact" className="team-section bg-white pb-150 pt-150">
         <div className="shape shape-5">
           <Image
             src="/images/paginaweb/shapes/shape-2.svg"
@@ -1124,25 +1167,29 @@ export default function Main() {
             height={400}
           />
         </div>
-        <div className="container">
-          <div className="row">
-            <div className="col-xl-8 mx-auto">
+        <div className="mx-auto w-full px-[calc(1.5rem*0.5)] sm:max-w-[540px] md:max-w-[720px] lg:max-w-[960px] xl:max-w-[1140px] 2xl:max-w-[1320px]">
+          <div className="-mx-[calc(1.5rem*0.5)] -mt-[0rem] flex flex-wrap">
+            <div className="mx-auto mt-[0rem] w-full max-w-full flex-shrink-0 px-[calc(1.5rem*0.5)] xl:w-2/3">
               <div className="section-title mb-55 text-center">
                 <span className="wow fadeInDown" data-wow-delay=".2s">
-                  Your Using Free Lite Version of The Template
+                  Reservas
                 </span>
-                <h2 className="wow fadeInUp mb-15" data-wow-delay=".4s">
-                  Please, purchase full version
+                <h2
+                  className="wow fadeInUp mb-2 mt-0 text-[calc(1.325rem+0.9vw)] font-medium leading-[1.2] md:text-[2rem]"
+                  data-wow-delay=".4s"
+                >
+                  Has una reserva ahora!
                 </h2>
                 <p className="wow fadeInUp" data-wow-delay=".6s">
-                  To get all sections and permission to use with commercial
-                  projects & footer credit remove <br />
+                  Puedes registrarte en línea y hacer una reserva en menos de 1
+                  minuto
+                  <br />
                 </p>
                 <br />
                 <a
                   href="https://rebrand.ly/medic-ud"
                   rel="nofollow"
-                  className="btn theme-btn"
+                  className="inline-block  rounded-md border  border-transparent bg-transparent px-3 py-1.5 text-base font-normal leading-6 text-current text-orange-500 no-underline shadow-md transition-colors  hover:text-orange-700 disabled:pointer-events-none disabled:opacity-65"
                 >
                   Reserva tu cita ahora!
                 </a>

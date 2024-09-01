@@ -379,7 +379,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
             <Image
               width={78}
               height={78}
-              src={"/paginawebimages/logo/logo.png"}
+              src={"/images/logo/logo.png"}
               alt="Logo"
               priority
             />

@@ -2,20 +2,6 @@
 import DefaultLayout from "@/app/dashboard/components/Layouts/DefaultLayout";
 import React, { useState } from "react";
 import Breadcrumb from "@/app/dashboard/components/Breadcrumbs/Breadcrumb";
-import CheckboxFive from "@/app/dashboard/components/Checkboxes/CheckboxFive";
-import CheckboxFour from "@/app/dashboard/components/Checkboxes/CheckboxFour";
-import CheckboxOne from "@/app/dashboard/components/Checkboxes/CheckboxOne";
-import CheckboxThree from "@/app/dashboard/components/Checkboxes/CheckboxThree";
-import CheckboxTwo from "@/app/dashboard/components/Checkboxes/CheckboxTwo";
-import SwitcherFour from "@/app/dashboard/components/Switchers/SwitcherFour";
-import SwitcherOne from "@/app/dashboard/components/Switchers/SwitcherOne";
-import SwitcherThree from "@/app/dashboard/components/Switchers/SwitcherThree";
-import SwitcherTwo from "@/app/dashboard/components/Switchers/SwitcherTwo";
-import DatePickerTwo from "@/app/dashboard/components/FormElements/DatePicker/DatePickerTwo";
-import DatePickerOne from "@/app/dashboard/components/FormElements/DatePicker/DatePickerOne";
-import MultiSelect from "@/app/dashboard/components/FormElements/MultiSelect";
-import SelectGroupTwo from "@/app/dashboard/components/SelectGroup/SelectGroupTwo";
-import TablePatients from "@/app/dashboard/components/Tables/TablePatients";
 export default function Pacientes() {
   const personalData = {
     apellidoPaterno: "Pérez",

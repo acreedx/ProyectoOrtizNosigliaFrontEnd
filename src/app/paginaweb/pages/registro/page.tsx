@@ -1,9 +1,9 @@
 "use client";
 import PersoNavBar from "@/app/paginaweb/components/PersoNavBar";
-import "../assets/css/animate.css";
-import "../assets/css/LineIcons.css";
-import "../assets/css/main.css";
-import "../assets/css/tiny-slider.css";
+import "../../assets/css/animate.css";
+import "../../assets/css/LineIcons.css";
+import "../../assets/css/main.css";
+import "../../assets/css/tiny-slider.css";
 import React, { useEffect, useState } from "react";
 
 export default function Registro() {
