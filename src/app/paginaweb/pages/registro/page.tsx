@@ -5,10 +5,14 @@ import "../../assets/css/LineIcons.css";
 import "../../assets/css/main.css";
 import "../../assets/css/tiny-slider.css";
 import React, { useEffect, useState } from "react";
+import SelectGroupOne from "@/app/dashboard/components/SelectGroup/SelectGroupOne";
+import { localDomain } from "@/types/domain";
+import Swal from "sweetalert2";
+import { useRouter } from "next/navigation";
 
 export default function Registro() {
+  const router = useRouter();
   const [formData, setFormData] = useState({
-    fechaFiliacion: "",
     apellidoPaterno: "",
     apellidoMaterno: "",
     primerNombre: "",
@@ -21,9 +25,8 @@ export default function Registro() {
     telefono: "",
     celular: "",
     email: "",
-    referidoPor: "",
-    motivoConsulta: "",
     alergiaMedicamento: "",
+    estado: true,
   });
 
   const handleChange = (e: any) => {
@@ -34,10 +37,32 @@ export default function Registro() {
     });
   };
 
-  const handleSubmit = (e: any) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
-    console.log("Datos del formulario:", formData);
+    const url = localDomain + "person";
+    console.log(JSON.stringify(formData));
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    });
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error("Error al crear al paciente: " + error.message);
+    }
+    const data = await response.json();
     // Aquí puedes enviar los datos a tu backend o realizar alguna otra acción
+    Swal.fire({
+      title: "Éxito",
+      text: "Bienvenido al centro Ortiz Nosiliga " + data.primerNombre,
+      icon: "success",
+      confirmButtonText: "Continuar al listado",
+      confirmButtonColor: "#28a745",
+    }).then((result) => {
+      router.push("/dashboard/pacientes");
+    });
   };
 
   return (
@@ -138,7 +163,7 @@ export default function Registro() {
                 Sexo:
               </label>
               <select
-                className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                className="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                 name="sexo"
                 value={formData.sexo}
                 onChange={handleChange}

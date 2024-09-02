@@ -268,7 +268,6 @@ const odontogramaData: OdontogramaRow[] = [
     diagnostico: "",
     tratamiento: "",
   },
-  // ... continua con el resto de los datos
 ];
 const deletePatientAlert = () => {
   Swal.fire({

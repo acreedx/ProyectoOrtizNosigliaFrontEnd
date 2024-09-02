@@ -1,5 +1,12 @@
 import React from "react";
 import PersoNavBar from "./PersoNavBar";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation, Pagination, Scrollbar, A11y } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+import "swiper/css/scrollbar";
+
 export default function Header() {
   return (
     <>
@@ -52,14 +59,24 @@ export default function Header() {
         </div>
       </header>
       <PersoNavBar />
-      <div className="slider-wrapper">
-        <section className="slider-section">
-          <div className="slider-active slick-style">
+      <section className="slider-section">
+        <Swiper
+          className="h-[772px]"
+          modules={[Navigation, Pagination, Scrollbar, A11y]}
+          spaceBetween={0}
+          slidesPerView={1}
+          loop={true}
+          navigation
+          pagination={{
+            clickable: true,
+          }}
+        >
+          <SwiperSlide>
             <div className="single-slider img-bg bg-orange-400">
               <div className="mx-auto w-full px-[calc(1.5rem*0.5)] sm:max-w-[540px] md:max-w-[720px] lg:max-w-[960px] xl:max-w-[1140px] 2xl:max-w-[1320px]">
                 <div className="-mx-[calc(1.5rem*0.5)] -mt-[0rem] flex flex-wrap">
                   <div className="md:w-10/12 lg:w-2/3 xl:w-7/12">
-                    <div className="slider-content">
+                    <div className="slider-content h-[772px]">
                       <h1
                         className="mb-2 mt-0 text-[calc(1.375rem+1.5vw)] font-medium leading-tight text-[color:var(--bs-heading-color)] xl:text-[2.5rem]"
                         data-animation="fadeInDown"
@@ -91,11 +108,13 @@ export default function Header() {
                 </div>
               </div>
             </div>
+          </SwiperSlide>
+          <SwiperSlide>
             <div className="single-slider img-bg bg-orange-400">
               <div className="mx-auto w-full px-[calc(1.5rem*0.5)] sm:max-w-[540px] md:max-w-[720px] lg:max-w-[960px] xl:max-w-[1140px] 2xl:max-w-[1320px]">
                 <div className="-mx-[calc(1.5rem*0.5)] -mt-[0rem] flex flex-wrap">
                   <div className="md:w-10/12 lg:w-2/3 xl:w-7/12">
-                    <div className="slider-content">
+                    <div className="slider-content h-[772px]">
                       <h1
                         className="mb-2 mt-0 text-[calc(1.375rem+1.5vw)] font-medium leading-tight text-[color:var(--bs-heading-color)] xl:text-[2.5rem]"
                         data-animation="fadeInDown"
@@ -109,10 +128,9 @@ export default function Header() {
                         data-duration="1.5s"
                         data-delay=".7s"
                       >
-                        Lorem ipsum dolor sit amet, consetetur sadipscing elitr,
-                        sed dinonumy eirmod tempor invidunt ut labore et dolore
-                        magna aliquyam erat. Lorem ipsum dolor sit amet,
-                        consetetur sadipscing elitr.
+                        El centro odontológico Ortiz Nosilgia es un centro
+                        dedicado a brindar servicios de odontología general a
+                        toda la población
                       </p>
                       <a
                         href="#contact"
@@ -128,11 +146,13 @@ export default function Header() {
                 </div>
               </div>
             </div>
+          </SwiperSlide>
+          <SwiperSlide>
             <div className="single-slider img-bg bg-orange-400">
               <div className="mx-auto w-full px-[calc(1.5rem*0.5)] sm:max-w-[540px] md:max-w-[720px] lg:max-w-[960px] xl:max-w-[1140px] 2xl:max-w-[1320px]">
                 <div className="-mx-[calc(1.5rem*0.5)] -mt-[0rem] flex flex-wrap">
                   <div className="md:w-10/12 lg:w-2/3 xl:w-7/12">
-                    <div className="slider-content">
+                    <div className="slider-content h-[772px]">
                       <h1
                         className="mb-2 mt-0 text-[calc(1.375rem+1.5vw)] font-medium leading-tight text-[color:var(--bs-heading-color)] xl:text-[2.5rem]"
                         data-animation="fadeInDown"
@@ -146,10 +166,9 @@ export default function Header() {
                         data-duration="1.5s"
                         data-delay=".7s"
                       >
-                        Lorem ipsum dolor sit amet, consetetur sadipscing elitr,
-                        sed dinonumy eirmod tempor invidunt ut labore et dolore
-                        magna aliquyam erat. Lorem ipsum dolor sit amet,
-                        consetetur sadipscing elitr.
+                        El centro odontológico Ortiz Nosilgia es un centro
+                        dedicado a brindar servicios de odontología general a
+                        toda la población
                       </p>
                       <a
                         href="#services"
@@ -165,9 +184,9 @@ export default function Header() {
                 </div>
               </div>
             </div>
-          </div>
-        </section>
-      </div>
+          </SwiperSlide>
+        </Swiper>
+      </section>
     </>
   );
 }

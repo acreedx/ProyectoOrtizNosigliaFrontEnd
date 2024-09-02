@@ -88,7 +88,6 @@ const menuGroups = [
           { label: "Listado de pacientes", route: "/dashboard/pacientes" },
         ],
       },
-      /*
       {
         icon: (
           <svg
@@ -106,7 +105,7 @@ const menuGroups = [
           </svg>
         ),
         label: "Calendar",
-        route: "/calendar",
+        route: "/dashboard/pages/calendar",
       },
       {
         icon: (
@@ -129,7 +128,7 @@ const menuGroups = [
           </svg>
         ),
         label: "Profile",
-        route: "/profile",
+        route: "/dashboard/pages/profile",
       },
       {
         icon: (
@@ -166,8 +165,11 @@ const menuGroups = [
         label: "Forms",
         route: "#",
         children: [
-          { label: "Form Elements", route: "/forms/form-elements" },
-          { label: "Form Layout", route: "/forms/form-layout" },
+          {
+            label: "Form Elements",
+            route: "/dashboard/pages/forms/form-elements",
+          },
+          { label: "Form Layout", route: "/dashboard/pages/forms/form-layout" },
         ],
       },
       {
@@ -199,7 +201,7 @@ const menuGroups = [
           </svg>
         ),
         label: "Tables",
-        route: "/tables",
+        route: "/dashboard/pages/tables",
       },
       {
         icon: (
@@ -234,7 +236,7 @@ const menuGroups = [
           </svg>
         ),
         label: "Settings",
-        route: "/settings",
+        route: "/dashboard/pages/settings",
       },
     ],
   },
@@ -274,7 +276,7 @@ const menuGroups = [
           </svg>
         ),
         label: "Chart",
-        route: "/chart",
+        route: "/dashboard/pages/chart",
       },
       {
         icon: (
@@ -315,8 +317,8 @@ const menuGroups = [
         label: "UI Elements",
         route: "#",
         children: [
-          { label: "Alerts", route: "/ui/alerts" },
-          { label: "Buttons", route: "/ui/buttons" },
+          { label: "Alerts", route: "/dashboard/pages/ui/alerts" },
+          { label: "Buttons", route: "/dashboard/pages/ui/buttons" },
         ],
       },
       {
@@ -354,10 +356,10 @@ const menuGroups = [
         label: "Authentication",
         route: "#",
         children: [
-          { label: "Sign In", route: "/auth/signin" },
-          { label: "Sign Up", route: "/auth/signup" },
+          { label: "Sign In", route: "/dashboard/pages/auth/signin" },
+          { label: "Sign Up", route: "/dashboard/pages/auth/signup" },
         ],
-      },*/
+      },
     ],
   },
 ];

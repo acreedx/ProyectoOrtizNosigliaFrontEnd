@@ -4,9 +4,8 @@ import { Metadata } from "next";
 import DefaultLayout from "@/app/dashboard/components/Layouts/DefaultLayout";
 
 export const metadata: Metadata = {
-  title: "Next.js Settings | TailAdmin - Next.js Dashboard Template",
-  description:
-    "This is Next.js Settings page for TailAdmin - Next.js Tailwind CSS Admin Dashboard Template",
+  title: "Centro Ortiz Nosiglia",
+  description: "Este es el sitio web del Centro Odontológico Ortiz Nosiglia",
 };
 
 const Settings = () => {
