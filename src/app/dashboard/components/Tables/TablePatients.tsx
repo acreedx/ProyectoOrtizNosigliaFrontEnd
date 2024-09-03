@@ -104,14 +104,14 @@ const TableThree = () => {
     fectchPatients();
   }, []);
   return (
-    <div className="rounded-sm border border-stroke bg-white px-5 pb-2.5 pt-6 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
+    <div className="rounded-sm border border-stroke bg-white px-1 pb-2.5 pt-6 shadow-default dark:border-strokedark dark:bg-boxdark  xl:pb-1">
       <div className="max-w-full overflow-x-auto">
         {loading ? (
           <h1>Cargando...</h1>
         ) : personalData.length == 0 ? (
           <h1 className="mb-6">No se encontraron pacientes</h1>
         ) : (
-          <table className="w-full table-auto">
+          <table className="w-full  table-auto">
             <thead>
               <tr className="bg-gray-2 text-left dark:bg-meta-4">
                 <th className="py-4 font-medium text-black dark:text-white xl:pl-11">
