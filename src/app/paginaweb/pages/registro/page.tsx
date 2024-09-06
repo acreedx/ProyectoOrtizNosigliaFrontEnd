@@ -4,15 +4,25 @@ import "../../assets/css/animate.css";
 import "../../assets/css/LineIcons.css";
 import "../../assets/css/main.css";
 import "../../assets/css/tiny-slider.css";
-import React, { useEffect, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import SelectGroupOne from "@/app/dashboard/components/SelectGroup/SelectGroupOne";
 import { localDomain } from "@/types/domain";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { storage } from "../../../../../firebase.config.js";
+import Image from "next/image";
+
+interface FileWithPreview extends File {
+  preview?: string;
+}
 
 export default function Registro() {
+  const [image, setImage] = useState<FileWithPreview | null>(null);
+  const [progress, setProgress] = useState<number>(0);
   const router = useRouter();
   const [formData, setFormData] = useState({
+    fotoDePerfil: "",
     apellidoPaterno: "",
     apellidoMaterno: "",
     primerNombre: "",
@@ -37,10 +47,56 @@ export default function Registro() {
     });
   };
 
+  const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const selectedImage = e.target.files[0] as FileWithPreview;
+      selectedImage.preview = URL.createObjectURL(selectedImage);
+      setImage(selectedImage);
+    }
+  };
+
+  const handleUpload = async () => {
+    if (!image) return;
+
+    const storageRef = await ref(storage, `images/${image.name}`);
+    const uploadTask = uploadBytesResumable(storageRef, image);
+
+    uploadTask.on(
+      "state_changed",
+      (snapshot) => {
+        const progress = Math.round(
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100,
+        );
+        setProgress(progress);
+      },
+      (error) => {
+        console.error("Error al subir la imagen: ", error);
+        setImage(null);
+      },
+      () => {
+        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+          setFormData({
+            ...formData,
+            ["fotoDePerfil"]: downloadURL,
+          });
+        });
+      },
+    );
+  };
+
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-    const url = localDomain + "person";
+    if (image) {
+      await handleUpload();
+    } else {
+      setFormData({
+        ...formData,
+        ["fotoDePerfil"]:
+          "https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg",
+      });
+    }
     console.log(JSON.stringify(formData));
+    const url = localDomain + "person";
     const response = await fetch(url, {
       method: "POST",
       headers: {
@@ -53,7 +109,7 @@ export default function Registro() {
       throw new Error("Error al crear al paciente: " + error.message);
     }
     const data = await response.json();
-    // Aquí puedes enviar los datos a tu backend o realizar alguna otra acción
+
     Swal.fire({
       title: "Éxito",
       text: "Bienvenido al centro Ortiz Nosiliga " + data.primerNombre,
@@ -76,6 +132,37 @@ export default function Registro() {
           onSubmit={handleSubmit}
           className="flex w-full flex-col items-center p-10 pt-0"
         >
+          <div className="flex flex-row gap-5.5 p-6.5">
+            <div className="">
+              <label className="flex flex-col  content-center items-center justify-center gap-4 text-sm font-medium ">
+                <p className="text-black dark:text-white ">Imagen</p>
+                {image ? (
+                  <Image
+                    src={image!.preview!}
+                    alt="Previsualizacion imagen"
+                    width={250}
+                    height={250}
+                    className="max-h-[250px]"
+                  />
+                ) : (
+                  <Image
+                    src="https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg"
+                    alt="Imagen por defecto"
+                    height={250}
+                    width={250}
+                    className="max-h-[250px]"
+                  />
+                )}
+                <input
+                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                  type="file"
+                  name="fotoDePerfil"
+                  onChange={handleImageChange}
+                  accept="image/*"
+                />
+              </label>
+            </div>
+          </div>
           <div className="flex flex-row gap-5.5 p-6.5">
             <div>
               <label className="mb-3 block text-sm font-medium text-black dark:text-white">

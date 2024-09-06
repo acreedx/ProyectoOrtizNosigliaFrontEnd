@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import BotonVolver from "@/app/dashboard/components/BotonVolver";
 interface OdontogramaRow {
   msc: string;
   temp: string;
@@ -90,9 +91,7 @@ const Odontograma = ({ params }: { params: { id: string } }) => {
   }, []);
   return (
     <DefaultLayout>
-      <button className="mb-4 flex w-fit justify-center rounded bg-secondary p-3 font-medium text-gray hover:bg-opacity-90">
-        <Link href={"/dashboard/pacientes"}>{"<-"} Volver</Link>
-      </button>
+      <BotonVolver direccion="/dashboard/pacientes" />
       <Breadcrumb pageName="Editar odontograma" />
       {loading ? (
         <h1>Cargando...</h1>

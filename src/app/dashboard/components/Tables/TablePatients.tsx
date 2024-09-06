@@ -1,24 +1,26 @@
 "use client";
 import { localDomain } from "@/types/domain";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 interface patient {
   _id: string;
-  apellidoPaterno: String;
-  apellidoMaterno: String;
-  primerNombre: String;
-  segundoNombre: String;
-  fechaNacimiento: String;
-  lugarNacimiento: String;
-  sexo: String;
-  carnetIdentidad: String;
-  direccionZona: String;
-  telefono: String;
-  celular: String;
-  email: String;
-  alergiaMedicamento: String;
+  fotoDePerfil: string;
+  apellidoPaterno: string;
+  apellidoMaterno: string;
+  primerNombre: string;
+  segundoNombre: string;
+  fechaNacimiento: string;
+  lugarNacimiento: string;
+  sexo: string;
+  carnetIdentidad: string;
+  direccionZona: string;
+  telefono: string;
+  celular: string;
+  email: string;
+  alergiaMedicamento: string;
   estado: Boolean;
 }
 const TableThree = () => {
@@ -117,6 +119,9 @@ const TableThree = () => {
                 <th className="py-4 font-medium text-black dark:text-white xl:pl-11">
                   Nro
                 </th>
+                <th className="py-4 font-medium text-black dark:text-white xl:pl-11">
+                  Foto de perfil
+                </th>
                 <th className="px-4 py-4 font-medium text-black dark:text-white xl:pl-11">
                   Apellido Paterno
                 </th>
@@ -147,6 +152,15 @@ const TableThree = () => {
                     <h5 className="font-medium text-black dark:text-white">
                       {key + 1}
                     </h5>
+                  </td>
+                  <td className="border-b border-[#eee] px-4 py-5 pl-9 dark:border-strokedark xl:pl-11">
+                    <Image
+                      width={50}
+                      height={50}
+                      className="max-h-[50px] max-w-[50px]"
+                      src={person.fotoDePerfil}
+                      alt={`Foto de perfil del paciente ${person.primerNombre}`}
+                    />
                   </td>
                   <td className="border-b border-[#eee] px-4 py-5 pl-9 dark:border-strokedark xl:pl-11">
                     <h5 className="font-medium text-black dark:text-white">
