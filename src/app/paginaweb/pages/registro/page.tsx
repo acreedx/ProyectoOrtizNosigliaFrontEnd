@@ -1,5 +1,5 @@
 "use client";
-import PersoNavBar from "@/app/paginaweb/components/PersoNavBar";
+import PersoNavBar from "@/app/paginaweb/components/NavBar";
 import "../../assets/css/animate.css";
 import "../../assets/css/LineIcons.css";
 import "../../assets/css/main.css";

@@ -1,5 +1,5 @@
 import React from "react";
-import PersoNavBar from "./PersoNavBar";
+import NavBar from "./NavBar";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Scrollbar, A11y } from "swiper/modules";
 import "swiper/css";
@@ -8,6 +8,14 @@ import "swiper/css/pagination";
 import "swiper/css/scrollbar";
 
 export default function Header() {
+  const copiarTelefono = () => {
+    const texto = "591 12345678";
+    navigator.clipboard.writeText(texto);
+  };
+  const copiarCorreo = () => {
+    const texto = "OrtizNosiglia@gmail.com";
+    navigator.clipboard.writeText(texto);
+  };
   return (
     <>
       <header id="home">
@@ -19,12 +27,20 @@ export default function Header() {
                   <div className="header-top-left text-md-left text-center">
                     <ul className="mb-0">
                       <li>
-                        <a href="#" className="no-underline">
-                          <i className="lni lni-phone"></i> +12345678
+                        <a
+                          href="#"
+                          className="no-underline"
+                          onClick={copiarTelefono}
+                        >
+                          <i className="lni lni-phone"></i> +591 12345678
                         </a>
                       </li>
                       <li>
-                        <a href="#" className="no-underline">
+                        <a
+                          href="#"
+                          className="no-underline"
+                          onClick={copiarCorreo}
+                        >
                           <i className="lni lni-envelope"></i>
                           OrtizNosiglia@gmail.com
                         </a>
@@ -58,7 +74,7 @@ export default function Header() {
           </div>
         </div>
       </header>
-      <PersoNavBar />
+      <NavBar />
       <section className="slider-section">
         <Swiper
           className="h-[772px]"

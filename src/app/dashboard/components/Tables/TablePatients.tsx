@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
+import LoadingMessage from "../LoadingMessage";
 interface patient {
   _id: string;
   apellidoPaterno: String;
@@ -107,7 +108,7 @@ const TableThree = () => {
     <div className="rounded-sm border border-stroke bg-white px-5 pb-2.5 pt-6 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
       <div className="max-w-full overflow-x-auto">
         {loading ? (
-          <h1>Cargando...</h1>
+          <LoadingMessage />
         ) : personalData.length == 0 ? (
           <h1 className="mb-6">No se encontraron pacientes</h1>
         ) : (
