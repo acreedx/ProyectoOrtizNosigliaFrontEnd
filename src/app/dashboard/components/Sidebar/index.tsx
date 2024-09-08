@@ -88,6 +88,7 @@ const menuGroups = [
           { label: "Listado de pacientes", route: "/dashboard/pacientes" },
         ],
       },
+      /*
       {
         icon: (
           <svg
@@ -359,7 +360,7 @@ const menuGroups = [
           { label: "Sign In", route: "/dashboard/pages/auth/signin" },
           { label: "Sign Up", route: "/dashboard/pages/auth/signup" },
         ],
-      },
+      },*/
     ],
   },
 ];
@@ -371,7 +372,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   return (
     <ClickOutside onClick={() => setSidebarOpen(false)}>
       <aside
-        className={`fixed left-0 top-0 z-9999 flex h-screen w-72.5 flex-col overflow-y-hidden bg-black duration-300 ease-linear dark:bg-boxdark lg:translate-x-0 ${
+        className={`shadow-gray-500/50 fixed left-0 top-0 z-9999 flex h-screen w-72.5 flex-col overflow-y-hidden bg-slate-50 shadow-lg duration-300 ease-linear dark:bg-boxdark lg:translate-x-0 ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
@@ -382,7 +383,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               width={78}
               height={78}
               src={"/images/logo/logo.png"}
-              alt="Logo"
+              alt="Ortiz Nosiglia Logo"
               priority
             />
           </Link>
@@ -390,10 +391,10 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
             aria-controls="sidebar"
-            className="block lg:hidden"
+            className="absolute right-4 lg:hidden"
           >
             <svg
-              className="fill-current"
+              className="box-content rounded-lg fill-orange-400 p-2 drop-shadow-2 duration-300 ease-in-out hover:bg-orange-500 hover:fill-white "
               width="20"
               height="18"
               viewBox="0 0 20 18"
@@ -409,9 +410,9 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
         </div>
         {/* <!-- SIDEBAR HEADER --> */}
 
-        <div className="no-scrollbar flex flex-col overflow-y-auto duration-300 ease-linear">
+        <div className="no-scrollbar flex flex-col overflow-y-auto duration-300 ease-linear ">
           {/* <!-- Sidebar Menu --> */}
-          <nav className="mt-5 px-4 py-4 lg:mt-9 lg:px-6">
+          <nav className="mt-5 px-4 py-4 shadow-lg shadow-gray lg:mt-9 lg:px-2 ">
             {menuGroups.map((group, groupIndex) => (
               <div key={groupIndex}>
                 <h3 className="mb-4 ml-4 text-sm font-semibold text-bodydark2">
