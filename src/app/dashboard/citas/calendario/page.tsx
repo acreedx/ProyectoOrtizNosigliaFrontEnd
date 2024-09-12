@@ -44,12 +44,11 @@ export default function ListadoCitas() {
     { id: 3, nombre: "Paciente Juan" },
   ];
   function handleDateSelect(selectInfo: DateSelectArg) {
-    // SweetAlert para seleccionar el título y persona
     Swal.fire({
       title: "Agendar Cita",
       html: `
         <label for="motivo">Motivo de la cita:</label>
-        <input id="motivo" class="swal2-input" placeholder="Motivo de la cita" /></br>
+        <input id="motivo" class="swal2-input" placeholder="Motivo de la cita" /></br></br>
         <label for="persona">Elige a una persona:</label>
         <select id="persona" class="swal2-input">
           ${personas
@@ -61,6 +60,11 @@ export default function ListadoCitas() {
         </select>
       `,
       focusConfirm: false,
+      confirmButtonText: "Confirmar cita",
+      confirmButtonColor: "#28a745",
+      showCancelButton: true,
+      cancelButtonText: "Cancelar",
+      cancelButtonColor: "#dc3545",
       preConfirm: () => {
         const motivo = (document.getElementById("motivo") as HTMLInputElement)
           .value;
@@ -77,16 +81,14 @@ export default function ListadoCitas() {
         const { motivo, persona } = result.value;
 
         let calendarApi = selectInfo.view.calendar;
-        calendarApi.unselect(); // clear date selection
-
+        calendarApi.unselect();
         const newEvent = {
-          id: String(eventos.length + 1), // ID único para el evento
+          id: String(eventos.length + 1),
           title: `${motivo} - ${persona}`,
           start: selectInfo.startStr,
-          end: selectInfo.endStr ? selectInfo.endStr : selectInfo.startStr, // Maneja rango o un solo día
+          end: selectInfo.endStr ? selectInfo.endStr : selectInfo.startStr,
         };
-
-        setEventos([...eventos, newEvent]); // Guardar el nuevo evento en el estado
+        setEventos([...eventos, newEvent]);
       }
     });
   }
@@ -109,25 +111,29 @@ export default function ListadoCitas() {
           day: "2-digit",
         })
       : "";
-
     const horaInicio = info.event.start
       ? info.event.start.toLocaleTimeString("es-ES", {
           hour: "2-digit",
           minute: "2-digit",
         })
       : "";
-
     const horaFinal = info.event.end
       ? info.event.end.toLocaleTimeString("es-ES", {
           hour: "2-digit",
           minute: "2-digit",
         })
       : "";
-
     const title = info.event.title || "(sin título)";
-    alert(
-      `Evento "${title}" movido a la fecha ${fechaInicio} de ${horaInicio} a ${horaFinal}`,
-    );
+    Swal.fire({
+      title: "Éxito",
+      text: `Evento "${title}" movido a la fecha ${fechaInicio} de ${horaInicio} a ${horaFinal}`,
+      icon: "success",
+      confirmButtonText: "Ok",
+      confirmButtonColor: "#28a745",
+      showCancelButton: true,
+      cancelButtonText: "No, cancelar",
+      cancelButtonColor: "#dc3545",
+    }).then((result) => {});
   };
   function renderEventContent(eventInfo: EventContentArg) {
     return (
