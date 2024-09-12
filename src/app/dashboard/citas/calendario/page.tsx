@@ -5,7 +5,9 @@ import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 
-import interactionPlugin from "@fullcalendar/interaction";
+import interactionPlugin, {
+  EventResizeDoneArg,
+} from "@fullcalendar/interaction";
 import {
   DateSelectArg,
   EventContentArg,
@@ -16,6 +18,7 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import esLocale from "@fullcalendar/core/locales/es";
 import LoadingMessage from "../../components/LoadingMessage";
 import Swal from "sweetalert2";
+import { title } from "process";
 
 export default function ListadoCitas() {
   const [eventos, setEventos] = useState<EventInput[]>([
@@ -61,6 +64,8 @@ export default function ListadoCitas() {
         </select>
       `,
       focusConfirm: false,
+      confirmButtonText: "Confirmar cita",
+      confirmButtonColor: "#28a745",
       preConfirm: () => {
         const motivo = (document.getElementById("motivo") as HTMLInputElement)
           .value;
@@ -77,15 +82,14 @@ export default function ListadoCitas() {
         const { motivo, persona } = result.value;
 
         let calendarApi = selectInfo.view.calendar;
-        calendarApi.unselect(); // clear date selection
-
+        console.log(calendarApi);
         const newEvent = {
           id: String(eventos.length + 1), // ID único para el evento
           title: `${motivo} - ${persona}`,
           start: selectInfo.startStr,
           end: selectInfo.endStr ? selectInfo.endStr : selectInfo.startStr, // Maneja rango o un solo día
         };
-
+        calendarApi.addEvent(newEvent);
         setEventos([...eventos, newEvent]); // Guardar el nuevo evento en el estado
       }
     });
@@ -137,6 +141,15 @@ export default function ListadoCitas() {
       </>
     );
   }
+  const handleResize = (info: EventResizeDoneArg) => {
+    const updatedEvent = {
+      ...info.event,
+      title: info.event.title,
+      start: info.event.startStr,
+      end: info.event.endStr,
+    };
+    setEventos([...eventos, updatedEvent]);
+  };
   return (
     <DefaultLayout>
       <Breadcrumb pageName="Calendario de Citas" />
@@ -148,6 +161,7 @@ export default function ListadoCitas() {
             center: "title",
             right: "dayGridMonth,timeGridWeek,timeGridDay",
           }}
+          eventResize={handleResize}
           initialView="dayGridMonth"
           selectable={true}
           events={eventos}
