@@ -23,14 +23,18 @@ export default function PersoNavBar() {
           </li>
         </div>
         <div className="flex gap-10">
-          <NavBarLink linkName="Inicio" linkUrl="#" />
-          <NavBarLink linkName="Servicios" linkUrl="#" />
-          <NavBarLink linkName="Contacto" linkUrl="#" />
+          <NavBarLink linkName="Inicio" linkUrl="/paginaweb/pages/home" />
+          <NavBarLink linkName="Servicios" linkUrl="/paginaweb/pages/home" />
+          <NavBarLink linkName="Contacto" linkUrl="/paginaweb/pages/home" />
+          <NavBarLink
+            linkName="Reserva una cita"
+            linkUrl="/paginaweb/pages/citas"
+          />
         </div>
         <div className="flex items-center gap-4">
           <li>
             <Link
-              href="/dashboard/pacientes"
+              href="/paginaweb/pages/login"
               className="rounded-xl bg-orange-400 p-2 text-lg text-white no-underline  hover:text-orange-700 hover:drop-shadow-md "
             >
               Iniciar Sesión

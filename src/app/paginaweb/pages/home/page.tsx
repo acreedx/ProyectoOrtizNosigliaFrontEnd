@@ -6,10 +6,12 @@ import "../../assets/css/tiny-slider.css";
 import Header from "@/app/paginaweb/components/Header";
 import Footer from "@/app/paginaweb/components/Footer";
 import Main from "@/app/paginaweb/components/Main";
+import Slider from "../../components/Slider";
 export default function Home() {
   return (
     <>
       <Header />
+      <Slider />
       <Main />
       <Footer />
       <a
