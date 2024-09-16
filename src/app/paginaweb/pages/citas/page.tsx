@@ -6,16 +6,10 @@ import "../../assets/css/tiny-slider.css";
 import React, { useState } from "react";
 import Footer from "../../components/Footer";
 import Header from "../../components/Header";
-import Link from "next/link";
-import CandadoIcon from "@/app/dashboard/components/Icons/CandadoIcon";
-import Image from "next/image";
-import PacienteIcon from "@/app/dashboard/components/Icons/PacienteIcon";
-import { EventInput } from "@fullcalendar/core/index.js";
-import ArrowIcon from "@/app/dashboard/components/Icons/ArrowIcon";
 import Swal from "sweetalert2";
 import CancelIcon from "@/app/dashboard/components/Icons/CancelIcon";
-import CalendarIcon from "@/app/dashboard/components/Icons/CalendarIcon";
 import InfoIcon from "@/app/dashboard/components/Icons/InfoIcon";
+import CheckIcon from "@/app/dashboard/components/Icons/CheckIcon";
 
 export default function Citas() {
   const [motivo, setMotivo] = useState("");
@@ -80,7 +74,7 @@ export default function Citas() {
     const fecha = convertDate(fechaHora);
     const hora = convertTime(fechaHora);
     Swal.fire({
-      title: "Confirmación",
+      title: "Esta seguro?",
       text: `¿Quiere reservar una cita el día ${fecha} a las ${hora}?`,
       icon: "question",
       showCancelButton: true,
@@ -246,7 +240,6 @@ export default function Citas() {
                         type="datetime-local"
                         value={fechaHora}
                         onChange={(e) => setFechaHora(e.target.value)}
-                        min={fechaActual}
                         className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-3 text-black outline-none focus:border-orange-500 dark:border-form-strokedark dark:bg-form-input dark:text-white"
                       />
                     </div>
