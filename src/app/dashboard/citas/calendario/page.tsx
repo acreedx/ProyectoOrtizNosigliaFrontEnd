@@ -160,14 +160,15 @@ export default function ListadoCitas() {
     });
   };
   function renderEventContent(eventInfo: EventContentArg) {
+    const currentView = eventInfo.view.type;
     return (
-      <div className="flex w-full flex-col overflow-hidden border px-2 shadow-lg transition-all">
+      <div className="flex h-full w-full flex-wrap overflow-hidden">
         {eventInfo.event.allDay ? (
-          <div>
+          <div className="mr-2">
             <b>{`Hora sin asignar `}</b>
           </div>
         ) : (
-          <div>
+          <div className="mr-2">
             <b>Hora:{` `}</b>
             {eventInfo.event.start
               ? ` ${convertTime(eventInfo.event.start)}`
@@ -178,7 +179,7 @@ export default function ListadoCitas() {
           </div>
         )}
         {eventInfo.event.extendedProps.paciente ? (
-          <div>
+          <div className="mr-2">
             <div>
               <b>Paciente:</b>
               <i>{` ${eventInfo.event.extendedProps.paciente}`}</i>
@@ -187,7 +188,7 @@ export default function ListadoCitas() {
         ) : (
           ""
         )}
-        <div>
+        <div className="mr-2">
           <div>
             <b>Descripción:</b>
             <i>{` ${eventInfo.event.title}`}</i>

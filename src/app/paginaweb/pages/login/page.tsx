@@ -11,16 +11,34 @@ import Image from "next/image";
 import CandadoIcon from "@/app/dashboard/components/Icons/CandadoIcon";
 import PacienteIcon from "@/app/dashboard/components/Icons/PacienteIcon";
 import { useRouter } from "next/navigation";
+import { localDomain } from "@/types/domain";
 
 export default function Login() {
   const router = useRouter();
   const [nombreUsuario, setnombreUsuario] = useState("");
   const [password, setpassword] = useState("");
-  const handleLogin = (e: any) => {
+  const handleLogin = async (e: any) => {
+    e.preventDefault();
     console.log(nombreUsuario);
     console.log(password);
-    e.preventDefault();
-    router.push("/dashboard");
+    const url = localDomain + "user/login";
+    const response = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        username: nombreUsuario,
+        password: password,
+      }),
+    });
+    if (!response.ok) {
+      const error = await response.json();
+      console.log(error);
+      return;
+    }
+    const data = await response.json();
+    console.log(data);
+
+    //router.push("/dashboard");
   };
   return (
     <>
