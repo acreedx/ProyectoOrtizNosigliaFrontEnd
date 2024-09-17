@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import DefaultLayout from "../../components/Layouts/DefaultLayout";
 import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb";
 import FullCalendar from "@fullcalendar/react";
@@ -17,11 +17,29 @@ import {
 } from "@fullcalendar/core/index.js";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import esLocale from "@fullcalendar/core/locales/es";
-import LoadingMessage from "../../components/LoadingMessage";
 import Swal from "sweetalert2";
-import { title } from "process";
+import { AppointmentService } from "@/app/repositories/appointment";
+import Appointment from "@/app/interfaces/Appointment";
 
 export default function ListadoCitas() {
+  useEffect(() => {
+    const getData = async () => {
+      const eventos: Appointment[] = await AppointmentService.getAppointments();
+      let inputs: EventInput[] = [];
+      eventos.forEach((e) => {
+        inputs.push({
+          id: e._id,
+          title: e.description,
+          start: e.start,
+          end: e.end,
+          paciente: e.participant[0].actor.display,
+          doctor: e.participant[1].actor.display,
+        });
+      });
+      setEventos(inputs);
+    };
+    getData();
+  }, []);
   const [eventos, setEventos] = useState<EventInput[]>([
     {
       id: "1",
