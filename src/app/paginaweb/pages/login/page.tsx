@@ -19,26 +19,28 @@ export default function Login() {
   const [password, setpassword] = useState("");
   const handleLogin = async (e: any) => {
     e.preventDefault();
-    console.log(nombreUsuario);
-    console.log(password);
     const url = localDomain + "user/login";
-    const response = await fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        username: nombreUsuario,
-        password: password,
-      }),
-    });
-    if (!response.ok) {
-      const error = await response.json();
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
+          nombreUsuario: nombreUsuario,
+          password: password,
+        }),
+      });
+      if (!response.ok) {
+        const error = await response.json();
+        console.log(error);
+        return;
+      }
+      const data = await response.json();
+      console.log(data);
+      router.push("/dashboard");
+    } catch (error) {
       console.log(error);
-      return;
     }
-    const data = await response.json();
-    console.log(data);
-
-    //router.push("/dashboard");
   };
   return (
     <>

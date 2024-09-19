@@ -10,8 +10,14 @@ import Swal from "sweetalert2";
 import CancelIcon from "@/app/dashboard/components/Icons/CancelIcon";
 import InfoIcon from "@/app/dashboard/components/Icons/InfoIcon";
 import CheckIcon from "@/app/dashboard/components/Icons/CheckIcon";
+import { AppointmentService } from "@/app/repositories/appointment";
+import Appointment from "@/app/interfaces/Appointment";
+import { title } from "process";
+import { start } from "repl";
+import useUser from "@/hooks/useUser";
 
 export default function Citas() {
+  const { user, loading, error } = useUser();
   const [motivo, setMotivo] = useState("");
   const [fechaHora, setFechaHora] = useState("");
   const [doctor, setDoctor] = useState("");
@@ -66,7 +72,7 @@ export default function Citas() {
     });
     return hora;
   }
-  const handleSubmit = (e: any) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
     const motivo = e.target[0].value;
     const fechaHora = e.target[1].value;
@@ -84,6 +90,27 @@ export default function Citas() {
       cancelButtonColor: "#dc3545",
     }).then(async (result) => {
       if (result.isConfirmed) {
+        const cita: Appointment = {
+          resourceType: "Appointment",
+          status: "booked",
+          description: title,
+          start: fechaHora,
+          end: new Date(
+            new Date(fechaHora).getTime() + 60 * 60 * 1000,
+          ).toISOString(),
+          participant: [
+            {
+              actor: { reference: user?._id, display: user?.username },
+              status: "accepted",
+            },
+            {
+              actor: { reference: doctor, display: doctor },
+              status: "accepted",
+            },
+          ],
+        };
+        const citaRegistrada = await AppointmentService.createAppointment(cita);
+        console.log(citaRegistrada);
         const nuevoEvento = {
           id: (eventos.length + 1).toString(),
           title: motivo,
@@ -91,10 +118,9 @@ export default function Citas() {
           end: new Date(
             new Date(fechaHora).getTime() + 60 * 60 * 1000,
           ).toISOString(), // +1 hora
-          paciente: "Nombre del paciente", // Puedes agregar lógica para esto
-          doctor: doctor,
+          paciente: citaRegistrada.participant[0].actor.display, // Puedes agregar lógica para esto
+          doctor: citaRegistrada.participant[1].actor.display,
         };
-
         setEventos([...eventos, nuevoEvento]);
         setMotivo("");
         setFechaHora("");

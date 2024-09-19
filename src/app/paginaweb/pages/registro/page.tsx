@@ -21,12 +21,15 @@ export default function Registro() {
   const [image, setImage] = useState<FileWithPreview | null>(null);
   const [progress, setProgress] = useState<number>(0);
   const router = useRouter();
+  const [confirmPassword, setconfirmPassword] = useState("");
   const [formData, setFormData] = useState({
     fotoDePerfil: "",
     apellidoPaterno: "",
     apellidoMaterno: "",
     primerNombre: "",
     segundoNombre: "",
+    nombreUsuario: "",
+    password: "",
     fechaNacimiento: "",
     lugarNacimiento: "",
     sexo: "",
@@ -86,6 +89,16 @@ export default function Registro() {
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
+    if (confirmPassword != formData.password) {
+      Swal.fire({
+        title: "Error",
+        text: "El password debe ser igual a la confirmacion",
+        icon: "error",
+        confirmButtonText: "Ok",
+        confirmButtonColor: "#28a745",
+      });
+      return;
+    }
     if (image) {
       await handleUpload();
     } else {
@@ -95,7 +108,6 @@ export default function Registro() {
           "https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg",
       });
     }
-    console.log(JSON.stringify(formData));
     const url = localDomain + "person";
     const response = await fetch(url, {
       method: "POST",
@@ -215,6 +227,46 @@ export default function Registro() {
                 name="segundoNombre"
                 value={formData.segundoNombre}
                 onChange={handleChange}
+              />
+            </div>
+          </div>
+          <div className="flex flex-row gap-5.5 p-6.5">
+            <div>
+              <label className="mb-3 block text-sm font-medium text-black dark:text-white">
+                Nombre de usuario:
+              </label>
+              <input
+                className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                type="text"
+                name="nombreUsuario"
+                value={formData.nombreUsuario}
+                onChange={handleChange}
+              />
+            </div>
+            <div>
+              <label className="mb-3 block text-sm font-medium text-black dark:text-white">
+                Password:
+              </label>
+              <input
+                className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                type="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+              />
+            </div>
+            <div>
+              <label className="mb-3 block text-sm font-medium text-black dark:text-white">
+                Confirmar Password:
+              </label>
+              <input
+                className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                type="password"
+                name="confirmPassword"
+                value={confirmPassword}
+                onChange={(e) => {
+                  setconfirmPassword(e.target.value);
+                }}
               />
             </div>
           </div>
