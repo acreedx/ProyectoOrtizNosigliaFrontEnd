@@ -7,6 +7,21 @@ export class AppointmentService {
     const data: Appointment[] = await res.json();
     return data;
   }
+  static async getPendingAppointments(): Promise<Appointment[]> {
+    const res = await fetch(localDomain + moduleName + "/pendientes");
+    const data: Appointment[] = await res.json();
+    return data;
+  }
+  static async getActiveAppointments(): Promise<Appointment[]> {
+    const res = await fetch(localDomain + moduleName + "/confirmadas");
+    const data: Appointment[] = await res.json();
+    return data;
+  }
+  static async getCanceledAppointments(): Promise<Appointment[]> {
+    const res = await fetch(localDomain + moduleName + "/canceladas");
+    const data: Appointment[] = await res.json();
+    return data;
+  }
   static async createAppointment(cita: Appointment) {
     const res = await fetch(localDomain + moduleName, {
       method: "POST",
@@ -43,20 +58,24 @@ export class AppointmentService {
     const data = await res.json();
     return data;
   }
-  static async confirmAppointment(cita: Appointment) {
-    const res = await fetch(localDomain + moduleName, {
-      method: "POST",
+  static async confirmAppointment(id: string) {
+    const res = await fetch(localDomain + moduleName + "/confirmar", {
+      method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(cita),
+      body: JSON.stringify({
+        _id: id,
+      }),
     });
     const data = await res.json();
     return data;
   }
-  static async cancelAppointment(cita: Appointment) {
-    const res = await fetch(localDomain + moduleName, {
-      method: "POST",
+  static async cancelAppointment(id: string) {
+    const res = await fetch(localDomain + moduleName + "/cancelar", {
+      method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(cita),
+      body: JSON.stringify({
+        _id: id,
+      }),
     });
     const data = await res.json();
     return data;

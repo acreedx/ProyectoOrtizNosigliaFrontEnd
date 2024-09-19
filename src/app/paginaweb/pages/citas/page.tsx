@@ -3,7 +3,7 @@ import "../../assets/css/animate.css";
 import "../../assets/css/LineIcons.css";
 import "../../assets/css/main.css";
 import "../../assets/css/tiny-slider.css";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Footer from "../../components/Footer";
 import Header from "../../components/Header";
 import Swal from "sweetalert2";
@@ -15,9 +15,12 @@ import Appointment from "@/app/interfaces/Appointment";
 import { title } from "process";
 import { start } from "repl";
 import useUser from "@/hooks/useUser";
+import LoadingMessage from "@/app/dashboard/components/LoadingMessage";
+import CheckSmallIcon from "@/app/dashboard/components/Icons/CheckSmallIcon";
 
 export default function Citas() {
   const { user, loading, error } = useUser();
+  const [loadingData, setloadingData] = useState(true);
   const [motivo, setMotivo] = useState("");
   const [fechaHora, setFechaHora] = useState("");
   const [doctor, setDoctor] = useState("");
@@ -32,32 +35,9 @@ export default function Citas() {
       nombre: "Perez",
     },
   ];
-  const [eventos, setEventos] = useState<any[]>([
-    {
-      id: "1",
-      title: "Extracción de muelas",
-      start: "2024-09-10T10:00:00",
-      end: "2024-09-10T11:00:00",
-      paciente: "Martin García",
-      doctor: "Ortiz",
-    },
-    {
-      id: "2",
-      title: "Revisión Dental",
-      start: "2024-09-16T12:00:00",
-      end: "2024-09-16T13:00:00",
-      paciente: "Juan Pérez",
-      doctor: "Ortiz",
-    },
-    {
-      id: "3",
-      title: "Control de Salud",
-      start: "2024-09-16T14:00:00",
-      end: "2024-09-16T15:00:00",
-      paciente: "Camilo Mendoza",
-      doctor: "Ortiz",
-    },
-  ]);
+  const [citasConf, setcitasConf] = useState<Appointment[]>([]);
+  const [citasCancel, setcitasCancel] = useState<Appointment[]>([]);
+  const [citasPend, setcitasPend] = useState<Appointment[]>([]);
   function convertDate(fecha: any) {
     return new Date(fecha).toLocaleDateString("es-ES", {
       year: "numeric",
@@ -91,16 +71,17 @@ export default function Citas() {
     }).then(async (result) => {
       if (result.isConfirmed) {
         const cita: Appointment = {
+          _id: "",
           resourceType: "Appointment",
           status: "booked",
-          description: title,
+          description: motivo,
           start: fechaHora,
           end: new Date(
             new Date(fechaHora).getTime() + 60 * 60 * 1000,
           ).toISOString(),
           participant: [
             {
-              actor: { reference: user?._id, display: user?.username },
+              actor: { reference: user?._id, display: user?.nombreUsuario },
               status: "accepted",
             },
             {
@@ -109,19 +90,9 @@ export default function Citas() {
             },
           ],
         };
-        const citaRegistrada = await AppointmentService.createAppointment(cita);
-        console.log(citaRegistrada);
-        const nuevoEvento = {
-          id: (eventos.length + 1).toString(),
-          title: motivo,
-          start: fechaHora,
-          end: new Date(
-            new Date(fechaHora).getTime() + 60 * 60 * 1000,
-          ).toISOString(), // +1 hora
-          paciente: citaRegistrada.participant[0].actor.display, // Puedes agregar lógica para esto
-          doctor: citaRegistrada.participant[1].actor.display,
-        };
-        setEventos([...eventos, nuevoEvento]);
+        const citaRegistrada: Appointment =
+          await AppointmentService.createAppointment(cita);
+        setcitasPend([...citasPend, citaRegistrada]);
         setMotivo("");
         setFechaHora("");
         setDoctor("");
@@ -147,7 +118,12 @@ export default function Citas() {
       cancelButtonColor: "#dc3545",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        setEventos(eventos.filter((evento) => evento.id !== eventoId));
+        await AppointmentService.cancelAppointment(eventoId);
+        setloadingData(true);
+        await citasPendientes();
+        await citasConfirmadas();
+        await citasCanceladas();
+        setloadingData(false);
         Swal.fire({
           title: "Cita cancelada",
           text: "La cita ha sido cancelada con éxito",
@@ -157,11 +133,38 @@ export default function Citas() {
       }
     });
   };
-  const handleShowInformacion = (eventoId: string) => {
-    const cita = eventos.find((e) => e.id == eventoId);
-    const fecha = convertDate(cita.start);
-    const hora = convertTime(cita.start);
-    const doctor = cita.doctor;
+  const handleConfirmacion = (eventoId: string) => {
+    Swal.fire({
+      title: "Confirmación",
+      text: "¿Quiere confirmar la cita?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Sí",
+      cancelButtonText: "Cancelar",
+      confirmButtonColor: "#28a745",
+      cancelButtonColor: "#dc3545",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        await AppointmentService.confirmAppointment(eventoId);
+        setloadingData(true);
+        await citasPendientes();
+        await citasConfirmadas();
+        await citasCanceladas();
+        setloadingData(false);
+        Swal.fire({
+          title: "Cita confirmada",
+          text: "La cita ha sido confirmada con éxito",
+          icon: "success",
+          confirmButtonColor: "#28a745",
+        });
+      }
+    });
+  };
+  const handleShowInformacionCanceled = async (eventoId: string) => {
+    const cita = citasCancel.find((e) => e._id == eventoId);
+    const fecha = convertDate(cita?.start);
+    const hora = convertTime(cita?.start);
+    const doctor = cita?.participant[1].actor.display;
     Swal.fire({
       title: "Información de la cita",
       text: `La cita con el doctor ${doctor} ha sido registrada para el ${fecha} a las ${hora}`,
@@ -169,72 +172,52 @@ export default function Citas() {
       confirmButtonColor: "#28a745",
     });
   };
-  const fechaActual = new Date().toISOString().slice(0, 16);
+  const handleShowInformacionPending = async (eventoId: string) => {
+    const cita = citasPend.find((e) => e._id == eventoId);
+    const fecha = convertDate(cita?.start);
+    const hora = convertTime(cita?.start);
+    const doctor = cita?.participant[1].actor.display;
+    Swal.fire({
+      title: "Información de la cita",
+      text: `La cita con el doctor ${doctor} ha sido registrada para el ${fecha} a las ${hora}`,
+      icon: "info",
+      confirmButtonColor: "#28a745",
+    });
+  };
+  const handleShowInformacionConfirmed = async (eventoId: string) => {
+    const cita = citasConf.find((e) => e._id == eventoId);
+    const fecha = convertDate(cita?.start);
+    const hora = convertTime(cita?.start);
+    const doctor = cita?.participant[1].actor.display;
+    Swal.fire({
+      title: "Información de la cita",
+      text: `La cita con el doctor ${doctor} ha sido registrada para el ${fecha} a las ${hora}`,
+      icon: "info",
+      confirmButtonColor: "#28a745",
+    });
+  };
+  const citasConfirmadas = async () => {
+    setcitasConf(await AppointmentService.getActiveAppointments());
+  };
+  const citasCanceladas = async () => {
+    setcitasCancel(await AppointmentService.getCanceledAppointments());
+  };
+  const citasPendientes = async () => {
+    setcitasPend(await AppointmentService.getPendingAppointments());
+  };
+  useEffect(() => {
+    citasConfirmadas();
+    citasCanceladas();
+    citasPendientes();
+    setloadingData(false);
+  }, []);
   return (
     <>
       <Header />
       <main>
         <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-          <div className="flex flex-wrap items-center ">
-            <div className="w-full border-stroke dark:border-strokedark xl:w-1/2 xl:border-l-2">
-              <div className="w-full p-4 sm:p-12.5 xl:p-17.5">
-                {eventos.length > 0 ? (
-                  <>
-                    <h2 className="mb-9 text-2xl font-bold text-black dark:text-white sm:text-title-xl2">
-                      Citas pendientes
-                    </h2>
-                    <div className="flex cursor-pointer flex-col gap-4">
-                      {eventos.map((evento, key) => (
-                        <div
-                          key={key}
-                          className="relative flex flex-row bg-orange-400 p-4 shadow-lg transition-all hover:shadow-2xl"
-                        >
-                          <div className="w-203">
-                            <p className="text-white">
-                              <b>Fecha:</b>
-                              {` ${evento.start ? convertDate(evento.start) : ""}`}
-                            </p>
-                            <p className="text-white">
-                              <b>Hora:</b> de{" "}
-                              {evento.start ? convertTime(evento.start) : ""} a{" "}
-                              {evento.end ? convertTime(evento.end) : ""}
-                            </p>
-                            <p className="text-white">
-                              <b>Motivo:</b> {evento.title}
-                            </p>
-                            <p className="text-white">
-                              <b>Doctor:</b> {evento.doctor}
-                            </p>
-                          </div>
-                          <div className="flex w-full items-center justify-end gap-4 text-white">
-                            <div
-                              onClick={() => handleCancelacion(evento.id)}
-                              className="transition-all hover:drop-shadow-lg"
-                            >
-                              <CancelIcon />
-                            </div>
-                            <div
-                              onClick={() => {
-                                handleShowInformacion(evento.id);
-                              }}
-                              className="transition-all hover:drop-shadow-lg"
-                            >
-                              <InfoIcon />
-                            </div>{" "}
-                          </div>
-                        </div>
-                      ))}
-                    </div>{" "}
-                  </>
-                ) : (
-                  <h2 className="mb-9 text-2xl font-bold text-black dark:text-white sm:text-title-xl2">
-                    No se encontraron citas pendientes
-                  </h2>
-                )}
-              </div>
-            </div>
-
-            <div className="w-full border-stroke dark:border-strokedark xl:w-1/2 xl:border-l-2">
+          <div className="flex flex-col flex-wrap items-center">
+            <div className="w-full ">
               <div className="w-full p-4 sm:p-12.5 xl:p-17.5">
                 <h2 className="mb-9 text-2xl font-bold text-black dark:text-white sm:text-title-xl2">
                   Crear una cita
@@ -299,6 +282,194 @@ export default function Citas() {
                     />
                   </div>
                 </form>
+              </div>
+            </div>
+            <div className="mb-4 flex flex-col gap-4">
+              <div className="">
+                {loadingData ? (
+                  <LoadingMessage />
+                ) : (
+                  <>
+                    {citasPend.length > 0 ? (
+                      <>
+                        <h2 className="mb-9 text-2xl font-bold text-black dark:text-white sm:text-title-xl2">
+                          Citas pendientes
+                        </h2>
+                        <div className="flex cursor-pointer flex-col gap-4">
+                          {citasPend.map((cita, key) => (
+                            <div
+                              key={key}
+                              className="relative flex flex-row bg-orange-400 p-4 shadow-lg transition-all hover:shadow-2xl"
+                            >
+                              <div className="w-203">
+                                <p className="text-white">
+                                  <b>Fecha:</b>
+                                  {` ${cita.start ? convertDate(cita.start) : ""}`}
+                                </p>
+                                <p className="text-white">
+                                  <b>Hora:</b> de{" "}
+                                  {cita.start ? convertTime(cita.start) : ""} a{" "}
+                                  {cita.end ? convertTime(cita.end) : ""}
+                                </p>
+                                <p className="text-white">
+                                  <b>Motivo:</b> {cita.description}
+                                </p>
+                                <p className="text-white">
+                                  <b>Doctor:</b>{" "}
+                                  {cita.participant[1].actor.display}
+                                </p>
+                              </div>
+                              <div className="flex w-full items-center justify-end gap-4 text-white">
+                                <div
+                                  onClick={() => handleConfirmacion(cita._id)}
+                                  className="transition-all hover:drop-shadow-lg"
+                                >
+                                  <CheckSmallIcon />
+                                </div>
+                                <div
+                                  onClick={() => handleCancelacion(cita._id)}
+                                  className="transition-all hover:drop-shadow-lg"
+                                >
+                                  <CancelIcon />
+                                </div>
+                                <div
+                                  onClick={() => {
+                                    handleShowInformacionPending(cita._id);
+                                  }}
+                                  className="transition-all hover:drop-shadow-lg"
+                                >
+                                  <InfoIcon />
+                                </div>{" "}
+                              </div>
+                            </div>
+                          ))}
+                        </div>{" "}
+                      </>
+                    ) : (
+                      <h2 className="mb-9 text-2xl font-bold text-black dark:text-white sm:text-title-xl2">
+                        No se encontraron citas pendientes
+                      </h2>
+                    )}
+                  </>
+                )}
+              </div>
+              <div className="">
+                {loadingData ? (
+                  <LoadingMessage />
+                ) : (
+                  <>
+                    {citasConf.length > 0 ? (
+                      <>
+                        <h2 className="mb-9 text-2xl font-bold text-black dark:text-white sm:text-title-xl2">
+                          Citas confirmadas
+                        </h2>
+                        <div className="flex cursor-pointer flex-col gap-4">
+                          {citasConf.map((cita, key) => (
+                            <div
+                              key={key}
+                              className="relative flex flex-row bg-orange-400 p-4 shadow-lg transition-all hover:shadow-2xl"
+                            >
+                              <div className="w-203">
+                                <p className="text-white">
+                                  <b>Fecha:</b>
+                                  {` ${cita.start ? convertDate(cita.start) : ""}`}
+                                </p>
+                                <p className="text-white">
+                                  <b>Hora:</b> de{" "}
+                                  {cita.start ? convertTime(cita.start) : ""} a{" "}
+                                  {cita.end ? convertTime(cita.end) : ""}
+                                </p>
+                                <p className="text-white">
+                                  <b>Motivo:</b> {cita.description}
+                                </p>
+                                <p className="text-white">
+                                  <b>Doctor:</b>{" "}
+                                  {cita.participant[1].actor.display}
+                                </p>
+                              </div>
+                              <div className="flex w-full items-center justify-end gap-4 text-white">
+                                <div
+                                  onClick={() => handleCancelacion(cita._id)}
+                                  className="transition-all hover:drop-shadow-lg"
+                                >
+                                  <CancelIcon />
+                                </div>
+                                <div
+                                  onClick={() => {
+                                    handleShowInformacionConfirmed(cita._id);
+                                  }}
+                                  className="transition-all hover:drop-shadow-lg"
+                                >
+                                  <InfoIcon />
+                                </div>{" "}
+                              </div>
+                            </div>
+                          ))}
+                        </div>{" "}
+                      </>
+                    ) : (
+                      <h2 className="mb-9 text-2xl font-bold text-black dark:text-white sm:text-title-xl2">
+                        No se encontraron citas confirmadas
+                      </h2>
+                    )}
+                  </>
+                )}
+              </div>
+              <div className="">
+                {loadingData ? (
+                  <LoadingMessage />
+                ) : (
+                  <>
+                    {citasCancel.length > 0 ? (
+                      <>
+                        <h2 className="mb-9 text-2xl font-bold text-black dark:text-white sm:text-title-xl2">
+                          Citas canceladas
+                        </h2>
+                        <div className="flex cursor-pointer flex-col gap-4">
+                          {citasCancel.map((cita, key) => (
+                            <div
+                              key={key}
+                              className="relative flex flex-row bg-orange-400 p-4 shadow-lg transition-all hover:shadow-2xl"
+                            >
+                              <div className="w-203">
+                                <p className="text-white">
+                                  <b>Fecha:</b>
+                                  {` ${cita.start ? convertDate(cita.start) : ""}`}
+                                </p>
+                                <p className="text-white">
+                                  <b>Hora:</b> de{" "}
+                                  {cita.start ? convertTime(cita.start) : ""} a{" "}
+                                  {cita.end ? convertTime(cita.end) : ""}
+                                </p>
+                                <p className="text-white">
+                                  <b>Motivo:</b> {cita.description}
+                                </p>
+                                <p className="text-white">
+                                  <b>Doctor:</b>{" "}
+                                  {cita.participant[1].actor.display}
+                                </p>
+                              </div>
+                              <div className="flex w-full items-center justify-end gap-4 text-white">
+                                <div
+                                  onClick={() => {
+                                    handleShowInformacionCanceled(cita._id);
+                                  }}
+                                  className="transition-all hover:drop-shadow-lg"
+                                >
+                                  <InfoIcon />
+                                </div>{" "}
+                              </div>
+                            </div>
+                          ))}
+                        </div>{" "}
+                      </>
+                    ) : (
+                      <h2 className="mb-9 text-2xl font-bold text-black dark:text-white sm:text-title-xl2">
+                        No se encontraron citas canceladas
+                      </h2>
+                    )}
+                  </>
+                )}
               </div>
             </div>
           </div>

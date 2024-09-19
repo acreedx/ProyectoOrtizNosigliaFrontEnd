@@ -40,32 +40,7 @@ export default function ListadoCitas() {
     };
     getData();
   }, []);
-  const [eventos, setEventos] = useState<EventInput[]>([
-    {
-      id: "1",
-      title: "Extracción de muelas",
-      start: "2024-09-10T10:00:00",
-      end: "2024-09-10T11:00:00",
-      paciente: "Martin García",
-      doctor: "Ortiz",
-    },
-    {
-      id: "2",
-      title: "Revisión Dental",
-      start: "2024-09-16T12:00:00",
-      end: "2024-09-16T13:00:00",
-      paciente: "Juan Pérez",
-      doctor: "Ortiz",
-    },
-    {
-      id: "3",
-      title: "Control de Salud",
-      start: "2024-09-16T14:00:00",
-      end: "2024-09-16T15:00:00",
-      paciente: "Camilo Mendoza",
-      doctor: "Ortiz",
-    },
-  ]);
+  const [eventos, setEventos] = useState<EventInput[]>([]);
   const personas = [
     { id: 1, nombre: "Martin García" },
     { id: 2, nombre: "Juan Pérez" },
@@ -104,7 +79,7 @@ export default function ListadoCitas() {
         }
         return { motivo, persona };
       },
-    }).then((result: any) => {
+    }).then(async (result: any) => {
       if (result.isConfirmed) {
         const { motivo, persona } = result.value;
 
@@ -120,6 +95,40 @@ export default function ListadoCitas() {
         };
         calendarApi.addEvent(newEvent);
         setEventos([...eventos, newEvent]);
+        try {
+          const cita: Appointment = {
+            _id: "",
+            resourceType: "Appointment",
+            status: "booked",
+            description: motivo,
+            start: selectInfo.startStr,
+            end: selectInfo.endStr ? selectInfo.endStr : selectInfo.startStr,
+            participant: [
+              {
+                actor: {
+                  reference: persona,
+                  display: persona,
+                },
+                status: "accepted",
+              },
+              {
+                actor: {
+                  reference: "Ortiz",
+                  display: "Ortiz",
+                },
+                status: "accepted",
+              },
+            ],
+          };
+          const nuevaCita = await AppointmentService.createAppointment(cita);
+        } catch (error) {
+          console.error("Error en el fetch:", error);
+          Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: "No se pudo agendar la cita",
+          });
+        }
       }
     });
   }
@@ -159,7 +168,7 @@ export default function ListadoCitas() {
       showCancelButton: true,
       cancelButtonText: "No, cancelar",
       cancelButtonColor: "#dc3545",
-    }).then((result) => {
+    }).then(async (result) => {
       if (result.isConfirmed) {
         const eventosActualizados = eventos.map((evento: EventInput) => {
           if (evento.id === String(info.event.id)) {
@@ -172,13 +181,39 @@ export default function ListadoCitas() {
           return evento;
         });
         setEventos(eventosActualizados);
+        if (!info.event.allDay) {
+          const cita: Appointment = {
+            _id: info.event.id,
+            resourceType: "Appointment",
+            status: "pending",
+            description: info.event.title,
+            start: info.event.startStr,
+            end: info.event.endStr,
+            participant: [
+              {
+                actor: {
+                  reference: info.event.extendedProps.paciente,
+                  display: info.event.extendedProps.paciente,
+                },
+                status: "accepted",
+              },
+              {
+                actor: {
+                  reference: info.event.extendedProps.doctor,
+                  display: info.event.extendedProps.doctor,
+                },
+                status: "accepted",
+              },
+            ],
+          };
+          AppointmentService.updateAppointment(cita);
+        }
       } else {
         info.revert();
       }
     });
   };
   function renderEventContent(eventInfo: EventContentArg) {
-    const currentView = eventInfo.view.type;
     return (
       <div className="flex h-full w-full flex-wrap overflow-hidden">
         {eventInfo.event.allDay ? (

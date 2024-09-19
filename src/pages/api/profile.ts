@@ -3,7 +3,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 
 interface MyJwtPayload extends JwtPayload {
   _id: string;
-  username: string;
+  nombreUsuario: string;
   email: string;
 }
 

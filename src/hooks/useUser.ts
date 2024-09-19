@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 interface User {
   _id: string;
-  username: string;
+  nombreUsuario: string;
   email: string;
 }
 
@@ -19,6 +19,7 @@ const useUser = () => {
           throw new Error("Error al obtener la información del usuario");
         }
         const data = await res.json();
+        console.log(data);
         setUser(data.decodedToken); // Asumiendo que tienes el token decodificado aquí
       } catch (err: any) {
         setError(err.message);
