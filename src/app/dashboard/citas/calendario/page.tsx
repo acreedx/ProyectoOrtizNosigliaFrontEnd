@@ -24,7 +24,8 @@ import Appointment from "@/interfaces/Appointment";
 export default function ListadoCitas() {
   useEffect(() => {
     const getData = async () => {
-      const eventos: Appointment[] = await AppointmentService.getAppointments();
+      const eventos: Appointment[] =
+        await AppointmentService.getActiveAppointments();
       let inputs: EventInput[] = [];
       eventos.forEach((e) => {
         inputs.push({
@@ -41,11 +42,7 @@ export default function ListadoCitas() {
     getData();
   }, []);
   const [eventos, setEventos] = useState<EventInput[]>([]);
-  const personas = [
-    { id: 1, nombre: "Martin García" },
-    { id: 2, nombre: "Juan Pérez" },
-    { id: 3, nombre: "Camilo Mendoza" },
-  ];
+  const personas = [{ id: 1, nombre: "Adrian Herrera" }];
   function handleDateSelect(selectInfo: DateSelectArg) {
     Swal.fire({
       title: "Agendar Cita",
@@ -82,27 +79,21 @@ export default function ListadoCitas() {
     }).then(async (result: any) => {
       if (result.isConfirmed) {
         const { motivo, persona } = result.value;
-
+        const startDate = new Date(selectInfo.start);
+        startDate.setHours(8, 0, 0, 0);
+        const endDate = new Date(selectInfo.start);
+        endDate.setHours(9, 0, 0, 0);
         let calendarApi = selectInfo.view.calendar;
         calendarApi.unselect();
-        const newEvent = {
-          id: String(eventos.length + 1),
-          title: `${motivo}`,
-          start: selectInfo.startStr,
-          end: selectInfo.endStr ? selectInfo.endStr : selectInfo.startStr,
-          paciente: persona,
-          doctor: "Ortiz",
-        };
-        calendarApi.addEvent(newEvent);
-        setEventos([...eventos, newEvent]);
+
         try {
           const cita: Appointment = {
             _id: "",
             resourceType: "Appointment",
-            status: "booked",
+            status: "pending",
             description: motivo,
-            start: selectInfo.startStr,
-            end: selectInfo.endStr ? selectInfo.endStr : selectInfo.startStr,
+            start: startDate.toISOString(),
+            end: endDate.toISOString(),
             participant: [
               {
                 actor: {
@@ -120,7 +111,19 @@ export default function ListadoCitas() {
               },
             ],
           };
-          const nuevaCita = await AppointmentService.createAppointment(cita);
+          const nuevaCita: Appointment =
+            await AppointmentService.createAppointment(cita);
+
+          const newEvent = {
+            id: nuevaCita._id,
+            title: `${motivo}`,
+            start: startDate.toISOString(),
+            end: endDate.toISOString(),
+            paciente: persona,
+            doctor: "Ortiz",
+          };
+          calendarApi.addEvent(newEvent);
+          setEventos([...eventos, newEvent]);
         } catch (error) {
           console.error("Error en el fetch:", error);
           Swal.fire({
@@ -250,7 +253,7 @@ export default function ListadoCitas() {
       </div>
     );
   }
-  const handleResize = (info: EventResizeDoneArg) => {
+  const handleResize = async (info: EventResizeDoneArg) => {
     const eventosActualizados = eventos.map((evento: EventInput) => {
       if (evento.id === String(info.event.id)) {
         return {
@@ -262,6 +265,31 @@ export default function ListadoCitas() {
       return evento;
     });
     setEventos(eventosActualizados);
+    const appointment: Appointment = {
+      _id: info.event.id,
+      resourceType: "Appointment",
+      status: "pending",
+      description: info.event.title,
+      start: info.event.startStr,
+      end: info.event.endStr,
+      participant: [
+        {
+          actor: {
+            reference: info.event.extendedProps.paciente,
+            display: info.event.extendedProps.paciente,
+          },
+          status: "accepted",
+        },
+        {
+          actor: {
+            reference: info.event.extendedProps.doctor,
+            display: info.event.extendedProps.doctor,
+          },
+          status: "accepted",
+        },
+      ],
+    };
+    const cita = await AppointmentService.updateAppointment(appointment);
   };
   const handleEventClick = (info: EventClickArg) => {
     const event = info.event;
