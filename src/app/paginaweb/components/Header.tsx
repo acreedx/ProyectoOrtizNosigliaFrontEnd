@@ -1,14 +1,13 @@
 import React from "react";
 import NavBar from "./NavBar";
-import Slider from "./Slider";
 
 export default function Header() {
   const copiarTelefono = () => {
-    const texto = "591 12345678";
+    const texto = "59172025082";
     navigator.clipboard.writeText(texto);
   };
   const copiarCorreo = () => {
-    const texto = "OrtizNosiglia@gmail.com";
+    const texto = "ortiznosiglia@gmail.com";
     navigator.clipboard.writeText(texto);
   };
   return (
@@ -20,24 +19,25 @@ export default function Header() {
               <div className="-mx-[calc(1.5rem*0.5)] -mt-[0rem] flex flex-wrap">
                 <div className="md:w-2/3">
                   <div className="header-top-left text-md-left text-center">
-                    <ul className="mb-0">
+                    <ul className="m-0 mb-0 list-none p-0">
                       <li>
                         <a
                           href="#"
-                          className="no-underline"
+                          className="inline-block no-underline transition-all duration-300 ease-out hover:text-[#00adb5] focus:shadow-none focus:outline-none"
                           onClick={copiarTelefono}
                         >
-                          <i className="lni lni-phone"></i> +591 12345678
+                          <i className="lni lni-phone inline-block no-underline"></i>{" "}
+                          +591 72025082
                         </a>
                       </li>
                       <li>
                         <a
                           href="#"
-                          className="no-underline"
+                          className="inline-block no-underline transition-all duration-300 ease-out hover:text-[#00adb5] focus:shadow-none focus:outline-none"
                           onClick={copiarCorreo}
                         >
-                          <i className="lni lni-envelope"></i>
-                          OrtizNosiglia@gmail.com
+                          <i className="lni lni-envelope inline-block no-underline"></i>
+                          ortiznosiglia@gmail.com
                         </a>
                       </li>
                     </ul>
@@ -45,20 +45,32 @@ export default function Header() {
                 </div>
                 <div className="md:w-1/3">
                   <div className="header-top-right d-none d-md-block">
-                    <ul className="mb-0">
+                    <ul className="m-0 mb-0 list-none p-0">
                       <li>
-                        <a href="#" className="">
-                          <i className="lni lni-facebook-filled"></i>
+                        <a
+                          href="https://www.facebook.com/ortiznosiglia"
+                          target="_blank"
+                          className="inline-block no-underline transition-all duration-300 ease-out hover:text-[#00adb5] focus:shadow-none focus:outline-none"
+                        >
+                          <i className="lni lni-facebook-fill inline-block no-underline"></i>
                         </a>
                       </li>
                       <li>
-                        <a href="#">
-                          <i className="lni lni-twitter-filled"></i>
+                        <a
+                          href="https://www.tiktok.com/@ortiznosiglia"
+                          target="_blank"
+                          className="inline-block no-underline transition-all duration-300 ease-out hover:text-[#00adb5] focus:shadow-none focus:outline-none"
+                        >
+                          <i className="lni lni-tiktok-alt inline-block no-underline"></i>
                         </a>
                       </li>
                       <li>
-                        <a href="#">
-                          <i className="lni lni-instagram-original"></i>
+                        <a
+                          href="https://www.instagram.com/ortiznosiglia/"
+                          target="_blank"
+                          className="inline-block no-underline transition-all duration-300 ease-out hover:text-[#00adb5] focus:shadow-none focus:outline-none"
+                        >
+                          <i className="lni lni-instagram-original inline-block no-underline"></i>
                         </a>
                       </li>
                     </ul>

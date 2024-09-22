@@ -1,17 +1,13 @@
 "use client";
-import PersoNavBar from "@/app/paginaweb/components/NavBar";
-import "../../assets/css/animate.css";
-import "../../assets/css/LineIcons.css";
-import "../../assets/css/main.css";
-import "../../assets/css/tiny-slider.css";
-import React, { ChangeEvent, useEffect, useState } from "react";
-import SelectGroupOne from "@/app/dashboard/components/SelectGroup/SelectGroupOne";
+import NavBar from "@/app/paginaweb/components/NavBar";
+import React, { ChangeEvent, useState } from "react";
 import { localDomain } from "@/types/domain";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { storage } from "../../../../../firebase.config.js";
 import Image from "next/image";
+import Layout from "../../components/Layout";
 
 interface FileWithPreview extends File {
   preview?: string;
@@ -134,8 +130,7 @@ export default function Registro() {
   };
 
   return (
-    <>
-      <PersoNavBar />
+    <Layout>
       <div className="mx-12 my-4  rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
         <h3 className="my-10 flex w-full justify-center font-medium text-black dark:text-white">
           Formulario de registro
@@ -404,6 +399,6 @@ export default function Registro() {
           </button>
         </form>
       </div>
-    </>
+    </Layout>
   );
 }

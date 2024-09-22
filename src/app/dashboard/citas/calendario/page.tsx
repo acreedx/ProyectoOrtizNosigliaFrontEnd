@@ -18,8 +18,8 @@ import {
 import timeGridPlugin from "@fullcalendar/timegrid";
 import esLocale from "@fullcalendar/core/locales/es";
 import Swal from "sweetalert2";
-import { AppointmentService } from "@/app/repositories/appointment";
-import Appointment from "@/app/interfaces/Appointment";
+import { AppointmentService } from "@/repositories/appointment";
+import Appointment from "@/interfaces/Appointment";
 
 export default function ListadoCitas() {
   useEffect(() => {

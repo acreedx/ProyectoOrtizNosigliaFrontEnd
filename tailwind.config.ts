@@ -11,6 +11,7 @@ const config: Config = {
   theme: {
     fontFamily: {
       satoshi: ["Satoshi", "sans-serif"],
+      raleway: ["Raleway", "sans-serif"],
     },
     screens: {
       "2xsm": "375px",

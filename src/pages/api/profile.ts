@@ -26,7 +26,6 @@ export default async function handler(
     const decodedToken = jwt.verify(access_token, secret) as MyJwtPayload;
     return res.json({ decodedToken });
   } catch (error) {
-    console.error("Error verifying token:", error);
     return res.status(401).json({ message: "Token inválido" });
   }
 }

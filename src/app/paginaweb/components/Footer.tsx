@@ -1,40 +1,57 @@
 import Image from "next/image";
 import "@/app/paginaweb/assets/css/footer.css";
+import Tiktok from "./Icons/Tiktok";
 export default function Footer() {
   return (
-    <footer className="footer img-bg h-full pt-100">
+    <footer className="footer img-bg h-full pb-[100px] pt-[100px]">
       <div className="mx-auto w-full px-[calc(1.5rem*0.5)] sm:max-w-[540px] md:max-w-[720px] lg:max-w-[960px] xl:max-w-[1140px] 2xl:max-w-[1320px]">
-        <div className="footer-widget-wrapper">
-          <div className="-mx-[calc(1.5rem*0.5)] -mt-[0rem] flex flex-wrap">
-            <div className="mt-[0rem] w-full max-w-full flex-shrink-0 px-[calc(1.5rem*0.5)] md:w-1/2 lg:w-5/12 xl:w-1/3">
-              <div className="footer-widget mb-30">
-                <a href="index.html" className="logo">
+        <div className="footer-widget-wrapper pb-0">
+          <div className="-mx-[calc(1.5rem*0.5)] -mt-[0rem]  flex flex-wrap">
+            <div className="mt-[40px] w-full max-w-full flex-shrink-0 px-16 md:w-1/2 lg:w-5/12 xl:w-1/3">
+              <div className="footer-widget flex flex-col items-center ">
+                <a
+                  href="index.html"
+                  className="logo inline-block no-underline transition-all duration-300 ease-out hover:text-[#00adb5] focus:shadow-none focus:outline-none"
+                >
                   <Image
+                    className="max-w-full transform transition-transform duration-300 hover:scale-105"
                     src="/images/logo/logo.png"
-                    alt=""
+                    alt="Logo del centro Ortiz Nosiglia"
                     width={110}
                     height={110}
                   />
                 </a>
-                <p className="mb-4 mt-0">
+                <p className="m-0 mb-4 mt-0 text-justify text-[18px] font-normal leading-[28px] text-[#8c96a7]">
                   El centro odontológico Ortiz Nosiglia es un centro dedicado a
                   brindar servicios de odontología a toda la población
                 </p>
                 <div className="footer-social-links">
-                  <ul className="mb-4 mt-0 pl-8">
+                  <ul className="m-0 mb-4 mt-0 list-none p-0 ">
                     <li>
-                      <a href="#">
-                        <i className="lni lni-facebook-filled"></i>
+                      <a
+                        href="https://www.facebook.com/ortiznosiglia"
+                        target="_blank"
+                        className="inline-block no-underline transition-all duration-300 ease-out  focus:shadow-none focus:outline-none"
+                      >
+                        <i className="lni lni-facebook-fill inline-block no-underline"></i>
                       </a>
                     </li>
                     <li>
-                      <a href="#">
-                        <i className="lni lni-twitter-filled"></i>
+                      <a
+                        href="https://www.tiktok.com/@ortiznosiglia"
+                        target="_blank"
+                        className="inline-block no-underline transition-all duration-300 ease-out focus:shadow-none focus:outline-none"
+                      >
+                        <i className="lni lni-tiktok-alt inline-block no-underline"></i>
                       </a>
                     </li>
                     <li>
-                      <a href="#">
-                        <i className="lni lni-instagram-original"></i>
+                      <a
+                        href="https://www.instagram.com/ortiznosiglia/"
+                        target="_blank"
+                        className="inline-block no-underline transition-all duration-300 ease-out focus:shadow-none focus:outline-none"
+                      >
+                        <i className="lni lni-instagram-original inline-block no-underline"></i>
                       </a>
                     </li>
                   </ul>
@@ -42,21 +59,32 @@ export default function Footer() {
               </div>
             </div>
             <div className="md:w-1/2 lg:w-1/4 xl:w-1/6">
-              <div className="footer-widget mb-30">
-                <h4>Links</h4>
-                <ul className="footer-links mb-4 mt-0 pl-8">
+              <div className="footer-widget">
+                <h4 className="font-raleway m-0 text-[25px] font-semibold text-[#393e46]">
+                  Links
+                </h4>
+                <ul className="footer-links m-0 mb-4 mt-0 list-none p-0 ">
                   <li>
-                    <a className="no-underline" href="#">
+                    <a
+                      className="inline-block text-white no-underline transition-all duration-300 ease-out hover:text-orange-400  focus:shadow-none focus:outline-none"
+                      href="#"
+                    >
                       Inicio
                     </a>
                   </li>
                   <li>
-                    <a className="no-underline" href="#">
+                    <a
+                      className="inline-block text-white no-underline transition-all duration-300 ease-out hover:text-orange-400  focus:shadow-none focus:outline-none"
+                      href="#"
+                    >
                       Servicios
                     </a>
                   </li>
                   <li>
-                    <a className="no-underline" href="#">
+                    <a
+                      className="inline-block text-white no-underline transition-all duration-300 ease-out hover:text-orange-400 focus:shadow-none focus:outline-none"
+                      href="#"
+                    >
                       Contacto
                     </a>
                   </li>
@@ -65,20 +93,31 @@ export default function Footer() {
             </div>
             <div className="md:w-5/12 lg:w-1/4 xl:w-1/6">
               <div className="footer-widget mb-30">
-                <h4>Reservas</h4>
-                <ul className="footer-links mb-4 mt-0 pl-8">
+                <h4 className="font-raleway m-0 text-[25px] font-semibold text-[#393e46]">
+                  Reservas
+                </h4>
+                <ul className="footer-links m-0 mb-4 mt-0 list-none p-0">
                   <li>
-                    <a className="no-underline" href="#">
+                    <a
+                      className="inline-block text-white no-underline transition-all duration-300 ease-out hover:text-orange-400 focus:shadow-none focus:outline-none"
+                      href="#"
+                    >
                       Implantes
                     </a>
                   </li>
                   <li>
-                    <a className="no-underline" href="#">
+                    <a
+                      className="inline-block text-white no-underline transition-all duration-300 ease-out hover:text-orange-400 focus:shadow-none focus:outline-none"
+                      href="#"
+                    >
                       Ortodoncia
                     </a>
                   </li>
                   <li>
-                    <a className="no-underline" href="#">
+                    <a
+                      className="inline-block text-white no-underline transition-all duration-300 ease-out hover:text-orange-400 focus:shadow-none focus:outline-none"
+                      href="#"
+                    >
                       Tratamiento de caries
                     </a>
                   </li>
@@ -86,13 +125,16 @@ export default function Footer() {
               </div>
             </div>
             <div className="md:w-7/12 lg:w-full xl:w-1/3">
-              <div className="footer-widget mb-30">
-                <h4>Ubicación del centro</h4>
+              <div className="footer-widget">
+                <h4 className="font-raleway m-0 text-center text-[25px] font-semibold text-[#393e46]">
+                  {" "}
+                  Ubicación del centro
+                </h4>
                 <div className="map-canvas">
                   <iframe
                     className="map"
                     id="gmap_canvas"
-                    src="https://maps.google.com/maps?q=Mission%20District%2C%20San%20Francisco%2C%20CA%2C%20USA&amp;t=&amp;z=13&amp;ie=UTF8&amp;iwloc=&amp;output=embed"
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3824.6860226115905!2d-68.08588148831532!3d-16.541941341742554!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x915f219a0459807d%3A0xc6f594b962363dc0!2sConsultorio%20Dental%20Ortiz%20Nosiglia!5e0!3m2!1ses-419!2sbo!4v1726956035506!5m2!1ses-419!2sbo"
                   ></iframe>
                 </div>
               </div>

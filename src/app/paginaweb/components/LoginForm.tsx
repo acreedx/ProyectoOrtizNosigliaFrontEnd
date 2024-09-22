@@ -30,12 +30,12 @@ export default function LoginForm() {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="flex flex-col gap-8 bg-slate-500 p-10 rounded-xl text-white"
+      className="flex flex-col gap-8 rounded-xl bg-slate-500 p-10 text-white"
     >
       <div className="flex flex-col gap-4">
         <label htmlFor="username">Ingrese su nombre de usuario</label>
         <input
-          className="rounded-md text-black"
+          className="rounded-md text-black focus:no-underline focus:shadow-none focus:outline-none"
           type="text"
           id="username"
           {...register("username")}
@@ -44,7 +44,7 @@ export default function LoginForm() {
       <div className="flex flex-col gap-4">
         <label htmlFor="password">Ingrese su password</label>
         <input
-          className="rounded-md text-black"
+          className="rounded-md text-black focus:no-underline focus:shadow-none focus:outline-none"
           type="password"
           id="password"
           {...register("password")}
@@ -52,7 +52,7 @@ export default function LoginForm() {
       </div>
       <div className="flex justify-center">
         <button
-          className="bg-slate-600 px-4 py-2 rounded-xl"
+          className="rounded-xl bg-slate-600 px-4 py-2 focus:no-underline focus:shadow-none focus:outline-none"
           type="submit"
           disabled={isLoading}
         >

@@ -1,17 +1,12 @@
 "use client";
-import "../../assets/css/animate.css";
-import "../../assets/css/LineIcons.css";
-import "../../assets/css/main.css";
-import "../../assets/css/tiny-slider.css";
 import React, { useState } from "react";
-import Header from "../../components/Header";
-import Footer from "../../components/Footer";
 import Link from "next/link";
 import Image from "next/image";
 import CandadoIcon from "@/app/dashboard/components/Icons/CandadoIcon";
 import PacienteIcon from "@/app/dashboard/components/Icons/PacienteIcon";
 import { useRouter } from "next/navigation";
 import { localDomain } from "@/types/domain";
+import Layout from "../../components/Layout";
 
 export default function Login() {
   const router = useRouter();
@@ -43,8 +38,7 @@ export default function Login() {
     }
   };
   return (
-    <>
-      <Header />
+    <Layout>
       <main>
         <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
           <div className="flex flex-wrap items-center ">
@@ -161,13 +155,6 @@ export default function Login() {
           </div>
         </div>
       </main>
-      <Footer />
-      <a
-        href="#"
-        className="fixed bottom-[30px] right-[30px] z-[9] h-[45px] w-[45px] cursor-pointer rounded-[5px] bg-orange-400 text-center text-[20px] leading-[45px] text-white transition-all duration-300 ease-out hover:bg-[#00adb5b3] hover:text-white"
-      >
-        <i className="lni lni-arrow-up"></i>
-      </a>
-    </>
+    </Layout>
   );
 }
