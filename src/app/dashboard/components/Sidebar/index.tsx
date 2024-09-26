@@ -58,13 +58,15 @@ const menuGroups = [
         route: "#",
         children: [
           { label: "Listado de usuarios", route: "/dashboard/usuarios" },
+          {
+            label: "Roles y Permisos",
+            route: "/dashboard/roles",
+          },
+          {
+            label: "Logs",
+            route: "/dashboard/logs",
+          },
         ],
-      },
-      {
-        icon: <RoleIcon />,
-        label: "Roles",
-        route: "#",
-        children: [{ label: "Listado de roles", route: "/dashboard/roles" }],
       },
       {
         icon: <CalendarIcon />,

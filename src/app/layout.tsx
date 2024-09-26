@@ -9,6 +9,7 @@ import "@/app/dashboard/css/satoshi.css";
 import "@/app/dashboard/css/style.css";
 import { Inter } from "next/font/google";
 import { Metadata } from "next";
+import { Providers } from "./Providers";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -24,7 +25,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <div className="dark:bg-boxdark-2 dark:text-bodydark">{children}</div>
+        <Providers>
+          <div className="dark:bg-boxdark-2 dark:text-bodydark">{children}</div>
+        </Providers>
       </body>
     </html>
   );
