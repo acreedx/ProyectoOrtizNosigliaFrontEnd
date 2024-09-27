@@ -95,7 +95,7 @@ export default function Usuarios() {
     setSelectedUser(null); // Limpia el usuario seleccionado
   };
   const editUser = (user: any) => {
-    alert(`Editando Usuario: ${user.name}`);
+    router.push("/dashboard/usuarios/editar");
   };
 
   const addUser = () => {
@@ -209,7 +209,7 @@ export default function Usuarios() {
               </ModalBody>
               <ModalFooter>
                 <Button colorScheme="blue" mr={3} onClick={closeModal}>
-                  Close
+                  Cerrar
                 </Button>
               </ModalFooter>
             </ModalContent>

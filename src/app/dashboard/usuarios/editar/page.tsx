@@ -18,26 +18,26 @@ export default function Page() {
   const [formData, setFormData] = useState({
     active: true,
     name: {
-      use: "",
-      given: [""],
-      family: "",
+      use: "Jhon",
+      given: ["Doe"],
+      family: "Jones",
     },
-    gender: "",
-    birthDate: "",
-    telecom: [{ value: "", use: "", system: "" }],
-    photo: { _url: { id: "" } },
+    gender: "Masculino",
+    birthDate: "06/05/2003",
+    telecom: [{ value: "73744202", use: "Telefóno", system: "" }],
+    photo: { _url: { id: "https:image.jgp.com" } },
     address: {
-      use: "",
+      use: "Dirección",
       line: [""],
-      city: "",
-      state: "",
-      postalCode: "",
+      city: "La Paz",
+      state: "Murillo",
+      postalCode: "0000",
     },
     maritalStatus: {
-      coding: [{ system: "", code: "", display: "" }],
+      coding: [{ system: "", code: "S", display: "Soltero" }],
     },
     systemUser: {
-      username: "",
+      username: "Jhon2cb",
       password: "",
       roles: [""],
       lastLogin: "",
@@ -59,7 +59,7 @@ export default function Page() {
   };
   return (
     <DefaultLayout>
-      <Breadcrumb pageName="Crear Usuario" />
+      <Breadcrumb pageName="Editar Usuario" />
       <Box
         as="form"
         onSubmit={handleSubmit}
@@ -70,15 +70,22 @@ export default function Page() {
         <VStack spacing={4}>
           <FormControl isRequired>
             <FormLabel>Nombre</FormLabel>
-            <Input placeholder="Uso" name="name.use" onChange={handleChange} />
+            <Input
+              placeholder="Uso"
+              name="name.use"
+              value={formData.name.use}
+              onChange={handleChange}
+            />
             <Input
               placeholder="Nombre"
               name="name.given[0]"
+              value={formData.name.given[0]}
               onChange={handleChange}
             />
             <Input
               placeholder="Apellido"
               name="name.family"
+              value={formData.name.family}
               onChange={handleChange}
             />
           </FormControl>

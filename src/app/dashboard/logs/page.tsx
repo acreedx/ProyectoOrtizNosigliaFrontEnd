@@ -48,7 +48,7 @@ export default function Logs() {
   ];
   return (
     <DefaultLayout>
-      <Breadcrumb pageName="Listado de Usuarios" />
+      <Breadcrumb pageName="Listado de Actividades" />
       <Box p={4} bg="gray.50" borderRadius="md" boxShadow="md">
         <Table variant="striped" colorScheme="orange">
           <TableCaption>Tabla de Logs</TableCaption>

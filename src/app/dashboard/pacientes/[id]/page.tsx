@@ -7,7 +7,19 @@ import { localDomain } from "@/types/domain";
 import Swal from "sweetalert2";
 import Link from "next/link";
 import BotonVolver from "../../components/BotonVolver";
-
+import {
+  Box,
+  Button,
+  FormControl,
+  FormLabel,
+  Input,
+  Select,
+  Textarea,
+  VStack,
+  Heading,
+  Spinner,
+  HStack,
+} from "@chakra-ui/react";
 interface patient {
   _id: String;
   apellidoPaterno: String;
@@ -101,199 +113,146 @@ export default function Pacientes({ params }: { params: { id: string } }) {
       <BotonVolver direccion="/dashboard/pacientes" />
       <Breadcrumb pageName="Editar paciente" />
       {loading ? (
-        <h1>Loading...</h1>
+        <Spinner size="xl" />
       ) : (
-        <div className="mx-12 my-4  rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-          <form
-            onSubmit={handleSubmit}
-            className="flex w-full flex-col items-center p-10 pt-0"
-          >
-            <div className="flex flex-row gap-5.5 p-6.5">
-              <div>
-                <label className="mb-3 block text-sm font-medium text-black dark:text-white">
-                  Apellido Paterno:
-                </label>
-                <input
-                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                  type="text"
-                  name="apellidoPaterno"
-                  value={formData.apellidoPaterno}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-              <div>
-                <label className="mb-3 block text-sm font-medium text-black dark:text-white">
-                  Apellido Materno:
-                </label>
-                <input
-                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                  type="text"
-                  name="apellidoMaterno"
-                  value={formData.apellidoMaterno}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-              <div>
-                <label className="mb-3 block text-sm font-medium text-black dark:text-white">
-                  Primer Nombre:
-                </label>
-                <input
-                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                  type="text"
-                  name="primerNombre"
-                  value={formData.primerNombre}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-              <div>
-                <label className="mb-3 block text-sm font-medium text-black dark:text-white">
-                  Segundo Nombre:
-                </label>
-                <input
-                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                  type="text"
-                  name="segundoNombre"
-                  value={formData.segundoNombre}
-                  onChange={handleChange}
-                />
-              </div>
-            </div>
-            <div className="flex flex-row gap-5.5 p-6.5">
-              <div>
-                <label className="mb-3 block text-sm font-medium text-black dark:text-white">
-                  Fecha de Nacimiento:
-                </label>
-                <input
-                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                  type="date"
-                  name="fechaNacimiento"
-                  value={formData.fechaNacimiento}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-              <div>
-                <label className="mb-3 block text-sm font-medium text-black dark:text-white">
-                  Lugar de Nacimiento:
-                </label>
-                <input
-                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                  type="text"
-                  name="lugarNacimiento"
-                  value={formData.lugarNacimiento}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-              <div>
-                <label className="mb-3 block text-sm font-medium text-black dark:text-white">
-                  Sexo:
-                </label>
-                <select
-                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                  name="sexo"
-                  value={formData.sexo}
-                  onChange={handleChange}
-                  required
-                >
-                  <option value="">Seleccionar</option>
-                  <option value="Masculino">Masculino</option>
-                  <option value="Femenino">Femenino</option>
-                </select>
-              </div>
-              <div>
-                <label className="mb-3 block text-sm font-medium text-black dark:text-white">
-                  Carnet de Identidad:
-                </label>
-                <input
-                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                  type="text"
-                  name="carnetIdentidad"
-                  value={formData.carnetIdentidad}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-            </div>
-            <div className="flex flex-row gap-5.5 p-6.5">
-              <div>
-                <label className="mb-3 block text-sm font-medium text-black dark:text-white">
-                  Dirección/Zona:
-                </label>
-                <input
-                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                  type="text"
-                  name="direccionZona"
-                  value={formData.direccionZona}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-              <div>
-                <label className="mb-3 block text-sm font-medium text-black dark:text-white">
-                  Teléfono:
-                </label>
-                <input
-                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                  type="tel"
-                  name="telefono"
-                  value={formData.telefono}
-                  onChange={handleChange}
-                />
-              </div>
-              <div>
-                <label className="mb-3 block text-sm font-medium text-black dark:text-white">
-                  Celular:
-                </label>
-                <input
-                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                  type="tel"
-                  name="celular"
-                  value={formData.celular}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-            </div>
-            <div className="flex flex-row gap-5.5 p-6.5">
-              <div>
-                <label className="mb-3 block text-sm font-medium text-black dark:text-white">
-                  Email:
-                </label>
-                <input
-                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                />
-              </div>
-              <div>
-                <label className="mb-3 block text-sm font-medium text-black dark:text-white">
-                  Alergia a algún medicamento:
-                </label>
-                <textarea
-                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                  name="alergiaMedicamento"
-                  rows={4}
-                  value={formData.alergiaMedicamento}
-                  onChange={handleChange}
-                />
-              </div>
-            </div>
-            <div className="flex gap-4">
-              <button
-                className="flex w-56 justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90"
-                type="submit"
-              >
+        <Box
+          mx="12"
+          my="4"
+          borderWidth="1px"
+          borderRadius="lg"
+          boxShadow="lg"
+          bg="white"
+          p="10"
+        >
+          <form onSubmit={handleSubmit}>
+            <VStack spacing={6}>
+              <HStack spacing={5}>
+                <FormControl isRequired>
+                  <FormLabel>Apellido Paterno:</FormLabel>
+                  <Input
+                    name="apellidoPaterno"
+                    value={formData.apellidoPaterno}
+                    onChange={handleChange}
+                  />
+                </FormControl>
+                <FormControl isRequired>
+                  <FormLabel>Apellido Materno:</FormLabel>
+                  <Input
+                    name="apellidoMaterno"
+                    value={formData.apellidoMaterno}
+                    onChange={handleChange}
+                  />
+                </FormControl>
+                <FormControl isRequired>
+                  <FormLabel>Primer Nombre:</FormLabel>
+                  <Input
+                    name="primerNombre"
+                    value={formData.primerNombre}
+                    onChange={handleChange}
+                  />
+                </FormControl>
+                <FormControl>
+                  <FormLabel>Segundo Nombre:</FormLabel>
+                  <Input
+                    name="segundoNombre"
+                    value={formData.segundoNombre}
+                    onChange={handleChange}
+                  />
+                </FormControl>
+              </HStack>
+              <HStack spacing={5}>
+                <FormControl isRequired>
+                  <FormLabel>Fecha de Nacimiento:</FormLabel>
+                  <Input
+                    type="date"
+                    name="fechaNacimiento"
+                    value={formData.fechaNacimiento}
+                    onChange={handleChange}
+                  />
+                </FormControl>
+                <FormControl isRequired>
+                  <FormLabel>Lugar de Nacimiento:</FormLabel>
+                  <Input
+                    name="lugarNacimiento"
+                    value={formData.lugarNacimiento}
+                    onChange={handleChange}
+                  />
+                </FormControl>
+                <FormControl isRequired>
+                  <FormLabel>Sexo:</FormLabel>
+                  <Select
+                    name="sexo"
+                    value={formData.sexo}
+                    onChange={handleChange}
+                  >
+                    <option value="">Seleccionar</option>
+                    <option value="Masculino">Masculino</option>
+                    <option value="Femenino">Femenino</option>
+                  </Select>
+                </FormControl>
+                <FormControl isRequired>
+                  <FormLabel>Carnet de Identidad:</FormLabel>
+                  <Input
+                    name="carnetIdentidad"
+                    value={formData.carnetIdentidad}
+                    onChange={handleChange}
+                  />
+                </FormControl>
+              </HStack>
+              <HStack spacing={5}>
+                <FormControl isRequired>
+                  <FormLabel>Dirección/Zona:</FormLabel>
+                  <Input
+                    name="direccionZona"
+                    value={formData.direccionZona}
+                    onChange={handleChange}
+                  />
+                </FormControl>
+                <FormControl>
+                  <FormLabel>Teléfono:</FormLabel>
+                  <Input
+                    type="tel"
+                    name="telefono"
+                    value={formData.telefono}
+                    onChange={handleChange}
+                  />
+                </FormControl>
+                <FormControl isRequired>
+                  <FormLabel>Celular:</FormLabel>
+                  <Input
+                    type="tel"
+                    name="celular"
+                    value={formData.celular}
+                    onChange={handleChange}
+                  />
+                </FormControl>
+              </HStack>
+              <HStack spacing={5}>
+                <FormControl>
+                  <FormLabel>Email:</FormLabel>
+                  <Input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                  />
+                </FormControl>
+                <FormControl>
+                  <FormLabel>Alergia a algún medicamento:</FormLabel>
+                  <Textarea
+                    name="alergiaMedicamento"
+                    rows={4}
+                    value={formData.alergiaMedicamento}
+                    onChange={handleChange}
+                  />
+                </FormControl>
+              </HStack>
+              <Button type="submit" colorScheme="blue" width="full" mt="4">
                 Enviar
-              </button>
-            </div>
+              </Button>
+            </VStack>
           </form>
-        </div>
+        </Box>
       )}
     </DefaultLayout>
   );

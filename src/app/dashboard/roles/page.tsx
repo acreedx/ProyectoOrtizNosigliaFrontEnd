@@ -14,6 +14,7 @@ import {
   Tag,
   Button,
   HStack,
+  Stack,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -59,10 +60,19 @@ export default function Roles() {
   const editRole = (role: any) => {
     router.push("/dashboard/roles/editar");
   };
+
+  const addRoles = () => {
+    router.push("/dashboard/roles/crear");
+  };
   return (
     <DefaultLayout>
       <Breadcrumb pageName="Listado de Roles y Permisos" />
       <Box p={4} bg="gray.50" borderRadius="md" boxShadow="md">
+        <Stack mb={4} direction="row" justify="flex-end">
+          <Button colorScheme="teal" onClick={addRoles}>
+            Añadir nuevo rol
+          </Button>
+        </Stack>
         <Table variant="simple" colorScheme="purple">
           <TableCaption>Roles y Permisos</TableCaption>
           <Thead>
