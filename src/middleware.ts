@@ -19,7 +19,6 @@ export async function middleware(request: NextRequest) {
       console.log(payload);
       return NextResponse.next();
     } catch (e) {
-      console.error(e);
       return NextResponse.redirect(
         new URL("/paginaweb/pages/login", request.url),
       );

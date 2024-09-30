@@ -1,10 +1,10 @@
 "use client";
+import React, { useState } from "react";
 interface NavBarLinkDropDownProps {
   linkName: string;
   linkUrl: string;
   subLinks?: { name: string; url: string }[];
 }
-import React, { useState } from "react";
 
 export default function NavBarLinkDropDown({
   linkName,

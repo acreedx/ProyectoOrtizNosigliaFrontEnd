@@ -30,13 +30,13 @@ export default function Contact() {
           <div className="mx-auto mt-[0rem] w-full max-w-full flex-shrink-0 px-[calc(1.5rem*0.5)] xl:w-2/3">
             <div className="section-title mb-[55px] text-center">
               <span
-                className="wow fadeInDown font-raleway mb-[15px] inline-block text-[25px] font-semibold text-orange-400 no-underline"
+                className="wow fadeInDown mb-[15px] inline-block font-raleway text-[25px] font-semibold text-orange-400 no-underline"
                 data-wow-delay=".2s"
               >
                 Reservas
               </span>
               <h2
-                className="font-raleway wow fadeInUp  m-0 mb-2 mt-0 text-[calc(1.325rem+0.9vw)] font-medium leading-[1.2] text-[#393e46] md:text-[2rem]"
+                className="wow fadeInUp m-0  mb-2 mt-0 font-raleway text-[calc(1.325rem+0.9vw)] font-medium leading-[1.2] text-[#393e46] md:text-[2rem]"
                 data-wow-delay=".4s"
               >
                 Has una reserva ahora!
@@ -51,7 +51,7 @@ export default function Contact() {
               </p>
               <br />
               <a
-                href="https://rebrand.ly/medic-ud"
+                href="/paginaweb/pages/citas"
                 rel="nofollow"
                 className="inline-block rounded-md border border-transparent bg-transparent  px-3 py-1.5  text-base font-normal leading-6 text-current text-orange-500 no-underline shadow-md transition-colors duration-300 ease-out hover:text-orange-700 focus:shadow-none  focus:outline-none disabled:pointer-events-none disabled:opacity-65"
               >

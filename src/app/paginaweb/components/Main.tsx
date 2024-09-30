@@ -8,6 +8,7 @@ import Neurology from "./Icons/Neurology";
 import Cardiology from "./Icons/Cardiology";
 import Support from "./Icons/Support";
 import DropDownCard from "./DropDownCard";
+import ServiceCard from "./ServiceCard";
 
 export default function Main() {
   return (
@@ -27,24 +28,29 @@ export default function Main() {
             <div className="mx-auto xl:w-2/3">
               <div className="section-title mb-[55px] text-center">
                 <span
-                  className="wow fadeInDown font-raleway mb-[15px] inline-block text-[25px] font-semibold text-orange-400 no-underline"
+                  className="wow fadeInDown mb-[15px] inline-block font-raleway text-[25px] font-semibold text-orange-400 no-underline"
                   data-wow-delay=".2s"
                 >
                   Que hacemos
                 </span>
                 <h2
-                  className="font-raleway wow fadeInUp m-0 mb-2 mt-0 text-[calc(1.325rem+0.9vw)] font-medium leading-[1.2] text-[#393e46] md:text-[2rem]"
+                  className="wow fadeInUp m-0 mb-2 mt-0 font-raleway text-[calc(1.325rem+0.9vw)] font-medium leading-[1.2] text-[#393e46] md:text-[2rem]"
                   data-wow-delay=".4s"
                 >
                   Proveemos para tu salud
                 </h2>
                 <p
-                  className="wow fadeInUp m-0 text-[18px] font-normal leading-[28px] text-[#8c96a7]"
+                  className="wow fadeInUp m-0 text-center text-[18px] font-normal leading-[28px] text-[#8c96a7]"
                   data-wow-delay=".6s"
                 >
-                  Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed
-                  dinonumy <br className="d-none d-lg-block" /> eirmod tempor
-                  invidunt ut labore et dolore magn.
+                  En Ortiz Nosiglia, nos dedicamos a cuidar de tu bienestar,
+                  ofreciendo servicios médicos de alta calidad y un equipo de
+                  profesionales comprometidos con tu salud. Nuestro objetivo es
+                  brindar atención personalizada y garantizar que recibas el
+                  tratamiento adecuado para tus necesidades. Creemos que la
+                  prevención es la clave, y por eso estamos aquí para
+                  acompañarte en cada paso de tu cuidado médico, desde
+                  diagnósticos precisos hasta tratamientos efectivos.
                 </p>
               </div>
             </div>
@@ -110,7 +116,7 @@ export default function Main() {
                     </g>
                   </svg>
                 </div>
-                <h5 className="font-raleway m-0 text-[20px] font-semibold text-[#393e46]">
+                <h5 className="m-0 font-raleway text-[20px] font-semibold text-[#393e46]">
                   Dentistas especialistas
                 </h5>
               </div>
@@ -183,7 +189,7 @@ export default function Main() {
                     </g>
                   </svg>
                 </div>
-                <h5 className="font-raleway m-0 text-[20px] font-semibold text-[#393e46]">
+                <h5 className="m-0 font-raleway text-[20px] font-semibold text-[#393e46]">
                   Visitas Frecuentes
                 </h5>
               </div>
@@ -215,7 +221,7 @@ export default function Main() {
                     </g>
                   </svg>
                 </div>
-                <h5 className="font-raleway m-0 text-[20px] font-semibold text-[#393e46]">
+                <h5 className="m-0 font-raleway text-[20px] font-semibold text-[#393e46]">
                   Administración cordial
                 </h5>
               </div>
@@ -261,7 +267,7 @@ export default function Main() {
                     </g>
                   </svg>
                 </div>
-                <h5 className="font-raleway m-0 text-[20px] font-semibold text-[#393e46]">
+                <h5 className="m-0 font-raleway text-[20px] font-semibold text-[#393e46]">
                   Tratamientos especializados
                 </h5>
               </div>
@@ -285,13 +291,13 @@ export default function Main() {
               <div className="about-content mb-[55px] text-center">
                 <div className="section-title mb-[30px]">
                   <span
-                    className="wow fadeInDown font-raleway mb-[15px] inline-block text-[25px] font-semibold text-orange-400 no-underline"
+                    className="wow fadeInDown mb-[15px] inline-block font-raleway text-[25px] font-semibold text-orange-400 no-underline"
                     data-wow-delay=".2s"
                   >
                     Acerca de nosotros
                   </span>
                   <h2
-                    className="font-raleway wow fadeInUp m-0 mt-0 text-[calc(1.325rem+0.9vw)] font-medium leading-[1.2] text-[#393e46] md:text-[2rem]"
+                    className="wow fadeInUp m-0 mt-0 font-raleway text-[calc(1.325rem+0.9vw)] font-medium leading-[1.2] text-[#393e46] md:text-[2rem]"
                     data-wow-delay=".4s"
                   >
                     Bienvenido a nuestra clínica
@@ -344,13 +350,13 @@ export default function Main() {
             <div className="mx-auto xl:w-2/3">
               <div className="section-title mb-[55px] text-center">
                 <span
-                  className="wow fadeInDown font-raleway mb-[15px] inline-block text-[25px] font-semibold text-orange-400 no-underline"
+                  className="wow fadeInDown mb-[15px] inline-block font-raleway text-[25px] font-semibold text-orange-400 no-underline"
                   data-wow-delay=".2s"
                 >
                   Servicios
                 </span>
                 <h2
-                  className="font-raleway wow fadeInUp m-0 mb-2 mt-0 text-[calc(1.325rem+0.9vw)] font-medium leading-[1.2] text-[#393e46] md:text-[2rem]"
+                  className="wow fadeInUp m-0 mb-2 mt-0 font-raleway text-[calc(1.325rem+0.9vw)] font-medium leading-[1.2] text-[#393e46] md:text-[2rem]"
                   data-wow-delay=".4s"
                 >
                   Nuestros servicios dentales
@@ -359,159 +365,53 @@ export default function Main() {
                   className="wow fadeInUp m-0 text-[18px] font-normal leading-[28px] text-[#8c96a7]"
                   data-wow-delay=".6s"
                 >
-                  Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed
-                  dinonumy
-                  <br className="d-none d-lg-block" /> eirmod tempor invidunt ut
-                  labore et dolore magn.
+                  En Ortiz Nosiglia, ofrecemos una amplia gama de servicios
+                  dentales diseñados para satisfacer todas tus necesidades de
+                  salud bucal. Desde limpiezas y chequeos rutinarios hasta
+                  tratamientos especializados como ortodoncia, implantología y
+                  estética dental, nuestro equipo de expertos está comprometido
+                  a brindarte atención de calidad.
                 </p>
               </div>
             </div>
           </div>
           <div className="-mx-[calc(1.5rem*0.5)] -mt-[0rem] flex flex-wrap">
-            <div className="md:w-1/2 lg:w-1/3">
-              <div className="service-item mb-[30px]">
-                <div className="service-icon mb-25">
-                  <Cardiology />
-                </div>
-                <div className="service-content">
-                  <h4 className="font-raleway m-0 text-[25px] font-semibold text-[#393e46]">
-                    Cardiology
-                  </h4>
-                  <p className="m-0 text-[18px] font-normal leading-[28px] text-[#8c96a7]">
-                    Lorem ipsum dolor sit amet, consetet sadipscing elitr, sed
-                    dinonumy eirmod tempor invidunt.
-                  </p>
-                  <a
-                    href="#"
-                    className="read-more inline-block text-orange-500 no-underline transition-all duration-300 ease-out hover:text-orange-700  focus:shadow-none focus:outline-none"
-                  >
-                    Aprender más{" "}
-                    <i className="lni lni-arflex -mt-[0rem]-right -mx-[calc(1.5rem*0.5)] inline-block flex-wrap no-underline"></i>
-                  </a>
-                </div>
-                <div className="service-overlay img-bg"></div>
-              </div>
-            </div>
-            <div className="md:w-1/2 lg:w-1/3">
-              <div className="service-item mb-[30px]">
-                <div className="service-icon mb-25">
-                  <Neurology />
-                </div>
-                <div className="service-content">
-                  <h4 className="font-raleway m-0 text-[25px] font-semibold text-[#393e46]">
-                    Neurology
-                  </h4>
-                  <p className="m-0 text-[18px] font-normal leading-[28px] text-[#8c96a7]">
-                    Lorem ipsum dolor sit amet, consetet sadipscing elitr, sed
-                    dinonumy eirmod tempor invidunt.
-                  </p>
-                  <a
-                    href="#"
-                    className="read-more inline-block text-orange-500 no-underline transition-all duration-300 ease-out hover:text-orange-700  focus:shadow-none focus:outline-none"
-                  >
-                    Aprender más{" "}
-                    <i className="lni lni-arflex -mt-[0rem]-right -mx-[calc(1.5rem*0.5)] inline-block flex-wrap no-underline"></i>
-                  </a>
-                </div>
-                <div className="service-overlay img-bg"></div>
-              </div>
-            </div>
-            <div className="md:w-1/2 lg:w-1/3">
-              <div className="service-item mb-[30px]">
-                <div className="service-icon mb-25">
-                  <Stomach />
-                </div>
-                <div className="service-content">
-                  <h4 className="font-raleway m-0 text-[25px] font-semibold text-[#393e46]">
-                    Gastroenterology
-                  </h4>
-                  <p className="m-0 text-[18px] font-normal leading-[28px] text-[#8c96a7]">
-                    Lorem ipsum dolor sit amet, consetet sadipscing elitr, sed
-                    dinonumy eirmod tempor invidunt.
-                  </p>
-                  <a
-                    href="#"
-                    className="read-more inline-block text-orange-500 no-underline transition-all duration-300 ease-out hover:text-orange-700  focus:shadow-none focus:outline-none"
-                  >
-                    Aprender más{" "}
-                    <i className="lni lni-arflex -mt-[0rem]-right -mx-[calc(1.5rem*0.5)] inline-block flex-wrap no-underline"></i>
-                  </a>
-                </div>
-                <div className="service-overlay img-bg"></div>
-              </div>
-            </div>
-            <div className="md:w-1/2 lg:w-1/3">
-              <div className="service-item mb-[30px]">
-                <div className="service-icon mb-25">
-                  <Bone />
-                </div>
-                <div className="service-content">
-                  <h4 className="font-raleway m-0 text-[25px] font-semibold text-[#393e46]">
-                    Ortodoncia
-                  </h4>
-                  <p className="m-0 text-[18px] font-normal leading-[28px] text-[#8c96a7]">
-                    Lorem ipsum dolor sit amet, consetet sadipscing elitr, sed
-                    dinonumy eirmod tempor invidunt.
-                  </p>
-                  <a
-                    href="#"
-                    className="read-more inline-block text-orange-500 no-underline transition-all duration-300 ease-out focus:shadow-none focus:outline-none"
-                  >
-                    Aprender más{" "}
-                    <i className="lni lni-arflex -mt-[0rem]-right -mx-[calc(1.5rem*0.5)] inline-block flex-wrap no-underline"></i>
-                  </a>
-                </div>
-                <div className="service-overlay img-bg"></div>
-              </div>
-            </div>
-            <div className="md:w-1/2 lg:w-1/3">
-              <div className="service-item mb-[30px]">
-                <div className="service-icon mb-25">
-                  <Ginecology />
-                </div>
-                <div className="service-content">
-                  <h4 className="font-raleway m-0 text-[25px] font-semibold text-[#393e46]">
-                    Gynecology
-                  </h4>
-                  <p className="m-0 text-[18px] font-normal leading-[28px] text-[#8c96a7]">
-                    Lorem ipsum dolor sit amet, consetet sadipscing elitr, sed
-                    dinonumy eirmod tempor invidunt.
-                  </p>
-                  <a
-                    href="#"
-                    className="read-more inline-block text-orange-500 no-underline transition-all duration-300 ease-out focus:shadow-none focus:outline-none"
-                  >
-                    Aprender más{" "}
-                    <i className="lni lni-arflex -mt-[0rem]-right -mx-[calc(1.5rem*0.5)] inline-block flex-wrap no-underline"></i>
-                  </a>
-                </div>
-                <div className="service-overlay img-bg"></div>
-              </div>
-            </div>
-            <div className="md:w-1/2 lg:w-1/3">
-              <div className="service-item mb-[30px]">
-                <div className="service-icon mb-25">
-                  <Dental />
-                </div>
-                <div className="service-content">
-                  <h4 className="font-raleway m-0 text-[25px] font-semibold text-[#393e46]">
-                    Cirujía dental
-                  </h4>
-                  <p className="m-0 text-[18px] font-normal leading-[28px] text-[#8c96a7]">
-                    Lorem ipsum dolor sit amet, consetet sadipscing elitr, sed
-                    dinonumy eirmod tempor invidunt.
-                  </p>
-                  <a
-                    href="#"
-                    className="read-more inline-block text-orange-500 no-underline transition-all duration-300 ease-out focus:shadow-none focus:outline-none"
-                  >
-                    Aprender más{" "}
-                    <i className="lni lni-arflex -mt-[0rem]-right -mx-[calc(1.5rem*0.5)] inline-block flex-wrap no-underline"></i>
-                  </a>
-                </div>
-                <div className="service-overlay img-bg"></div>
-              </div>
-            </div>
+            <ServiceCard
+              title="Implantes Dentales"
+              description="Los implantes dentales son tornillos de titanio que se colocan en el hueso maxilar con el fin de sustituir a las raíces de las piezas perdidas."
+              iconComponent={<Neurology />}
+              url="#"
+            />
+            <ServiceCard
+              title="Carillas - Coronas"
+              description="Mejora la apariencia de tu boca. Ofrecemos carillas y coronas impresas con sistema CAD CAM, las que son confeccionadas en una impresora digital, llevando al máximo la calidad y la fiabilidad."
+              iconComponent={<Cardiology />}
+              url="#"
+            />
+            <ServiceCard
+              title="Ortodoncia Tradicional"
+              description="Utilizamos una técnica que disminuye las visitas a la consulta en un lapso corto. Ofrecemos brackets estéticos y efectivos que benefician la sonrisa y salud oral."
+              iconComponent={<Stomach />}
+              url="#"
+            />
+            <ServiceCard
+              title="Ortodoncia Invisible"
+              description="La ortodoncia invisible (Invisalign) consiste en férulas transparentes removibles situadas en la parte externa de los dientes y que son prácticamente imperceptibles a la vista."
+              iconComponent={<Bone />}
+              url="#"
+            />
+            <ServiceCard
+              title="Odontopediatría"
+              description="El tratamiento a menores es importante por su enfoque de “tratamiento preventivo”, crucial porque marcará el futuro de la salud dental para toda la vida del infante."
+              iconComponent={<Ginecology />}
+              url="#"
+            />
+            <ServiceCard
+              title="Tratamiento Anti Ronquidos"
+              description="Con nuestro tratamiento anti-ronquido ayudamos a corregir la posición de la mandíbula durante el sueño, mejorando considerablemente el paso del aire y la oxigenación en la sangre del paciente."
+              iconComponent={<Dental />}
+              url="#"
+            />
           </div>
         </div>
       </section>
@@ -547,13 +447,13 @@ export default function Main() {
               <div className="faq-content-wrapper pb-[90px] pt-[90px]">
                 <div className="section-title">
                   <span
-                    className="wow fadeInDown font-raleway mb-[15px] inline-block text-[25px] font-bold text-white no-underline"
+                    className="wow fadeInDown mb-[15px] inline-block font-raleway text-[25px] font-bold text-white no-underline"
                     data-wow-delay=".2s"
                   >
                     Preguntas frecuentes
                   </span>
                   <h2
-                    className="font-raleway wow fadeInUp m-0 mb-8 mt-0 text-[calc(1.325rem+0.9vw)] font-medium leading-[1.2] text-white md:text-[2rem]"
+                    className="wow fadeInUp m-0 mb-8 mt-0 font-raleway text-[calc(1.325rem+0.9vw)] font-medium leading-[1.2] text-white md:text-[2rem]"
                     data-wow-delay=".4s"
                   >
                     Consigue las respuestas que quieres
@@ -562,35 +462,21 @@ export default function Main() {
                 <div className="faq-wrapper accordion">
                   <DropDownCard
                     title="¿Que es el centro Ortiz Nosiglia?"
-                    content="Lorem ipsum dolor sit amet, consetet Lorem ipsum dolor
-                        sit amet, consetet sadipscing elitr, sed dinonumy eirmod
-                        tempor invidunt. sadipscing elitr, sed dinonumy eirmod
-                        tempor invidunt. Lorem ipsum dolor sit amet, consetet
-                        Lorem ipsum dolor."
+                    content="El Centro Ortiz Nosiglia es una institución dental dedicada a proporcionar atención integral y de calidad a nuestros pacientes.
+                    Nuestro equipo de profesionales altamente capacitados utiliza tecnología avanzada y técnicas actualizadas para asegurar 
+                    que cada visita sea una experiencia positiva. En el Centro Ortiz Nosiglia, nuestra misión es cuidar de tu salud bucal y contribuir a tu bienestar general."
                   />
                   <DropDownCard
-                    title="¿Que es el centro Ortiz Nosiglia?"
-                    content="Lorem ipsum dolor sit amet, consetet Lorem ipsum dolor
-                        sit amet, consetet sadipscing elitr, sed dinonumy eirmod
-                        tempor invidunt. sadipscing elitr, sed dinonumy eirmod
-                        tempor invidunt. Lorem ipsum dolor sit amet, consetet
-                        Lorem ipsum dolor."
+                    title="¿Qué tratamientos ofrecen en el centro Ortiz Nosiglia?"
+                    content="Ofrecemos una amplia gama de tratamientos dentales, que incluyen: limpiezas, ortodoncia, implantología, blanqueamiento dental, y cuidados pediátricos. Nos esforzamos por brindar atención personalizada según las necesidades de cada paciente."
                   />
                   <DropDownCard
-                    title="¿Que es el centro Ortiz Nosiglia?"
-                    content="Lorem ipsum dolor sit amet, consetet Lorem ipsum dolor
-                        sit amet, consetet sadipscing elitr, sed dinonumy eirmod
-                        tempor invidunt. sadipscing elitr, sed dinonumy eirmod
-                        tempor invidunt. Lorem ipsum dolor sit amet, consetet
-                        Lorem ipsum dolor."
+                    title="¿Es necesario hacer una cita para recibir atención?"
+                    content="Sí, recomendamos agendar una cita para garantizar que podamos atenderte de la mejor manera posible. Puedes hacer tu cita a través de nuestro sitio web o llamándonos directamente."
                   />
                   <DropDownCard
-                    title="¿Que es el centro Ortiz Nosiglia?"
-                    content="Lorem ipsum dolor sit amet, consetet Lorem ipsum dolor
-                        sit amet, consetet sadipscing elitr, sed dinonumy eirmod
-                        tempor invidunt. sadipscing elitr, sed dinonumy eirmod
-                        tempor invidunt. Lorem ipsum dolor sit amet, consetet
-                        Lorem ipsum dolor."
+                    title="¿Cuál es la política de cancelación de citas?"
+                    content="Si necesitas cancelar o reprogramar tu cita, te pedimos que nos avises con al menos 24 horas de anticipación. Esto nos permitirá atender a otros pacientes que necesiten nuestros servicios."
                   />
                 </div>
               </div>
@@ -599,6 +485,8 @@ export default function Main() {
         </div>
       </section>
       <Contact />
+      {/**
+       * SECCIÓN DE SUSCRIBIRSE A NUESTRO DIARIO
       <section
         id="emergency-section"
         className="subscribe-section img-bg bg-white pb-[100px] pt-[100px]"
@@ -607,7 +495,7 @@ export default function Main() {
           <div className="-mx-[calc(1.5rem*0.5)] -mt-[0rem] flex flex-wrap">
             <div className="xl:w-7/12">
               <div className="section-title">
-                <h2 className="font-raleway m-0 mb-2 mt-0 text-[calc(1.325rem+0.9vw)] font-medium leading-[1.2] text-[#393e46] md:text-[2rem]">
+                <h2 className="m-0 mb-2 mt-0 font-raleway text-[calc(1.325rem+0.9vw)] font-medium leading-[1.2] text-[#393e46] md:text-[2rem]">
                   Suscribete a nuestro diario
                 </h2>
                 <p className="m-0 mb-[35px] text-[18px] font-normal leading-[28px] text-[#8c96a7]">
@@ -638,7 +526,7 @@ export default function Main() {
                   <div className="support-icon">
                     <Support />
                   </div>
-                  <h2 className="font-raleway m-0 mb-2 mt-0 text-[calc(1.325rem+0.9vw)] font-medium leading-[1.2] text-[#393e46] md:text-[2rem]">
+                  <h2 className="m-0 mb-2 mt-0 font-raleway text-[calc(1.325rem+0.9vw)] font-medium leading-[1.2] text-[#393e46] md:text-[2rem]">
                     {" "}
                     <span className="block text-orange-400 no-underline">
                       Atención médica
@@ -692,8 +580,8 @@ export default function Main() {
             </div>
           </div>
         </div>
-      </section>
-      <section id="blog" className="blog-section bg-white pt-[150px]">
+      </section> */}
+      <section id="blog" className="blog-section bg-white">
         <div className="shape shape-7">
           <Image
             className="max-w-full"
@@ -708,29 +596,30 @@ export default function Main() {
             <div className="mx-auto xl:w-2/3">
               <div className="section-title mb-[55px] text-center">
                 <span
-                  className="wow fadeInDown font-raleway mb-[15px] inline-block text-[25px] font-semibold text-orange-400 no-underline"
+                  className="wow fadeInDown mb-[15px] inline-block font-raleway text-[25px] font-semibold text-orange-400 no-underline"
                   data-wow-delay=".2s"
                 >
-                  Noticias
+                  Descuentos
                 </span>
                 <h2
-                  className="font-raleway wow fadeInUp m-0 mb-2 mt-0 text-[calc(1.325rem+0.9vw)] font-medium leading-[1.2] text-[#393e46] md:text-[2rem]"
+                  className="wow fadeInUp m-0 mb-2 mt-0 font-raleway text-[calc(1.325rem+0.9vw)] font-medium leading-[1.2] text-[#393e46] md:text-[2rem]"
                   data-wow-delay=".4s"
                 >
-                  Nocitias recientes
+                  Descuentos recientes
                 </h2>
                 <p
                   className="wow fadeInUp m-0 text-[18px] font-normal leading-[28px] text-[#8c96a7]"
                   data-wow-delay=".4s"
                 >
-                  Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed
-                  dinonumy <br className="d-none d-lg-block" /> eirmod tempor
-                  invidunt ut labore et dolore magn.
+                  En el Centro Ortiz Nosiglia, nos comprometemos a hacer que la
+                  atención dental de calidad sea accesible para todos. Por eso,
+                  ofrecemos una variedad de descuentos y promociones especiales
+                  en nuestros tratamientos.
                 </p>
               </div>
             </div>
           </div>
-          <div className="-mx-[calc(1.5rem*0.5)] -mt-[0rem] flex flex-wrap">
+          <div className="-mx-[calc(1.5rem*0.5)] -mt-[0rem] flex flex-wrap justify-center">
             <div className="mt-[0rem] w-full max-w-full flex-shrink-0 px-[calc(1.5rem*0.5)] md:w-1/2 lg:w-1/3 xl:w-1/3">
               <div
                 className="single-blog wow fadeInUp mb-[30px]"
@@ -743,117 +632,79 @@ export default function Main() {
                   >
                     <Image
                       className="max-w-full"
-                      src="/images/paginaweb/blog/blog-1.png"
-                      alt=""
+                      src="/images/paginaweb/promociones.jpg"
+                      alt="Promociones"
                       width={400}
                       height={400}
                     />
                   </a>
                 </div>
-                <div className="blog-content">
-                  <h4 className="font-raleway m-0 text-[25px] font-semibold text-[#393e46]">
+                <div className="blog-content rounded-xl p-4 shadow-lg">
+                  <h4 className="m-0 font-raleway text-[25px] font-semibold text-[#393e46]">
                     <a
                       href="#"
                       className="inline-block no-underline transition-all duration-300 ease-out hover:text-orange-400 focus:shadow-none focus:outline-none"
                     >
-                      250+ Medical Tips We Just Had to Share
+                      REGALOS por el mes del amor y la amistad
                     </a>
                   </h4>
-                  <p className="m-0 text-[18px] font-normal leading-[28px] text-[#8c96a7]">
-                    Lorem ipsum dolor sirtewt amertse consetetur sadipscing
-                    elitr, sedqw dinoumy eirmod tempor invidunt sedrsu.
-                  </p>
+                  <div className="m-0  text-[18px] font-normal leading-[28px] text-black ">
+                    <p className="font-bold">
+                      PERIODO: Del 16 de septiembre al 15 de octubre de 2024
+                    </p>
+
+                    <div className="space-y-1">
+                      <p className="font-semibold">1.- Día del estudiante</p>
+                      <p className="pl-4">
+                        2x1 En limpieza dental (incluye fluor y ultrasonido)
+                      </p>
+                      <p className="pl-4">
+                        Limpieza dental pensada en los peques (desde los 6 hasta
+                        los 14 años) y sus papás y mamás
+                      </p>
+                    </div>
+
+                    <div className="space-y-1">
+                      <p className="font-semibold">2.- Día del amor</p>
+                      <p className="pl-4">2x1 en blanqueamiento dental</p>
+                      <p className="pl-4">
+                        ¡Celebra el día del amor junto a tu pareja con una
+                        sonrisa espectacular!
+                      </p>
+                    </div>
+
+                    <div className="space-y-1">
+                      <p className="font-semibold">3.- Día de la primavera!</p>
+                      <p className="pl-4">
+                        25% de descuento en implantes dentales
+                      </p>
+                      <p className="pl-4">
+                        No hay nada mejor que una sonrisa saludable para
+                        sentirse pleno en esta primavera.
+                      </p>
+                    </div>
+
+                    <p className="mt-4">
+                      ¡Pide cualquiera de estos regalos hasta el martes 15 de
+                      octubre!
+                    </p>
+                    <p className="italic">
+                      PS: Tienes que escoger uno de los regalos… no son
+                      combinables ni se pueden sumar.
+                    </p>
+                    <p>
+                      Pide tu cita o solicita mayor información al{" "}
+                      <span className="font-semibold">72025082</span>.
+                    </p>
+                  </div>
+                  {/*
                   <a
                     className="read-more inline-block text-orange-300 no-underline transition-all duration-300 ease-out hover:text-orange-400 focus:shadow-none focus:outline-none"
                     href="#"
                   >
                     Aprender más
                     <i className="lni lni-arflex -mt-[0rem]-right -mx-[calc(1.5rem*0.5)] inline-block flex-wrap no-underline"></i>
-                  </a>
-                </div>
-              </div>
-            </div>
-            <div className="mt-[0rem] w-full max-w-full flex-shrink-0 px-[calc(1.5rem*0.5)] md:w-1/2 lg:w-1/3 xl:w-1/3">
-              <div
-                className="single-blog wow fadeInUp mb-[30px]"
-                data-wow-delay=".4s"
-              >
-                <div className="blog-img">
-                  <a
-                    href="#"
-                    className="inline-block no-underline transition-all duration-300 ease-out hover:text-orange-400 focus:shadow-none focus:outline-none"
-                  >
-                    <Image
-                      className="max-w-full"
-                      src="/images/paginaweb/blog/blog-2.png"
-                      alt=""
-                      width={400}
-                      height={400}
-                    />
-                  </a>
-                </div>
-                <div className="blog-content">
-                  <h4 className="font-raleway m-0 text-[25px] font-semibold text-[#393e46]">
-                    <a
-                      href="#"
-                      className="inline-block no-underline transition-all duration-300 ease-out hover:text-orange-400 focus:shadow-none focus:outline-none"
-                    >
-                      100+ Medical Tips We Just Had to Share
-                    </a>
-                  </h4>
-                  <p className="m-0 text-[18px] font-normal leading-[28px] text-[#8c96a7]">
-                    Lorem ipsum dolor sirtewt amertse consetetur sadipscing
-                    elitr, sedqw dinoumy eirmod tempor invidunt sedrsu.
-                  </p>
-                  <a
-                    className="read-more inline-block text-orange-300 no-underline transition-all duration-300 ease-out hover:text-orange-400 focus:shadow-none focus:outline-none"
-                    href="#"
-                  >
-                    Aprender más{" "}
-                    <i className="lni lni-arflex -mt-[0rem]-right -mx-[calc(1.5rem*0.5)] inline-block flex-wrap no-underline"></i>
-                  </a>
-                </div>
-              </div>
-            </div>
-            <div className="mt-[0rem] w-full max-w-full flex-shrink-0 px-[calc(1.5rem*0.5)] md:w-1/2 lg:w-1/3 xl:w-1/3">
-              <div
-                className="single-blog wow fadeInUp mb-[30px]"
-                data-wow-delay=".6s"
-              >
-                <div className="blog-img">
-                  <a
-                    href="#"
-                    className="inline-block no-underline transition-all duration-300 ease-out hover:text-orange-400 focus:shadow-none focus:outline-none"
-                  >
-                    <Image
-                      className="max-w-full"
-                      src="/images/paginaweb/blog/blog-3.png"
-                      alt=""
-                      width={400}
-                      height={400}
-                    />
-                  </a>
-                </div>
-                <div className="blog-content">
-                  <h4 className="font-raleway m-0 text-[25px] font-semibold text-[#393e46]">
-                    <a
-                      href="#"
-                      className="inline-block no-underline transition-all duration-300 ease-out hover:text-orange-400 focus:shadow-none focus:outline-none"
-                    >
-                      250+ Medical Tips We Just Had to Share
-                    </a>
-                  </h4>
-                  <p className="m-0 text-[18px] font-normal leading-[28px] text-[#8c96a7]">
-                    Lorem ipsum dolor sirtewt amertse consetetur sadipscing
-                    elitr, sedqw dinoumy eirmod tempor invidunt sedrsu.
-                  </p>
-                  <a
-                    className="read-more inline-block text-orange-300 no-underline transition-all duration-300 ease-out hover:text-orange-400 focus:shadow-none focus:outline-none"
-                    href="#"
-                  >
-                    Aprender más{" "}
-                    <i className="lni lni-arflex -mt-[0rem]-right -mx-[calc(1.5rem*0.5)] inline-block flex-wrap no-underline"></i>
-                  </a>
+                  </a> */}
                 </div>
               </div>
             </div>

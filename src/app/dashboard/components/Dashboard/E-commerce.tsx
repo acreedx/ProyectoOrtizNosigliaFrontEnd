@@ -21,6 +21,8 @@ const ChartThree = dynamic(
 const ECommerce: React.FC = () => {
   return (
     <>
+      {/*Charts por defecto */}
+      {/*
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
         <CardDataStats title="Total views" total="$3.456K" rate="0.43%" levelUp>
           <svg
@@ -117,6 +119,14 @@ const ECommerce: React.FC = () => {
           <TableOne />
         </div>
         <ChatCard />
+      </div> */}
+      <div className="mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6 2xl:mt-7.5 2xl:gap-7.5">
+        <div className="col-span-12 rounded-sm border border-stroke bg-white py-6 shadow-default dark:border-strokedark dark:bg-boxdark xl:col-span-4">
+          <h4 className="mb-6 px-7.5 text-xl font-semibold text-black dark:text-white">
+            Últimos usuarios registrados
+          </h4>
+          <div></div>
+        </div>
       </div>
     </>
   );
