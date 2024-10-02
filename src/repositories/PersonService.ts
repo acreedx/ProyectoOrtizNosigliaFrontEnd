@@ -7,6 +7,11 @@ export class PersonService {
     const data: Person[] = await res.json();
     return data;
   }
+  static async getLatestPersons(): Promise<Person[]> {
+    const res = await fetch(localDomain + moduleName + "/newpersons");
+    const data: Person[] = await res.json();
+    return data;
+  }
   static async getPersonById(id: string): Promise<Person> {
     const res = await fetch(localDomain + moduleName + "/" + id);
     const data: Person = await res.json();

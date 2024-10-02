@@ -1,11 +1,23 @@
 "use client";
 import dynamic from "next/dynamic";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ChartOne from "../Charts/ChartOne";
 import ChartTwo from "../Charts/ChartTwo";
 import ChatCard from "../Chat/ChatCard";
 import TableOne from "../Tables/TableOne";
 import CardDataStats from "../CardDataStats";
+import Person from "@/interfaces/Person";
+import {
+  Table,
+  Thead,
+  Tbody,
+  Tr,
+  Th,
+  Td,
+  TableCaption,
+  Avatar,
+} from "@chakra-ui/react";
+import { PersonService } from "@/repositories/PersonService";
 
 const MapOne = dynamic(() => import("@/app/dashboard/components/Maps/MapOne"), {
   ssr: false,
@@ -19,6 +31,24 @@ const ChartThree = dynamic(
 );
 
 const ECommerce: React.FC = () => {
+  const [persons, setPersons] = useState<Person[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const data = await PersonService.getLatestPersons();
+        setPersons(data);
+      } catch (err) {
+        setError("Error fetching data");
+        console.error(err); // Log para más detalles
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    getData();
+  }, []);
   return (
     <>
       {/*Charts por defecto */}
@@ -125,7 +155,32 @@ const ECommerce: React.FC = () => {
           <h4 className="mb-6 px-7.5 text-xl font-semibold text-black dark:text-white">
             Últimos usuarios registrados
           </h4>
-          <div></div>
+          <Table variant="simple">
+            <TableCaption>Lista de usuarios</TableCaption>
+            <Thead>
+              <Tr>
+                <Th>Avatar</Th>
+                <Th>Nombre</Th>
+                <Th>Teléfono</Th>
+                <Th>Estado Civil</Th>
+              </Tr>
+            </Thead>
+            <Tbody>
+              {persons.map((person) => (
+                <Tr key={person._id}>
+                  <Td>
+                    <Avatar
+                      src={person.photo?._url.id}
+                      name={`${person.name.given.join(" ")} ${person.name.family}`}
+                    />
+                  </Td>
+                  <Td>{`${person.name.given.join(" ")} ${person.name.family}`}</Td>
+                  <Td>{person.telecom[0].value}</Td>
+                  <Td>{person.maritalStatus.coding[0].display}</Td>
+                </Tr>
+              ))}
+            </Tbody>
+          </Table>
         </div>
       </div>
     </>

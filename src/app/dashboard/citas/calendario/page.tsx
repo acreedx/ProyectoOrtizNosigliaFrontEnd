@@ -22,6 +22,8 @@ import { AppointmentService } from "@/repositories/appointment";
 import Appointment from "@/interfaces/Appointment";
 
 export default function ListadoCitas() {
+  const [eventos, setEventos] = useState<EventInput[]>([]);
+  const personas = [{ id: 1, nombre: "Adrian Herrera" }];
   useEffect(() => {
     const getData = async () => {
       const eventos: Appointment[] =
@@ -41,9 +43,19 @@ export default function ListadoCitas() {
     };
     getData();
   }, []);
-  const [eventos, setEventos] = useState<EventInput[]>([]);
-  const personas = [{ id: 1, nombre: "Adrian Herrera" }];
   function handleDateSelect(selectInfo: DateSelectArg) {
+    const now = new Date();
+    if (selectInfo.start < now) {
+      Swal.fire({
+        title: "Error",
+        icon: "error",
+        text: "No se puede crear una cita en una fecha anterior",
+        confirmButtonText: "Confirmar",
+        confirmButtonColor: "#28a745",
+      });
+      selectInfo.view.calendar.unselect();
+      return;
+    }
     Swal.fire({
       title: "Agendar Cita",
       html: `
@@ -149,6 +161,18 @@ export default function ListadoCitas() {
     });
   }
   const manejarDropEvento = async (info: EventDropArg) => {
+    const now = new Date();
+    if (info.event.start && info.event.start < now) {
+      await Swal.fire({
+        title: "Error",
+        icon: "error",
+        text: "No se puede mover la cita a una fecha anterior",
+        confirmButtonText: "Confirmar",
+        confirmButtonColor: "#28a745",
+      });
+      info.revert();
+      return;
+    }
     const fechaPrevia = info.oldEvent.start
       ? convertDate(info.oldEvent.start)
       : "";
@@ -217,8 +241,15 @@ export default function ListadoCitas() {
     });
   };
   function renderEventContent(eventInfo: EventContentArg) {
+    const now = new Date();
+    const isPastEvent = eventInfo.event.start && eventInfo.event.start < now;
+    console.log(isPastEvent);
     return (
-      <div className="flex h-full w-full flex-wrap overflow-hidden">
+      <div
+        className={`flex h-full w-full flex-wrap overflow-hidden ${
+          isPastEvent ? "bg-rose-600 text-white" : ""
+        }`} // Añadir fondo rojo si es un evento antiguo
+      >
         {eventInfo.event.allDay ? (
           <div className="mr-2">
             <b>{`Hora sin asignar `}</b>
@@ -293,7 +324,6 @@ export default function ListadoCitas() {
   };
   const handleEventClick = (info: EventClickArg) => {
     const event = info.event;
-
     Swal.fire({
       title: `Detalles de la cita`,
       html: `

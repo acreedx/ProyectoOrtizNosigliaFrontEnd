@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import DefaultLayout from "../components/Layouts/DefaultLayout";
 import Breadcrumb from "../components/Breadcrumbs/Breadcrumb";
 import { useState } from "react";
@@ -24,8 +24,11 @@ import {
   ModalBody,
   ModalFooter,
   Text,
+  TableCaption,
 } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
+import Person from "@/interfaces/Person";
+import { PersonService } from "@/repositories/PersonService";
 export default function Usuarios() {
   const router = useRouter();
   const toast = useToast();
@@ -101,18 +104,91 @@ export default function Usuarios() {
   const addUser = () => {
     router.push("/dashboard/usuarios/crear");
   };
+  const [persons, setpersons] = useState<Person[]>([]);
+  const getdata = async () => {
+    setpersons(await PersonService.getPerson());
+    console.log(await PersonService.getPerson());
+  };
+  useEffect(() => {
+    getdata();
+  }, []);
   return (
     <DefaultLayout>
       <Breadcrumb pageName="Listado de Usuarios" />
+      <Box overflowX="auto">
+        <Table variant="simple">
+          <TableCaption>Lista de Personas</TableCaption>
+          <Thead>
+            <Tr>
+              <Th>Nombre</Th>
+              <Th>Género</Th>
+              <Th>Fecha de Nacimiento</Th>
+              <Th>Estado Civil</Th>
+              <Th>Nombre de Usuario</Th>
+            </Tr>
+          </Thead>
+          <Tbody>
+            {persons.map((person, index) => (
+              <Tr key={person._id}>
+                <Td>{`${person.name.given.join(" ")} ${person.name.family}`}</Td>
+                <Td>{person.gender}</Td>
+                <Td>{person.birthDate}</Td>
+                <Td>{person.maritalStatus.coding[0].display}</Td>
+                <Td>{person.systemUser.username}</Td>
+                <Td>
+                  <HStack spacing={3}>
+                    <Button
+                      size="sm"
+                      colorScheme={person.active ? "red" : "green"}
+                      onClick={async () => {
+                        if (person.active) {
+                          await PersonService.disablePerson(person!._id!).then(
+                            async () => {
+                              getdata();
+                            },
+                          );
+                        } else {
+                          await PersonService.enablePerson(person!._id!).then(
+                            async () => {
+                              getdata();
+                            },
+                          );
+                        }
+                      }}
+                    >
+                      {person.active ? "Deshabilitar" : "Habilitar"}
+                    </Button>
+                    <Button
+                      size="sm"
+                      colorScheme="blue"
+                      onClick={() => viewUserInfo(person)}
+                    >
+                      Ver información
+                    </Button>
+                    <Button
+                      size="sm"
+                      colorScheme="yellow"
+                      onClick={() => editUser(person)}
+                    >
+                      Editar
+                    </Button>
+                  </HStack>
+                </Td>
+              </Tr>
+            ))}
+          </Tbody>
+        </Table>
+      </Box>
       <Box p={4} bg="gray.50" borderRadius="md" boxShadow="md">
-        {/* Botón para agregar nuevo usuario */}
+        {/* Botón para agregar nuevo usuario 
         <Stack mb={4} direction="row" justify="flex-end">
           <Button colorScheme="teal" onClick={addUser}>
             Añadir nuevo usuario
           </Button>
-        </Stack>
+        </Stack>*/}
 
         {/* Tabla de usuarios */}
+        {/*
         <Table variant="simple" colorScheme="purple">
           <Thead>
             <Tr>
@@ -165,46 +241,45 @@ export default function Usuarios() {
             ))}
           </Tbody>
         </Table>
-
+ */}
         {/* Modal para mostrar la información del usuario */}
         {selectedUser && (
           <Modal isOpen={isModalOpen} onClose={closeModal}>
             <ModalOverlay />
             <ModalContent>
-              <ModalHeader>Información del usuario</ModalHeader>
+              <ModalHeader>Información del Usuario</ModalHeader>
               <ModalCloseButton />
               <ModalBody>
                 <Text>
-                  <strong>Nombre:</strong> {selectedUser.name}
+                  <strong>Nombre:</strong>{" "}
+                  {`${selectedUser.name.given.join(" ")} ${selectedUser.name.family}`}
                 </Text>
                 <Text>
-                  <strong>Correo:</strong> {selectedUser.email}
+                  <strong>Correo:</strong>{" "}
+                  {selectedUser.telecom[0]?.value || "No disponible"}
                 </Text>
                 <Text>
-                  <strong>Fecha de nacimiento:</strong>{" "}
-                  {selectedUser.FechaNacimiento}
+                  <strong>Fecha de Nacimiento:</strong> {selectedUser.birthDate}
                 </Text>
                 <Text>
-                  <strong>Sexo:</strong> {selectedUser.Sexo}
+                  <strong>Sexo:</strong> {selectedUser.gender}
                 </Text>
                 <Text>
-                  <strong>CI:</strong> {selectedUser.CI}
+                  <strong>CI:</strong> {selectedUser.carnetDeIdentidad}
                 </Text>
                 <Text>
-                  <strong>Teléfono:</strong> {selectedUser.Telefono}
+                  <strong>Teléfono:</strong>{" "}
+                  {selectedUser.telecom[1]?.value || "No disponible"}
                 </Text>
-
                 <Text>
-                  <strong>Celular:</strong> {selectedUser.Celular}
+                  <strong>Celular:</strong>{" "}
+                  {selectedUser.telecom[2]?.value || "No disponible"}
                 </Text>
                 <Text>
                   <strong>Estado:</strong>{" "}
-                  {selectedUser.status === "Active"
+                  {selectedUser.systemUser.status
                     ? "Habilitado"
                     : "Deshabilitado"}
-                </Text>
-                <Text>
-                  <strong>Roles:</strong> {selectedUser.role}
                 </Text>
               </ModalBody>
               <ModalFooter>

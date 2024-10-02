@@ -52,6 +52,32 @@ export default function Citas() {
     const doctor = e.target[2].value;
     const fecha = convertDate(fechaHora);
     const hora = convertTime(fechaHora);
+    const selectedDate = new Date(fechaHora);
+    const day = selectedDate.getDay();
+    const hours = selectedDate.getHours();
+    if (day === 0 || day === 6) {
+      // 0 es Domingo, 6 es Sábado
+      await Swal.fire({
+        title: "Error",
+        icon: "error",
+        text: "No se pueden programar citas en fines de semana (sábado o domingo).",
+        confirmButtonText: "Confirmar",
+        confirmButtonColor: "#28a745",
+      });
+      return;
+    }
+
+    // Validación de la hora (entre 8 AM y 5 PM)
+    if (hours < 8 || hours >= 17) {
+      await Swal.fire({
+        title: "Error",
+        icon: "error",
+        text: "La hora seleccionada debe estar entre las 8:00 AM y las 5:00 PM.",
+        confirmButtonText: "Confirmar",
+        confirmButtonColor: "#28a745",
+      });
+      return;
+    }
     Swal.fire({
       title: "Esta seguro?",
       text: `¿Quiere reservar una cita el día ${fecha} a las ${hora}?`,
@@ -190,13 +216,75 @@ export default function Citas() {
     });
   };
   const citasConfirmadas = async () => {
-    setcitasConf(await AppointmentService.getActiveAppointments());
+    setcitasConf(
+      (await AppointmentService.getActiveAppointments()).filter((e) => {
+        const now = new Date();
+        const eventStart = new Date(e.start);
+        return eventStart >= now;
+      }),
+    );
   };
   const citasCanceladas = async () => {
-    setcitasCancel(await AppointmentService.getCanceledAppointments());
+    setcitasCancel(
+      (await AppointmentService.getCanceledAppointments()).filter((e) => {
+        const now = new Date();
+        const eventStart = new Date(e.start);
+        return eventStart >= now;
+      }),
+    );
   };
   const citasPendientes = async () => {
-    setcitasPend(await AppointmentService.getPendingAppointments());
+    setcitasPend(
+      (await AppointmentService.getPendingAppointments()).filter((e) => {
+        const now = new Date();
+        const eventStart = new Date(e.start);
+        return eventStart >= now;
+      }),
+    );
+  };
+  const getMinDate = () => {
+    const now = new Date();
+    now.setHours(8, 0, 0, 0); // Establecer 8:00 AM
+    return now.toISOString().slice(0, 16); // Formato adecuado para datetime-local
+  };
+
+  const getMaxDate = () => {
+    const now = new Date();
+    now.setHours(17, 0, 0, 0); // Establecer 5:00 PM
+    return now.toISOString().slice(0, 16); // Formato adecuado para datetime-local
+  };
+  const handleDateTimeChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const selectedDate = new Date(e.target.value);
+    const now = new Date();
+    const tomorrow = new Date(now);
+    tomorrow.setDate(now.getDate()); // Establecer la fecha actual para comparación
+    const hours = selectedDate.getHours();
+
+    let errorMessage = "";
+
+    // Validación de la fecha (que sea al menos un día después)
+    if (selectedDate < tomorrow) {
+      errorMessage +=
+        "La fecha seleccionada debe ser al menos un día de anticipación.";
+    }
+
+    // Si hay algún error, mostrar la alerta
+    if (errorMessage) {
+      await Swal.fire({
+        title: "Error",
+        icon: "error",
+        text: errorMessage,
+        confirmButtonText: "Confirmar",
+        confirmButtonColor: "#28a745",
+      });
+      e.target.value = ""; // Limpiar el campo si hay errores
+      return;
+    }
+
+    // Si pasa ambas validaciones, actualizar el estado
+    setFechaHora(e.target.value);
   };
   useEffect(() => {
     citasConfirmadas();
@@ -277,7 +365,7 @@ export default function Citas() {
                           required
                           type="datetime-local"
                           value={fechaHora}
-                          onChange={(e) => setFechaHora(e.target.value)}
+                          onChange={handleDateTimeChange}
                           className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-3 text-black outline-none focus:border-orange-500 dark:border-form-strokedark dark:bg-form-input dark:text-white"
                         />
                       </div>
@@ -291,6 +379,7 @@ export default function Citas() {
                           value={doctor}
                           onChange={(e) => setDoctor(e.target.value)}
                           className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-orange-500 focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                          required
                         >
                           <option value="" disabled>
                             Seleccione un doctor

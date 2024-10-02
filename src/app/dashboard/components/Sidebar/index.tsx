@@ -45,7 +45,8 @@ const menuGroups = [
         label: "Gestión de citas",
         route: "#",
         children: [
-          { label: "Listado de citas", route: "/dashboard/citas" },
+          /*
+          { label: "Listado de citas", route: "/dashboard/citas" },*/
           {
             label: "Calendario de citas",
             route: "/dashboard/citas/calendario",
@@ -68,6 +69,7 @@ const menuGroups = [
           },
         ],
       },
+      /*
       {
         icon: <CalendarIcon />,
         label: "Calendar",
@@ -203,9 +205,10 @@ const menuGroups = [
         ),
         label: "Settings",
         route: "/dashboard/pages/settings",
-      },
+      },*/
     ],
   },
+  /* 
   {
     name: "OTHERS",
     menuItems: [
@@ -327,7 +330,7 @@ const menuGroups = [
         ],
       },
     ],
-  },
+  },*/
 ];
 
 const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
