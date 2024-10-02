@@ -1,0 +1,16 @@
+{
+  "name": { "given": ["asdasd", "asd"], "family": "asd" },
+  "gender": "asdsd",
+  "birthDate": "2024-10-16",
+  "telecom": [
+    { "value": "asd" },
+    { "value": "asdasd" },
+    { "value": "asdasd@gmail.com" }
+  ],
+  "photo": { "_url": { "id": "" } },
+  "address": { "line": ["asdads"], "city": "asdasd" },
+  "maritalStatus": { "coding": [{ "code": "S", "display": "Single" }] },
+  "carnetDeIdentidad": "12312312",
+  "systemUser": { "username": "acreerdx", "password": "123123123" },
+  "allergies": []
+}

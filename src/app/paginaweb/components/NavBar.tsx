@@ -88,11 +88,13 @@ export default function PersoNavBar() {
                   <HStack>
                     <Avatar
                       size="md"
-                      name={user.nombreUsuario}
+                      name={user.nombre + " " + user.apellido}
                       src={user.foto}
                     />
                     <div className="flex flex-col">
-                      <Text fontWeight="bold">{user.nombreUsuario}</Text>
+                      <Text fontWeight="bold">
+                        {user.nombre + " " + user.apellido}
+                      </Text>
                       <Text fontSize="sm" color="black">
                         Ver perfil
                       </Text>
@@ -132,7 +134,9 @@ export default function PersoNavBar() {
           <DrawerBody>
             <div className="mb-4 flex flex-col items-center">
               <Avatar size="2xl" name={user?.nombreUsuario} src={user?.foto} />
-              <h2 className="mt-2 text-xl font-bold">{user?.nombreUsuario}</h2>
+              <h2 className="mt-2 text-xl font-bold">
+                {user?.nombre + " " + user?.apellido}
+              </h2>
               <p className="text-gray-600">{user?.email}</p>
             </div>
             <div className="flex flex-col items-center justify-center gap-4">

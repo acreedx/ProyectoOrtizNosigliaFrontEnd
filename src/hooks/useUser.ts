@@ -7,6 +7,9 @@ interface User {
   nombreUsuario: string;
   email: string;
   foto: string;
+  nombre: string;
+  apellido: string;
+  permisos: String[];
 }
 const LogOut = async () => {
   const res = await fetch(localDomain + "user/logout", {

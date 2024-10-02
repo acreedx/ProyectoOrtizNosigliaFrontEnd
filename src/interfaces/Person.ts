@@ -1,35 +1,56 @@
-import Address from "./Address";
-import MaritalStatus from "./MaritalStatus";
-import Name from "./Name";
-import Photo from "./Photo";
-import Telecom from "./Telecom";
-
-interface SystemUser {
-  username: string;
-  password: string;
-  roles?: string[];
-  lastLogin?: string;
-  passwordExpiration?: string;
-  status?: string;
-}
-
-interface Allergy {
-  substance: string;
-  reaction: string;
-  severity: "mild" | "moderate" | "severe";
-  notes?: string;
-}
-
 export default interface Person {
+  _id?: string;
   resourceType?: string;
-  active: boolean;
-  name: Name;
+  active?: boolean;
+  name: {
+    given: string[];
+    family: string;
+  };
   gender: string;
   birthDate: string;
-  telecom?: Telecom[];
-  photo?: Photo;
-  address?: Address;
-  maritalStatus?: MaritalStatus;
-  systemUser: SystemUser;
-  allergies?: Allergy[];
+  telecom: [
+    {
+      value: string;
+    },
+    {
+      value: string;
+    },
+    {
+      value: string;
+    },
+  ];
+  photo: {
+    _url: {
+      id: string;
+    };
+  };
+  address: {
+    line: string[];
+    city: string;
+  };
+  maritalStatus: {
+    coding: [
+      {
+        code: "M" | "S";
+        display: string;
+      },
+    ];
+  };
+  carnetDeIdentidad: string;
+  systemUser: {
+    username: string;
+    password: string;
+    roles?: string[];
+    lastLogin?: string;
+    passwordExpiration?: string;
+    status?: string;
+  };
+  allergies?: [
+    {
+      substance: string;
+      reaction: string;
+      severity: "mild" | "moderate" | "severe";
+      notes?: string;
+    },
+  ];
 }

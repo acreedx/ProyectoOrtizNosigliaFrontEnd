@@ -1,45 +1,72 @@
 "use client";
-import NavBar from "@/app/paginaweb/components/NavBar";
-import React, { ChangeEvent, useState } from "react";
-import { localDomain } from "@/types/domain";
-import Swal from "sweetalert2";
-import { useRouter } from "next/navigation";
-import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-import { storage } from "../../../../../firebase.config.js";
-import Image from "next/image";
-import Layout from "../../components/Layout";
+import Layout from "@/app/paginaweb/components/Layout";
+import Person from "@/interfaces/Person";
+import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import {
   Box,
   Button,
   Flex,
   FormControl,
   FormLabel,
-  Input,
-  Select,
-  Textarea,
   Heading,
+  Image,
+  Input,
+  InputGroup,
+  InputRightElement,
+  Select,
+  Stack,
+  Text,
 } from "@chakra-ui/react";
-import User from "@/interfaces/User.js";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { ChangeEvent, useState } from "react"; // Asegúrate de que la ruta sea correcta
+import Swal from "sweetalert2";
+
+import { z } from "zod";
+import { storage } from "../../../../../firebase.config";
+import formularioPersona from "./formularioRegistro";
+import schema from "./validacionRegistro";
+import { PersonService } from "@/repositories/PersonService";
+import { useRouter } from "next/navigation";
+
 interface FileWithPreview extends File {
   preview?: string;
 }
-
-export default function Registro() {
-  const [image, setImage] = useState<FileWithPreview | null>(null);
-  const [progress, setProgress] = useState<number>(0);
+export default function PersonForm() {
   const router = useRouter();
-  const [confirmPassword, setconfirmPassword] = useState("");
-  const [formData, setFormData] = useState<Partial<User>>({});
+  const [formData, setFormData] = useState<formularioPersona>({
+    foto: "",
+    primerNombre: "",
+    segundoNombre: "",
+    apellido: "",
+    genero: "Masculino",
+    telefono: "",
+    celular: "",
+    correo: "",
+    fechaNacimiento: "",
+    direccion: "",
+    ciudad: "",
+    estadoCivil: "S",
+    carnetDeIdentidad: "",
+    username: "",
+    password: "",
+    confirmPassword: "",
+    alergias: [],
+  });
+  const [image, setImage] = useState<FileWithPreview | null>(null);
+  const [errors, setErrors] = useState<any>({});
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const handleChange = (e: any) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
+    setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
 
-  const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({ ...prevData, [name]: value }));
+  };
+  const handleImageChange = async (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const selectedImage = e.target.files[0] as FileWithPreview;
       selectedImage.preview = URL.createObjectURL(selectedImage);
@@ -47,81 +74,134 @@ export default function Registro() {
     }
   };
 
-  const handleUpload = async () => {
-    if (!image) return;
-
-    const storageRef = await ref(storage, `images/${image.name}`);
-    const uploadTask = uploadBytesResumable(storageRef, image);
-
-    uploadTask.on(
-      "state_changed",
-      (snapshot) => {
-        const progress = Math.round(
-          (snapshot.bytesTransferred / snapshot.totalBytes) * 100,
-        );
-        setProgress(progress);
-      },
-      (error) => {
-        console.error("Error al subir la imagen: ", error);
-        setImage(null);
-      },
-      () => {
-        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-          setFormData({
-            ...formData,
-            ["fotoDePerfil"]: downloadURL,
-          });
-        });
-      },
+  const addAllergy = () => {
+    setFormData((prevData) => ({
+      ...prevData,
+      alergias: [
+        ...prevData.alergias,
+        { sustancia: "", reaccion: "", severidad: "mild", notas: "" },
+      ],
+    }));
+  };
+  const handleAllergyChange = (index: number, field: string, value: string) => {
+    const updatedAllergies = formData.alergias.map((allergy, i) =>
+      i === index ? { ...allergy, [field]: value } : allergy,
     );
+    setFormData({ ...formData, alergias: updatedAllergies });
   };
 
-  const handleSubmit = async (e: any) => {
+  const handleRemoveAllergy = (index: number) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      alergias: prevData.alergias.filter((_, i) => i !== index),
+    }));
+  };
+
+  const handleClick = () => setShowPassword((prev) => !prev);
+
+  const handleClickConfirm = () => setShowConfirmPassword((prev) => !prev);
+  const obtenerUrlImagen = async () => {
+    try {
+      if (!image) {
+        return "https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg";
+      } else {
+        const storageRef = await ref(storage, `images/${image.name}`);
+        const snapshot = await uploadBytes(storageRef, image);
+        const downloadURL = await getDownloadURL(snapshot.ref);
+        return downloadURL;
+      }
+    } catch (error) {
+      console.log(error);
+      return "https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg";
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (confirmPassword != formData.password) {
-      Swal.fire({
-        title: "Error",
-        text: "El password debe ser igual a la confirmacion",
-        icon: "error",
-        confirmButtonText: "Ok",
-        confirmButtonColor: "#28a745",
-      });
-      return;
-    }
-    if (image) {
-      await handleUpload();
-    } else {
-      setFormData({
+    try {
+      schema.parse({
         ...formData,
-        ["fotoDePerfil"]:
-          "https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg",
+        fechaNacimiento: new Date(formData.fechaNacimiento),
       });
+      setErrors({});
+      let arrayAlergiass = [] as any[];
+      formData.alergias.forEach((allergy) => {
+        arrayAlergiass.push({
+          substance: allergy.sustancia,
+          reaction: allergy.reaccion,
+          severity: allergy.severidad as any,
+          notes: allergy.notas,
+        });
+      });
+      const person: Person = {
+        name: {
+          given: [formData.primerNombre, formData.segundoNombre],
+          family: formData.apellido,
+        },
+        gender: formData.genero,
+        birthDate: formData.fechaNacimiento,
+        telecom: [
+          { value: formData.telefono },
+          { value: formData.celular },
+          { value: formData.correo },
+        ],
+        photo: { _url: { id: await obtenerUrlImagen() } },
+        address: {
+          line: [formData.direccion],
+          city: formData.ciudad,
+        },
+        maritalStatus: {
+          coding: [
+            {
+              code: formData.estadoCivil as any,
+              display: formData.estadoCivil === "M" ? "Casado" : "Soltero",
+            },
+          ],
+        },
+        carnetDeIdentidad: formData.carnetDeIdentidad,
+        systemUser: {
+          username: formData.username,
+          password: formData.password,
+        },
+        allergies: arrayAlergiass as any,
+      };
+      console.log(person);
+      const creada = await PersonService.createPerson(person);
+      console.log(creada);
+      if (creada.message) {
+        Swal.fire({
+          title: "Error",
+          text: creada.message,
+          icon: "error",
+          confirmButtonColor: "#28a745",
+        });
+      } else {
+        Swal.fire({
+          title: "Éxito",
+          text: `Bienvenido al Centro Odontológico Ortiz Nosiglia`,
+          icon: "success",
+          confirmButtonColor: "#28a745",
+        }).then((result) => {
+          router.push("/paginaweb/pages/login");
+        });
+      }
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        const formErrors: Record<string, string> = {};
+        error.errors.forEach((err) => {
+          formErrors[err.path[0]] = err.message;
+        });
+        setErrors(formErrors);
+      } else {
+        Swal.fire({
+          title: "Error",
+          text: `Error al crear el Usuario`,
+          icon: "error",
+          confirmButtonColor: "#28a745",
+        });
+      }
     }
-    const url = localDomain + "person";
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formData),
-    });
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error("Error al crear al paciente: " + error.message);
-    }
-    const data = await response.json();
-
-    Swal.fire({
-      title: "Éxito",
-      text: "Bienvenido al centro Ortiz Nosiliga " + data.primerNombre,
-      icon: "success",
-      confirmButtonText: "Continuar al listado",
-      confirmButtonColor: "#28a745",
-    }).then((result) => {
-      router.push("/dashboard/pacientes");
-    });
   };
-
   return (
     <Layout>
       <Box
@@ -137,224 +217,285 @@ export default function Registro() {
           Formulario de registro
         </Heading>
         <form onSubmit={handleSubmit}>
-          <Flex
-            direction={{ base: "column", md: "row" }}
-            gap={5}
-            mb={5}
-            className="w-full justify-center"
-          >
-            <FormControl w={"400px"}>
-              <FormLabel>Imagen</FormLabel>
-              <Flex direction="column" align="center">
-                {image ? (
-                  <Image
-                    src={image!.preview!}
-                    alt="Previsualizacion imagen"
-                    width={250}
-                    height={250}
-                    className="mb-4 max-h-[250px]"
+          <Stack spacing={4}>
+            <Flex
+              direction={{ base: "column", md: "row" }}
+              gap={5}
+              mb={5}
+              className="w-full justify-center"
+            >
+              <FormControl w={"400px"}>
+                <Flex direction="column" align="center">
+                  <FormLabel>Imagen</FormLabel>
+                  {image ? (
+                    <Image
+                      src={image!.preview!}
+                      alt="Previsualizacion imagen"
+                      width={250}
+                      height={250}
+                      className="mb-4 max-h-[250px]"
+                    />
+                  ) : (
+                    <Image
+                      src="https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg"
+                      alt="Imagen por defecto"
+                      width={250}
+                      height={250}
+                      className="mb-4 max-h-[250px]"
+                    />
+                  )}
+                  <Input
+                    type="file"
+                    name="fotoDePerfil"
+                    onChange={handleImageChange}
+                    accept="image/*"
+                    className="pt-1"
                   />
-                ) : (
-                  <Image
-                    src="https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg"
-                    alt="Imagen por defecto"
-                    width={250}
-                    height={250}
-                    className="mb-4 max-h-[250px]"
-                  />
-                )}
-                <Input
-                  type="file"
-                  name="fotoDePerfil"
-                  onChange={handleImageChange}
-                  accept="image/*"
-                  className="pt-1"
-                />
-              </Flex>
-            </FormControl>
-          </Flex>
-
-          {/* Nombre Fields */}
-          <Flex direction={{ base: "column", md: "row" }} gap={5} mb={5}>
-            <FormControl isRequired>
-              <FormLabel>Apellido Paterno:</FormLabel>
+                </Flex>
+              </FormControl>
+            </Flex>
+            <FormControl id="primerNombre" isRequired>
+              <FormLabel>Primer Nombre</FormLabel>
               <Input
-                type="text"
-                name="apellidoPaterno"
-                value={formData.apellidoPaterno}
-                onChange={handleChange}
-              />
-            </FormControl>
-            <FormControl isRequired>
-              <FormLabel>Apellido Materno:</FormLabel>
-              <Input
-                type="text"
-                name="apellidoMaterno"
-                value={formData.apellidoMaterno}
-                onChange={handleChange}
-              />
-            </FormControl>
-          </Flex>
-
-          {/* Names Fields */}
-          <Flex direction={{ base: "column", md: "row" }} gap={5} mb={5}>
-            <FormControl isRequired>
-              <FormLabel>Primer Nombre:</FormLabel>
-              <Input
-                type="text"
                 name="primerNombre"
                 value={formData.primerNombre}
-                onChange={handleChange}
+                onChange={handleInputChange}
               />
+              {errors.primerNombre && (
+                <Text color="red.500">{errors.primerNombre}</Text>
+              )}
             </FormControl>
-            <FormControl isRequired>
-              <FormLabel>Segundo Nombre:</FormLabel>
+            <FormControl id="segundoNombre" isRequired>
+              <FormLabel>Segundo Nombre</FormLabel>
               <Input
-                type="text"
                 name="segundoNombre"
                 value={formData.segundoNombre}
-                onChange={handleChange}
+                onChange={handleInputChange}
               />
+              {errors.segundoNombre && (
+                <Text color="red.500">{errors.segundoNombre}</Text>
+              )}
             </FormControl>
-          </Flex>
-
-          {/* User and Password Fields */}
-          <Flex direction={{ base: "column", md: "row" }} gap={5} mb={5}>
-            <FormControl isRequired>
-              <FormLabel>Nombre de usuario:</FormLabel>
+            <FormControl id="apellido" isRequired>
+              <FormLabel>Apellido</FormLabel>
+              <Input
+                name="apellido"
+                value={formData.apellido}
+                onChange={handleInputChange}
+              />
+              {errors.apellido && (
+                <Text color="red.500">{errors.apellido}</Text>
+              )}
+            </FormControl>
+            <FormControl id="genero" isRequired>
+              <FormLabel>Género</FormLabel>
+              <Select
+                name="genero"
+                value={formData.genero}
+                onChange={handleSelectChange}
+              >
+                <option value="Masculino">Masculino</option>
+                <option value="Femenino">Femenino</option>
+                <option value="Otro">Otro</option>
+              </Select>
+            </FormControl>
+            <FormControl id="telefono" isRequired>
+              <FormLabel>Teléfono</FormLabel>
+              <Input
+                type="number"
+                name="telefono"
+                value={formData.telefono}
+                onChange={handleInputChange}
+              />
+              {errors.telefono && (
+                <Text color="red.500">{errors.telefono}</Text>
+              )}
+            </FormControl>
+            <FormControl id="celular" isRequired>
+              <FormLabel>Celular</FormLabel>
+              <Input
+                type="number"
+                name="celular"
+                value={formData.celular}
+                onChange={handleInputChange}
+              />
+              {errors.celular && <Text color="red.500">{errors.celular}</Text>}
+            </FormControl>
+            <FormControl id="correo" isRequired>
+              <FormLabel>Correo</FormLabel>
               <Input
                 type="text"
-                name="nombreUsuario"
-                value={formData.nombreUsuario}
-                onChange={handleChange}
+                name="correo"
+                value={formData.correo}
+                onChange={handleInputChange}
               />
+              {errors.correo && <Text color="red.500">{errors.correo}</Text>}
             </FormControl>
-            <FormControl isRequired>
-              <FormLabel>Password:</FormLabel>
-              <Input
-                type="password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-              />
-            </FormControl>
-            <FormControl isRequired>
-              <FormLabel>Confirmar Password:</FormLabel>
-              <Input
-                type="password"
-                name="confirmPassword"
-                value={confirmPassword}
-                onChange={(e) => {
-                  setconfirmPassword(e.target.value);
-                }}
-              />
-            </FormControl>
-          </Flex>
-
-          {/* Birth Date and Location Fields */}
-          <Flex direction={{ base: "column", md: "row" }} gap={5} mb={5}>
-            <FormControl isRequired>
-              <FormLabel>Fecha de Nacimiento:</FormLabel>
+            <FormControl id="fechaNacimiento" isRequired>
+              <FormLabel>Fecha de Nacimiento</FormLabel>
               <Input
                 type="date"
                 name="fechaNacimiento"
                 value={formData.fechaNacimiento}
-                onChange={handleChange}
+                onChange={handleInputChange}
               />
+              {errors.fechaNacimiento && (
+                <Text color="red.500">{errors.fechaNacimiento}</Text>
+              )}
             </FormControl>
-            <FormControl isRequired>
-              <FormLabel>Lugar de Nacimiento:</FormLabel>
+            <FormControl id="direccion" isRequired>
+              <FormLabel>Dirección</FormLabel>
               <Input
-                type="text"
-                name="lugarNacimiento"
-                value={formData.lugarNacimiento}
-                onChange={handleChange}
+                name="direccion"
+                value={formData.direccion}
+                onChange={handleInputChange}
               />
+              {errors.direccion && (
+                <Text color="red.500">{errors.direccion}</Text>
+              )}
             </FormControl>
-            <FormControl isRequired>
-              <FormLabel>Sexo:</FormLabel>
-              <Select name="sexo" value={formData.sexo} onChange={handleChange}>
-                <option value="">Seleccionar</option>
-                <option value="Masculino">Masculino</option>
-                <option value="Femenino">Femenino</option>
+            <FormControl id="ciudad" isRequired>
+              <FormLabel>Ciudad</FormLabel>
+              <Input
+                name="ciudad"
+                value={formData.ciudad}
+                onChange={handleInputChange}
+              />
+              {errors.ciudad && <Text color="red.500">{errors.ciudad}</Text>}
+            </FormControl>
+            <FormControl id="estadoCivil" isRequired>
+              <FormLabel>Estado Civil</FormLabel>
+              <Select
+                name="estadoCivil"
+                value={formData.estadoCivil}
+                onChange={handleSelectChange}
+              >
+                <option value="S">Soltero</option>
+                <option value="M">Casado</option>
               </Select>
             </FormControl>
-          </Flex>
-
-          {/* ID and Address Fields */}
-          <Flex direction={{ base: "column", md: "row" }} gap={5} mb={5}>
-            <FormControl isRequired>
-              <FormLabel>Carnet de Identidad:</FormLabel>
+            <FormControl id="carnetDeIdentidad" isRequired>
+              <FormLabel>Carnet De Identidad</FormLabel>
               <Input
-                type="text"
-                name="carnetIdentidad"
-                value={formData.carnetIdentidad}
-                onChange={handleChange}
+                type="number"
+                name="carnetDeIdentidad"
+                value={formData.carnetDeIdentidad}
+                onChange={handleInputChange}
               />
+              {errors.carnetDeIdentidad && (
+                <Text color="red.500">{errors.carnetDeIdentidad}</Text>
+              )}
             </FormControl>
-            <FormControl isRequired>
-              <FormLabel>Dirección/Zona:</FormLabel>
+            <FormControl id="username" isRequired>
+              <FormLabel>Usuario</FormLabel>
               <Input
-                type="text"
-                name="direccionZona"
-                value={formData.direccionZona}
-                onChange={handleChange}
+                name="username"
+                value={formData.username}
+                onChange={handleInputChange}
               />
+              {errors.username && (
+                <Text color="red.500">{errors.username}</Text>
+              )}
             </FormControl>
-          </Flex>
-
-          {/* Contact Fields */}
-          <Flex direction={{ base: "column", md: "row" }} gap={5} mb={5}>
-            <FormControl isRequired>
-              <FormLabel>Teléfono:</FormLabel>
-              <Input
-                type="tel"
-                name="telefono"
-                value={formData.telefono}
-                onChange={handleChange}
-              />
+            <FormControl id="password" isRequired>
+              <FormLabel>Contraseña</FormLabel>
+              <InputGroup>
+                <Input
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  value={formData.password}
+                  onChange={handleInputChange}
+                />
+                <InputRightElement>
+                  <Button variant="link" onClick={handleClick}>
+                    {showPassword ? <ViewOffIcon /> : <ViewIcon />}
+                  </Button>
+                </InputRightElement>
+              </InputGroup>
+              {errors.password && (
+                <Text color="red.500">{errors.password}</Text>
+              )}
             </FormControl>
-            <FormControl isRequired>
-              <FormLabel>Celular:</FormLabel>
-              <Input
-                type="tel"
-                name="celular"
-                value={formData.celular}
-                onChange={handleChange}
-              />
+            <FormControl id="confirmPassword" isRequired>
+              <FormLabel>Confirmar contraseña</FormLabel>
+              <InputGroup>
+                <Input
+                  type={showConfirmPassword ? "text" : "password"}
+                  name="confirmPassword"
+                  value={formData.confirmPassword}
+                  onChange={handleInputChange}
+                />
+                <InputRightElement>
+                  <Button variant="link" onClick={handleClickConfirm}>
+                    {showConfirmPassword ? <ViewOffIcon /> : <ViewIcon />}
+                  </Button>
+                </InputRightElement>
+              </InputGroup>
+              {errors.confirmPassword && (
+                <Text color="red.500">{errors.confirmPassword}</Text>
+              )}
             </FormControl>
-          </Flex>
-
-          {/* Email and Allergy Fields */}
-          <Flex direction={{ base: "column", md: "row" }} gap={5} mb={5}>
-            <FormControl isRequired>
-              <FormLabel>Email:</FormLabel>
-              <Input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-              />
-            </FormControl>
-            <FormControl isRequired>
-              <FormLabel>Alergia a algún medicamento:</FormLabel>
-              <Textarea
-                name="alergiaMedicamento"
-                rows={4}
-                value={formData.alergiaMedicamento}
-                onChange={handleChange}
-              />
-            </FormControl>
-          </Flex>
-
-          <Button
-            colorScheme="orange"
-            variant="solid"
-            width="full"
-            type="submit"
-          >
-            Enviar
-          </Button>
+            {/* Alergias */}
+            <Heading as="h4" size="md">
+              Alergias
+            </Heading>
+            {formData.alergias.map((allergy, index) => (
+              <Box key={index} borderWidth="1px" borderRadius="md" p={4} mb={2}>
+                <FormControl isRequired>
+                  <FormLabel>Nombre de la sustancia</FormLabel>
+                  <Input
+                    type="text"
+                    value={allergy.sustancia}
+                    onChange={(e) =>
+                      handleAllergyChange(index, "sustancia", e.target.value)
+                    }
+                  />
+                </FormControl>
+                <FormControl isRequired>
+                  <FormLabel>Tipo de reacción</FormLabel>
+                  <Select
+                    value={allergy.reaccion}
+                    onChange={(e) =>
+                      handleAllergyChange(index, "reaccion", e.target.value)
+                    }
+                  >
+                    <option value="mild">Baja</option>
+                    <option value="moderate">Moderada</option>
+                    <option value="severe">Severa</option>
+                  </Select>
+                </FormControl>
+                <FormControl>
+                  <FormLabel>Comentario sobre la alergia</FormLabel>
+                  <Input
+                    type="text"
+                    value={allergy.notas}
+                    onChange={(e) =>
+                      handleAllergyChange(index, "notas", e.target.value)
+                    }
+                  />
+                </FormControl>
+                <Box textAlign="right" mt={2}>
+                  <Button
+                    colorScheme="red"
+                    onClick={() => handleRemoveAllergy(index)}
+                  >
+                    Quitar Alergia
+                  </Button>
+                </Box>
+              </Box>
+            ))}
+            <Button onClick={addAllergy} colorScheme="blue" variant="outline">
+              Añadir Alergia
+            </Button>
+            {/* Botón de envío */}
+            <Button
+              colorScheme="orange"
+              type="submit"
+              isLoading={false} // Controla esto según tu lógica
+            >
+              Registrar
+            </Button>
+          </Stack>
         </form>
       </Box>
     </Layout>

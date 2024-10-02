@@ -22,6 +22,7 @@ import Permission from "@/interfaces/Permission";
 import { PermissionService } from "@/repositories/PermissionService";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
+import BotonVolver from "../../components/BotonVolver";
 export default function Page({ params }: { params: { id: string } }) {
   const router = useRouter();
   const [loading, setloading] = useState(true);
@@ -54,7 +55,13 @@ export default function Page({ params }: { params: { id: string } }) {
     try {
       const data = await RolService.updateRol(rol as Role);
       if (data) {
-        Swal.fire("EXITO").then((result) => {
+        Swal.fire({
+          title: "Éxito",
+          text: "Rol editado correctamente",
+          icon: "success",
+          confirmButtonText: "Volver al listado",
+          confirmButtonColor: "#28a745",
+        }).then((result) => {
           router.push("/dashboard/roles");
         });
       }
@@ -64,6 +71,7 @@ export default function Page({ params }: { params: { id: string } }) {
   };
   return (
     <DefaultLayout>
+      <BotonVolver direccion="/dashboard/roles" />
       <Breadcrumb pageName="Editar Rol" />
       {loading ? (
         <Spinner />
@@ -94,16 +102,16 @@ export default function Page({ params }: { params: { id: string } }) {
 
             {/* Campo para la descripción del rol */}
             {/* 
-          <FormControl id="description" mb={4}>
-            <FormLabel>Descripción</FormLabel>
-            <Textarea
-              name="description"
-              value={rol.description}
-              onChange={handleInputChange}
-              required
-            />
-          </FormControl>
-        */}
+              <FormControl id="description" mb={4}>
+                <FormLabel>Descripción</FormLabel>
+                <Textarea
+                  name="description"
+                  value={rol.description}
+                  onChange={handleInputChange}
+                  required
+                />
+              </FormControl>
+            */}
             {/* Lista de permisos con checkboxes */}
             <FormControl id="permissions" mb={4}>
               <FormLabel>Permisos</FormLabel>

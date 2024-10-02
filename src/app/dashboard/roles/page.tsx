@@ -48,13 +48,55 @@ export default function Roles() {
   const toggleStatus = async (index: any, state: boolean) => {
     let data;
     if (state) {
-      data = await RolService.disableRol(index);
+      Swal.fire({
+        title: "Advertencia",
+        text: "Estas seguro de deshabilitar este rol?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Sí, hazlo!",
+        cancelButtonText: "No, cancelar",
+        confirmButtonColor: "#28a745",
+        cancelButtonColor: "#dc3545",
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          data = await RolService.disableRol(index);
+          if (data) {
+            Swal.fire({
+              title: "Éxito",
+              text: "Rol deshabilitado correctamente",
+              icon: "success",
+              confirmButtonText: "Volver al listado",
+              confirmButtonColor: "#28a745",
+            });
+            getData();
+          }
+        }
+      });
     } else {
-      data = await RolService.enableRol(index);
-    }
-    if (data) {
-      Swal.fire("Exito");
-      getData();
+      Swal.fire({
+        title: "Advertencia",
+        text: "Estas seguro de rehabilitar este rol?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Sí, hazlo!",
+        cancelButtonText: "No, cancelar",
+        confirmButtonColor: "#28a745",
+        cancelButtonColor: "#dc3545",
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          data = await RolService.enableRol(index);
+          if (data) {
+            Swal.fire({
+              title: "Éxito",
+              text: "Rol rehabilitado correctamente",
+              icon: "success",
+              confirmButtonText: "Volver al listado",
+              confirmButtonColor: "#28a745",
+            });
+            getData();
+          }
+        }
+      });
     }
   };
 

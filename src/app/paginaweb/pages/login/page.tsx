@@ -7,11 +7,13 @@ import PacienteIcon from "@/app/dashboard/components/Icons/PacienteIcon";
 import { useRouter } from "next/navigation";
 import { localDomain } from "@/types/domain";
 import Layout from "../../components/Layout";
+import Swal from "sweetalert2";
 
 export default function Login() {
   const router = useRouter();
   const [nombreUsuario, setnombreUsuario] = useState("");
   const [password, setpassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const handleLogin = async (e: any) => {
     e.preventDefault();
     const url = localDomain + "user/login";
@@ -25,14 +27,24 @@ export default function Login() {
           password: password,
         }),
       });
-      if (!response.ok) {
-        const error = await response.json();
-        console.log(error);
-        return;
-      }
       const data = await response.json();
-      console.log(data);
-      router.push("/dashboard");
+      if (data.message) {
+        Swal.fire({
+          title: "Error",
+          text: data.message,
+          icon: "error",
+          confirmButtonColor: "#28a745",
+        });
+      } else {
+        Swal.fire({
+          title: "Éxito",
+          text: `Bienvenido de nuevo`,
+          icon: "success",
+          confirmButtonColor: "#28a745",
+        }).then((result) => {
+          router.push("/dashboard");
+        });
+      }
     } catch (error) {
       console.log(error);
     }
@@ -112,12 +124,17 @@ export default function Login() {
                         onChange={(e: any) => {
                           setpassword(e.target.value);
                         }}
-                        type="password"
+                        type={showPassword ? "text" : "password"}
                         placeholder="Ingresa tu contraseña"
                         className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-orange-500 focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                       />
 
-                      <span className="absolute right-4 top-4">
+                      <span
+                        className="absolute right-4 top-4"
+                        onClick={() => {
+                          setShowPassword((prev) => !prev);
+                        }}
+                      >
                         <CandadoIcon />
                       </span>
                     </div>
@@ -135,14 +152,14 @@ export default function Login() {
                     href={"/paginaweb/pages/editar"}
                     className="flex w-full items-center justify-center gap-3.5 rounded-lg border border-stroke bg-gray-2 p-4 text-black hover:bg-opacity-50 dark:border-strokedark dark:bg-meta-4 dark:hover:bg-opacity-50"
                   >
-                    Olvidaste tu contraseña?
+                    Cambio de contraseña?
                   </Link>
 
                   <div className="mt-6 text-center">
                     <p className="text-black">
                       No tienes una cuenta?{" "}
                       <Link
-                        href="/auth/signup"
+                        href="/paginaweb/pages/registro"
                         className="text-orange-400 hover:text-orange-500"
                       >
                         Registrate

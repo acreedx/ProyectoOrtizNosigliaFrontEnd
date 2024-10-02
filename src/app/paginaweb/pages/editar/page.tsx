@@ -6,14 +6,81 @@ import CandadoIcon from "@/app/dashboard/components/Icons/CandadoIcon";
 import PacienteIcon from "@/app/dashboard/components/Icons/PacienteIcon";
 import { useRouter } from "next/navigation";
 import Layout from "../../components/Layout";
+import schema from "./validation";
+import { z } from "zod";
+import Swal from "sweetalert2";
+import { Text } from "@chakra-ui/react";
+import { localDomain } from "@/types/domain";
 
 export default function Editar() {
   const router = useRouter();
+  const [errors, setErrors] = useState<any>({});
   const [nombreUsuario, setnombreUsuario] = useState("");
   const [password, setpassword] = useState("");
-  const handleLogin = (e: any) => {
+  const [newpassword, setnewpassword] = useState("");
+  const [confirmpassword, setconfirmpassword] = useState("");
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [showNewPassword, setshowNewPassword] = useState(false);
+
+  const [showConfirmPassword, setshowConfirmPassword] = useState(false);
+  const handleSubmit = (e: any) => {
     e.preventDefault();
-    router.push("/dashboard");
+    try {
+      const obj = {
+        username: nombreUsuario,
+        password: password,
+        newpassword: newpassword,
+        confirmPassword: confirmpassword,
+      };
+      schema.parse(obj);
+      setErrors({});
+      const fetchData = async () => {
+        const res = await fetch(localDomain + "user/cambiopassword", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            username: nombreUsuario,
+            password: password,
+            newpassword: newpassword,
+          }),
+        });
+        const data = await res.json();
+        if (data.message) {
+          Swal.fire({
+            title: "Error",
+            text: data.message,
+            icon: "error",
+            confirmButtonColor: "#28a745",
+          });
+        } else {
+          Swal.fire({
+            title: "Éxito",
+            text: `Password cambiado con exito`,
+            icon: "success",
+            confirmButtonColor: "#28a745",
+          }).then((result) => {
+            router.push("/paginaweb/pages/login");
+          });
+        }
+      };
+      fetchData();
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        const formErrors: Record<string, string> = {};
+        error.errors.forEach((err) => {
+          formErrors[err.path[0]] = err.message;
+        });
+        setErrors(formErrors);
+      } else {
+        Swal.fire({
+          title: "Error",
+          text: `Error al editar el usuario`,
+          icon: "error",
+          confirmButtonColor: "#28a745",
+        });
+      }
+    }
   };
   return (
     <Layout>
@@ -56,7 +123,7 @@ export default function Editar() {
                   Cambio de contraseña
                 </h2>
 
-                <form onSubmit={handleLogin}>
+                <form onSubmit={handleSubmit}>
                   <div className="mb-4">
                     <label className="mb-2.5 block font-medium text-black dark:text-white">
                       Usuario
@@ -76,9 +143,13 @@ export default function Editar() {
                         <PacienteIcon />
                       </span>
                     </div>
+                    {errors.username && (
+                      <Text color="red.500">{errors.username}</Text>
+                    )}
                   </div>
 
                   <div className="mb-6">
+                    {" "}
                     <label className="mb-2.5 block font-medium text-black dark:text-white">
                       Ingresa tu contraseña actual
                     </label>
@@ -89,15 +160,22 @@ export default function Editar() {
                         onChange={(e: any) => {
                           setpassword(e.target.value);
                         }}
-                        type="password"
+                        type={showPassword ? "text" : "password"}
                         placeholder="Contraseña actual"
                         className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-orange-500 focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                       />
-
-                      <span className="absolute right-4 top-4">
+                      <span
+                        className="absolute right-4 top-4"
+                        onClick={() => {
+                          setShowPassword((prev) => !prev);
+                        }}
+                      >
                         <CandadoIcon />
                       </span>
                     </div>
+                    {errors.password && (
+                      <Text color="red.500">{errors.password}</Text>
+                    )}
                   </div>
                   <div className="mb-6">
                     <label className="mb-2.5 block font-medium text-black dark:text-white">
@@ -106,19 +184,27 @@ export default function Editar() {
                     <div className="relative">
                       <input
                         required
-                        value={password}
+                        value={newpassword}
                         onChange={(e: any) => {
-                          setpassword(e.target.value);
+                          setnewpassword(e.target.value);
                         }}
-                        type="password"
+                        type={showNewPassword ? "text" : "password"}
                         placeholder="Ingresa tu contraseña"
                         className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-orange-500 focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                       />
 
-                      <span className="absolute right-4 top-4">
+                      <span
+                        className="absolute right-4 top-4"
+                        onClick={() => {
+                          setshowNewPassword((prev) => !prev);
+                        }}
+                      >
                         <CandadoIcon />
                       </span>
                     </div>
+                    {errors.newpassword && (
+                      <Text color="red.500">{errors.newpassword}</Text>
+                    )}
                   </div>
                   <div className="mb-6">
                     <label className="mb-2.5 block font-medium text-black dark:text-white">
@@ -127,19 +213,27 @@ export default function Editar() {
                     <div className="relative">
                       <input
                         required
-                        value={password}
+                        value={confirmpassword}
                         onChange={(e: any) => {
-                          setpassword(e.target.value);
+                          setconfirmpassword(e.target.value);
                         }}
-                        type="password"
+                        type={showConfirmPassword ? "text" : "password"}
                         placeholder="Ingresa tu contraseña"
                         className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-orange-500 focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                       />
 
-                      <span className="absolute right-4 top-4">
+                      <span
+                        className="absolute right-4 top-4"
+                        onClick={() => {
+                          setshowConfirmPassword((prev) => !prev);
+                        }}
+                      >
                         <CandadoIcon />
                       </span>
                     </div>
+                    {errors.confirmPassword && (
+                      <Text color="red.500">{errors.confirmPassword}</Text>
+                    )}
                   </div>
                   <div className="mb-5">
                     <input
