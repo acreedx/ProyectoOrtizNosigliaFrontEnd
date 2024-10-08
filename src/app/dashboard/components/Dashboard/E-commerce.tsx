@@ -41,12 +41,11 @@ const ECommerce: React.FC = () => {
         setPersons(data);
       } catch (err) {
         setError("Error fetching data");
-        console.error(err); // Log para más detalles
+        console.error(err);
       } finally {
         setLoading(false);
       }
     };
-
     getData();
   }, []);
   return (
@@ -151,7 +150,7 @@ const ECommerce: React.FC = () => {
         <ChatCard />
       </div> */}
       <div className="mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6 2xl:mt-7.5 2xl:gap-7.5">
-        <div className="col-span-12 rounded-sm border border-stroke bg-white py-6 shadow-default dark:border-strokedark dark:bg-boxdark xl:col-span-4">
+        <div className="col-span-12 rounded-sm border border-stroke bg-white py-6 shadow-default dark:border-strokedark dark:bg-boxdark xl:col-span-6">
           <h4 className="mb-6 px-7.5 text-xl font-semibold text-black dark:text-white">
             Últimos usuarios registrados
           </h4>

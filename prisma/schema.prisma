@@ -1,0 +1,113 @@
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+// Modelo de prueba
+model Post {
+  id       String    @id @default(auto()) @map("_id") @db.ObjectId
+  slug     String    @unique
+  title    String
+  body     String
+  author   String
+  authorId String
+  comments String[]
+}
+// Modelos de usuarios
+model Rol {
+  id          String      @id @default(auto()) @map("_id") @db.ObjectId
+  roleName    String      @unique
+  permissionsIDs String[] @db.ObjectId
+  permissions Permission[] @relation(fields: [permissionsIDs], references: [id])
+  active      Boolean
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+model Permission {
+  id          String      @id @default(auto()) @map("_id") @db.ObjectId
+  permissionName String   @unique
+  code        String      @unique
+  active      Boolean
+  rolesIDs String[] @db.ObjectId
+  roles       Rol[] @relation(fields: [rolesIDs], references: [id])
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+model Person {
+  id                 String   @id @default(auto()) @map("_id") @db.ObjectId
+  resourceType      String   @default("Patient")
+  active             Boolean
+  name               Name
+  gender             String   
+  birthDate         String   
+  telecom           Telecom[]
+  photo              Photo
+  address            Address
+  maritalStatus      MaritalStatus
+  carnetDeIdentidad  String   @unique
+  systemUser        SystemUser @relation(fields: [systemUserId], references: [id])
+  systemUserId      String   @map("systemUserId") @db.ObjectId
+  allergies          Allergy[]
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+model Name {
+  given    String[]
+  family   String
+}
+
+model Telecom {
+  id      String   @id @default(auto()) @map("_id") @db.ObjectId
+  value   String   
+}
+
+model Photo {
+  id      String   @id @default(auto()) @map("_id") @db.ObjectId
+  url     String   
+}
+
+model Address {
+  line    String[]
+  city    String   
+}
+
+model MaritalStatus {
+  coding  Coding[]
+}
+
+enum CivilState {
+  M
+  S
+}
+model Coding {
+  code   CivilState 
+  display String   
+}
+
+model SystemUser {
+  id                String   @id @default(auto()) @map("_id") @db.ObjectId
+  username          String   @unique 
+  password          String   
+  rol               Rol      @relation(fields: [rolId], references: [id])
+  rolId             String   @map("rolId") @db.ObjectId
+  lastLogin         String?
+  passwordExpiration String?
+  status            Boolean  @default(true)
+}
+enum Severity {
+  mild
+  moderate
+  severe
+}
+model Allergy {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  substance   String   
+  reaction    String   
+  severity    Severity 
+  notes       String?
+}
