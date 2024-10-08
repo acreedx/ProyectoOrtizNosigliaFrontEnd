@@ -1,4 +1,3 @@
-"use client";
 import React, { useEffect } from "react";
 import DefaultLayout from "../components/Layouts/DefaultLayout";
 import Breadcrumb from "../components/Breadcrumbs/Breadcrumb";
@@ -29,7 +28,7 @@ import {
 import { useRouter } from "next/navigation";
 import Person from "@/interfaces/Person";
 import { PersonService } from "@/repositories/PersonService";
-export default function Usuarios() {
+export default async function Usuarios() {
   const router = useRouter();
   const toast = useToast();
   const initialUsers = [

@@ -8,7 +8,16 @@ import Form from "./components/form";
 export default async function page() {
   const prisma = new PrismaClient();
   const posts = await prisma.post.findMany();
-
+  const persons = await prisma.person.findMany({
+    include: {
+      systemUser: true,
+      name: true,
+      photo: true,
+      address: true,
+      maritalStatus: true,
+    },
+  });
+  const person = persons[0]?.systemUser?.username;
   return (
     <DefaultLayout>
       <Breadcrumb pageName="Pruebas con prisma" />
@@ -54,6 +63,7 @@ export default async function page() {
         </div>
       )}
       <div>Posts {posts.length}</div>
+
       <Form />
     </DefaultLayout>
   );

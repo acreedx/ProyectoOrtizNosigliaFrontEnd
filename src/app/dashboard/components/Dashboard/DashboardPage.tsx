@@ -30,7 +30,7 @@ const ChartThree = dynamic(
   },
 );
 
-const ECommerce: React.FC = () => {
+const DashboardPage: React.FC = () => {
   const [persons, setPersons] = useState<Person[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -186,4 +186,4 @@ const ECommerce: React.FC = () => {
   );
 };
 
-export default ECommerce;
+export default DashboardPage;

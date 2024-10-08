@@ -16,40 +16,47 @@ model Post {
   authorId String
   comments String[]
 }
+
+
 // Modelos de usuarios
-model Rol {
-  id          String      @id @default(auto()) @map("_id") @db.ObjectId
-  roleName    String      @unique
-  permissionsIDs String[] @db.ObjectId
-  permissions Permission[] @relation(fields: [permissionsIDs], references: [id])
-  active      Boolean
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
-}
 
 model Permission {
   id          String      @id @default(auto()) @map("_id") @db.ObjectId
   permissionName String   @unique
   code        String      @unique
   active      Boolean
-  rolesIDs String[] @db.ObjectId
-  roles       Rol[] @relation(fields: [rolesIDs], references: [id])
+  rol       Rol @relation(fields: [rolID], references: [id])
+  rolID String @db.ObjectId @unique
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
 }
+
+model Rol {
+  id          String      @id @default(auto()) @map("_id") @db.ObjectId
+  roleName    String      @unique
+  description String      
+  permissions Permission[]
+  systemUser   SystemUser   @relation(fields: [systemUserId], references: [id])
+  systemUserId String @db.ObjectId @unique
+  active      Boolean
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+
 model Person {
   id                 String   @id @default(auto()) @map("_id") @db.ObjectId
   resourceType      String   @default("Patient")
   active             Boolean
-  name               Name
+  name               Name?
   gender             String   
   birthDate         String   
   telecom           Telecom[]
-  photo              Photo
-  address            Address
-  maritalStatus      MaritalStatus
+  photo              Photo?
+  address            Address?
+  maritalStatus      MaritalStatus?
   carnetDeIdentidad  String   @unique
-  systemUser        SystemUser @relation(fields: [systemUserId], references: [id])
+  systemUser        SystemUser?
   systemUserId      String   @map("systemUserId") @db.ObjectId
   allergies          Allergy[]
   createdAt         DateTime @default(now())
@@ -57,27 +64,40 @@ model Person {
 }
 
 model Name {
+  id      String   @id @default(auto()) @map("_id") @db.ObjectId
   given    String[]
   family   String
+  person   Person   @relation(fields: [personId], references: [id])
+  personId String @db.ObjectId @unique
 }
 
 model Telecom {
   id      String   @id @default(auto()) @map("_id") @db.ObjectId
   value   String   
+  person   Person   @relation(fields: [personId], references: [id])
+  personId String @db.ObjectId @unique
 }
 
 model Photo {
   id      String   @id @default(auto()) @map("_id") @db.ObjectId
   url     String   
+  person   Person   @relation(fields: [personId], references: [id])
+  personId String @db.ObjectId @unique
 }
 
 model Address {
+  id      String   @id @default(auto()) @map("_id") @db.ObjectId
   line    String[]
   city    String   
+  person   Person   @relation(fields: [personId], references: [id])
+  personId String @db.ObjectId @unique
 }
 
 model MaritalStatus {
+  id      String   @id @default(auto()) @map("_id") @db.ObjectId
   coding  Coding[]
+  person   Person   @relation(fields: [personId], references: [id])
+  personId String @db.ObjectId @unique
 }
 
 enum CivilState {
@@ -85,19 +105,23 @@ enum CivilState {
   S
 }
 model Coding {
+  id      String      @id @default(auto()) @map("_id") @db.ObjectId
   code   CivilState 
-  display String   
+  display String 
+  maritalStatus   MaritalStatus   @relation(fields: [maritalStatusId], references: [id])
+  maritalStatusId String @db.ObjectId @unique  
 }
 
 model SystemUser {
   id                String   @id @default(auto()) @map("_id") @db.ObjectId
   username          String   @unique 
   password          String   
-  rol               Rol      @relation(fields: [rolId], references: [id])
-  rolId             String   @map("rolId") @db.ObjectId
+  rol               Rol?
   lastLogin         String?
-  passwordExpiration String?
+  passwordExpiration String
   status            Boolean  @default(true)
+  person   Person   @relation(fields: [personId], references: [id])
+  personId String @db.ObjectId @unique
 }
 enum Severity {
   mild
@@ -110,4 +134,8 @@ model Allergy {
   reaction    String   
   severity    Severity 
   notes       String?
+  person   Person   @relation(fields: [personId], references: [id])
+  personId String @db.ObjectId @unique
 }
+
+//fin de modelo de usuarios
