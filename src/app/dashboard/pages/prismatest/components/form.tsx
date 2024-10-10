@@ -24,6 +24,7 @@ export default function Form() {
     setErrors({});
     const formData = new FormData(event.currentTarget);
     const response = await handleSubmit(formData);
+    console.log(response);
     if (!response.success) {
       setErrors(response.errors);
     } else {

@@ -1,17 +1,20 @@
 "use server";
 import { PrismaClient } from "@prisma/client";
 import { revalidatePath } from "next/cache";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { storage } from "../../../firebase.config";
+import { subirFotoDePerfil } from "../utils/upload_image";
 import personValidation from "../zod_models/personValidation";
 
-export async function handleSubmit(formData: FormData) {
+export async function createPerson(formData: FormData) {
   const prisma = new PrismaClient();
+  const profilePicture = formData.get("photoUrl") as File | undefined;
   const allergies: {
     substance: string;
     reaction: string;
     severity: string;
     notes: string;
   }[] = [];
-
   let i = 0;
   while (formData.get(`allergies[${i}][substance]`)) {
     allergies.push({
@@ -23,13 +26,14 @@ export async function handleSubmit(formData: FormData) {
     i++;
   }
   const data = {
-    photoUrl: formData.get("photoUrl")?.toString() || "",
     firstName: formData.get("firstName")?.toString() || "",
     secondName: formData.get("secondName")?.toString() || "",
     familyName: formData.get("familyName")?.toString() || "",
+    phone: formData.get("phone")?.toString() || "",
+    mobile: formData.get("mobile")?.toString() || "",
     gender: formData.get("gender")?.toString() || "",
     email: formData.get("email")?.toString() || "",
-    birthDate: formData.get("birthDate")?.toString() || "",
+    birthDate: new Date(formData.get("birthDate")?.toString() || ""),
     addressLine: formData.get("addressLine")?.toString() || "",
     addressCity: formData.get("addressCity")?.toString() || "",
     maritalStatus: formData.get("maritalStatus")?.toString() || "",
@@ -39,7 +43,9 @@ export async function handleSubmit(formData: FormData) {
     confirmPassword: formData.get("confirmPassword")?.toString() || "",
     allergies: allergies,
   };
+  console.log(data);
   const result = personValidation.safeParse(data);
+  console.log(result);
   if (!result.success) {
     return {
       success: false,
@@ -51,9 +57,11 @@ export async function handleSubmit(formData: FormData) {
       roleName: "Paciente",
     },
   });
+  const personas = await prisma.person.findMany();
+  console.log(personas);
   await prisma.person.create({
     data: {
-      photoUrl: data.photoUrl,
+      photoUrl: await subirFotoDePerfil(profilePicture),
       firstName: data.firstName,
       active: true,
       secondName: data.secondName,

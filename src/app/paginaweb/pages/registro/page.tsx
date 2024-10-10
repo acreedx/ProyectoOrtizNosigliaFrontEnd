@@ -14,6 +14,7 @@ import {
   InputGroup,
   InputRightElement,
   Select,
+  Spinner,
   Stack,
   Text,
 } from "@chakra-ui/react";
@@ -29,6 +30,7 @@ import formularioPersona, {
 import schema from "./validacionRegistro";
 import { PersonService } from "@/repositories/PersonService";
 import { useRouter } from "next/navigation";
+import { createPerson } from "@/pages/serveractions/person";
 
 interface FileWithPreview extends File {
   preview?: string;
@@ -97,8 +99,28 @@ export default function PersonForm() {
       return "https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg";
     }
   };
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setIsLoading(true);
+    setErrors({});
+    const formData = new FormData(event.currentTarget);
+    const response = await createPerson(formData);
+    if (!response.success) {
+      setErrors(response.errors);
+    } else {
+      Swal.fire({
+        title: "Éxito",
+        text: "Bienvenido al centro Ortiz Nosiglia",
+        icon: "success",
+        confirmButtonText: "Aceptar",
+        confirmButtonColor: "#28a745",
+      });
+    }
+    setIsLoading(false);
+  };
+  /*
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       schema.parse({
@@ -185,6 +207,7 @@ export default function PersonForm() {
       }
     }
   };
+  */
   return (
     <Layout>
       <Box
@@ -199,7 +222,7 @@ export default function PersonForm() {
         <Heading as="h3" textAlign="center" my={10} color="orange">
           Formulario de registro
         </Heading>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleFormSubmit}>
           <Stack spacing={4}>
             <Flex
               direction={{ base: "column", md: "row" }}
@@ -229,7 +252,7 @@ export default function PersonForm() {
                   )}
                   <Input
                     type="file"
-                    name="fotoDePerfil"
+                    name="photoUrl"
                     onChange={handleImageChange}
                     accept="image/*"
                     className="pt-1"
@@ -470,9 +493,8 @@ export default function PersonForm() {
             <Button onClick={addAllergy} colorScheme="blue" variant="outline">
               Añadir Alergia
             </Button>
-            {/* Botón de envío */}
-            <Button colorScheme="orange" type="submit" isLoading={false}>
-              Registrar
+            <Button colorScheme="orange" type="submit" isDisabled={isLoading}>
+              {isLoading ? <Spinner size="sm" /> : "Registrar"}
             </Button>
           </Stack>
         </form>

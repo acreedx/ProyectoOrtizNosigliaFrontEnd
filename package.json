@@ -20,6 +20,7 @@
     "@fullcalendar/timegrid": "^6.1.15",
     "@prisma/client": "^5.20.0",
     "apexcharts": "^3.45.2",
+    "bcrypt": "^5.1.1",
     "bootstrap": "^5.3.3",
     "cookie": "^0.6.0",
     "firebase": "^10.13.1",
@@ -29,6 +30,7 @@
     "jsonwebtoken": "^9.0.2",
     "jsvectormap": "^1.6.0",
     "next": "^14.2.4",
+    "nodemailer": "^6.9.15",
     "react": "^18",
     "react-apexcharts": "^1.4.1",
     "react-dom": "^18",
@@ -39,8 +41,10 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
     "@types/jsonwebtoken": "^9.0.7",
     "@types/node": "^20.16.11",
+    "@types/nodemailer": "^6.4.16",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "autoprefixer": "^10.0.1",
