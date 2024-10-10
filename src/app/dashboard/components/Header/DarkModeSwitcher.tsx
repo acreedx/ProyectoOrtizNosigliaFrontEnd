@@ -1,4 +1,4 @@
-import useColorMode from "@/app/dashboard/hooks/useColorMode";
+import useColorMode from "@/app/dashboard/assets/hooks/useColorMode";
 
 const DarkModeSwitcher = () => {
   const [colorMode, setColorMode] = useColorMode();

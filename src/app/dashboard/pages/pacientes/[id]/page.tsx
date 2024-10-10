@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { localDomain } from "@/types/domain";
 import Swal from "sweetalert2";
 import Link from "next/link";
-import BotonVolver from "../../components/BotonVolver";
+import BotonVolver from "../../../components/BotonVolver";
 import {
   Box,
   Button,
@@ -73,7 +73,7 @@ export default function Pacientes({ params }: { params: { id: string } }) {
       setloading(false);
     }
     fectchPatient();
-  }, []);
+  }, [params.id]);
 
   const handleChange = (e: any) => {
     const { name, value } = e.target;

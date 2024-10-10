@@ -23,7 +23,9 @@ import Swal from "sweetalert2";
 
 import { z } from "zod";
 import { storage } from "../../../../../firebase.config";
-import formularioPersona from "./formularioRegistro";
+import formularioPersona, {
+  createEmptyFormularioPersona,
+} from "./formularioRegistro";
 import schema from "./validacionRegistro";
 import { PersonService } from "@/repositories/PersonService";
 import { useRouter } from "next/navigation";
@@ -33,35 +35,15 @@ interface FileWithPreview extends File {
 }
 export default function PersonForm() {
   const router = useRouter();
-  const [formData, setFormData] = useState<formularioPersona>({
-    foto: "",
-    primerNombre: "",
-    segundoNombre: "",
-    apellido: "",
-    genero: "Masculino",
-    telefono: "",
-    celular: "",
-    correo: "",
-    fechaNacimiento: "",
-    direccion: "",
-    ciudad: "",
-    estadoCivil: "S",
-    carnetDeIdentidad: "",
-    username: "",
-    password: "",
-    confirmPassword: "",
-    alergias: [],
-  });
+  const [formData, setFormData] = useState(createEmptyFormularioPersona());
   const [image, setImage] = useState<FileWithPreview | null>(null);
   const [errors, setErrors] = useState<any>({});
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
-
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({ ...prevData, [name]: value }));
@@ -78,22 +60,22 @@ export default function PersonForm() {
     setFormData((prevData) => ({
       ...prevData,
       alergias: [
-        ...prevData.alergias,
+        ...prevData.allergies,
         { sustancia: "", reaccion: "", severidad: "mild", notas: "" },
       ],
     }));
   };
   const handleAllergyChange = (index: number, field: string, value: string) => {
-    const updatedAllergies = formData.alergias.map((allergy, i) =>
+    const updatedAllergies = formData.allergies.map((allergy, i) =>
       i === index ? { ...allergy, [field]: value } : allergy,
     );
-    setFormData({ ...formData, alergias: updatedAllergies });
+    setFormData({ ...formData, allergies: updatedAllergies });
   };
 
   const handleRemoveAllergy = (index: number) => {
     setFormData((prevData) => ({
       ...prevData,
-      alergias: prevData.alergias.filter((_, i) => i !== index),
+      alergias: prevData.allergies.filter((_, i) => i !== index),
     }));
   };
 
@@ -121,44 +103,45 @@ export default function PersonForm() {
     try {
       schema.parse({
         ...formData,
-        fechaNacimiento: new Date(formData.fechaNacimiento),
+        fechaNacimiento: new Date(formData.birthDate),
       });
       setErrors({});
       let arrayAlergiass = [] as any[];
-      formData.alergias.forEach((allergy) => {
+      formData.allergies.forEach((allergy) => {
         arrayAlergiass.push({
-          substance: allergy.sustancia,
-          reaction: allergy.reaccion,
-          severity: allergy.severidad as any,
-          notes: allergy.notas,
+          substance: allergy.substance,
+          reaction: allergy.reaction,
+          severity: allergy.severity as any,
+          notes: allergy.notes,
         });
       });
       const person: Person = {
         name: {
-          given: [formData.primerNombre, formData.segundoNombre],
-          family: formData.apellido,
+          given: [formData.firstName, formData.secondName],
+          family: formData.familyName,
         },
-        gender: formData.genero,
-        birthDate: formData.fechaNacimiento,
+        gender: formData.gender,
+        birthDate: formData.birthDate,
         telecom: [
-          { value: formData.telefono },
-          { value: formData.celular },
-          { value: formData.correo },
+          { value: formData.phone },
+          { value: formData.mobile },
+          { value: formData.email },
         ],
         photo: { _url: { id: await obtenerUrlImagen() } },
         address: {
-          line: [formData.direccion],
-          city: formData.ciudad,
+          line: [formData.addressLine],
+          city: formData.addressCity,
         },
         maritalStatus: {
           coding: [
             {
-              code: formData.estadoCivil as any,
-              display: formData.estadoCivil === "M" ? "Casado" : "Soltero",
+              code: formData.maritalStatus as any,
+              display:
+                formData.maritalStatus === "Married" ? "Casado" : "Soltero",
             },
           ],
         },
-        carnetDeIdentidad: formData.carnetDeIdentidad,
+        carnetDeIdentidad: formData.identification,
         systemUser: {
           username: formData.username,
           password: formData.password,
@@ -257,8 +240,8 @@ export default function PersonForm() {
             <FormControl id="primerNombre" isRequired>
               <FormLabel>Primer Nombre</FormLabel>
               <Input
-                name="primerNombre"
-                value={formData.primerNombre}
+                name="firstName"
+                value={formData.firstName}
                 onChange={handleInputChange}
               />
               {errors.primerNombre && (
@@ -268,8 +251,8 @@ export default function PersonForm() {
             <FormControl id="segundoNombre" isRequired>
               <FormLabel>Segundo Nombre</FormLabel>
               <Input
-                name="segundoNombre"
-                value={formData.segundoNombre}
+                name="secondName"
+                value={formData.secondName}
                 onChange={handleInputChange}
               />
               {errors.segundoNombre && (
@@ -279,8 +262,8 @@ export default function PersonForm() {
             <FormControl id="apellido" isRequired>
               <FormLabel>Apellido</FormLabel>
               <Input
-                name="apellido"
-                value={formData.apellido}
+                name="familyName"
+                value={formData.familyName}
                 onChange={handleInputChange}
               />
               {errors.apellido && (
@@ -290,8 +273,8 @@ export default function PersonForm() {
             <FormControl id="genero" isRequired>
               <FormLabel>Género</FormLabel>
               <Select
-                name="genero"
-                value={formData.genero}
+                name="gender"
+                value={formData.gender}
                 onChange={handleSelectChange}
               >
                 <option value="Masculino">Masculino</option>
@@ -303,8 +286,8 @@ export default function PersonForm() {
               <FormLabel>Teléfono</FormLabel>
               <Input
                 type="number"
-                name="telefono"
-                value={formData.telefono}
+                name="phone"
+                value={formData.phone}
                 onChange={handleInputChange}
               />
               {errors.telefono && (
@@ -315,8 +298,8 @@ export default function PersonForm() {
               <FormLabel>Celular</FormLabel>
               <Input
                 type="number"
-                name="celular"
-                value={formData.celular}
+                name="mobile"
+                value={formData.mobile}
                 onChange={handleInputChange}
               />
               {errors.celular && <Text color="red.500">{errors.celular}</Text>}
@@ -325,8 +308,8 @@ export default function PersonForm() {
               <FormLabel>Correo</FormLabel>
               <Input
                 type="text"
-                name="correo"
-                value={formData.correo}
+                name="email"
+                value={formData.email}
                 onChange={handleInputChange}
               />
               {errors.correo && <Text color="red.500">{errors.correo}</Text>}
@@ -335,8 +318,8 @@ export default function PersonForm() {
               <FormLabel>Fecha de Nacimiento</FormLabel>
               <Input
                 type="date"
-                name="fechaNacimiento"
-                value={formData.fechaNacimiento}
+                name="birthDate"
+                value={formData.birthDate}
                 onChange={handleInputChange}
               />
               {errors.fechaNacimiento && (
@@ -346,8 +329,8 @@ export default function PersonForm() {
             <FormControl id="direccion" isRequired>
               <FormLabel>Dirección</FormLabel>
               <Input
-                name="direccion"
-                value={formData.direccion}
+                name="addressLine"
+                value={formData.addressLine}
                 onChange={handleInputChange}
               />
               {errors.direccion && (
@@ -357,8 +340,8 @@ export default function PersonForm() {
             <FormControl id="ciudad" isRequired>
               <FormLabel>Ciudad</FormLabel>
               <Input
-                name="ciudad"
-                value={formData.ciudad}
+                name="addressCity"
+                value={formData.addressCity}
                 onChange={handleInputChange}
               />
               {errors.ciudad && <Text color="red.500">{errors.ciudad}</Text>}
@@ -366,20 +349,20 @@ export default function PersonForm() {
             <FormControl id="estadoCivil" isRequired>
               <FormLabel>Estado Civil</FormLabel>
               <Select
-                name="estadoCivil"
-                value={formData.estadoCivil}
+                name="maritalStatus"
+                value={formData.maritalStatus}
                 onChange={handleSelectChange}
               >
-                <option value="S">Soltero</option>
-                <option value="M">Casado</option>
+                <option value="Single">Soltero</option>
+                <option value="Married">Casado</option>
               </Select>
             </FormControl>
             <FormControl id="carnetDeIdentidad" isRequired>
               <FormLabel>Carnet De Identidad</FormLabel>
               <Input
                 type="number"
-                name="carnetDeIdentidad"
-                value={formData.carnetDeIdentidad}
+                name="identification"
+                value={formData.identification}
                 onChange={handleInputChange}
               />
               {errors.carnetDeIdentidad && (
@@ -439,13 +422,13 @@ export default function PersonForm() {
             <Heading as="h4" size="md">
               Alergias
             </Heading>
-            {formData.alergias.map((allergy, index) => (
+            {formData.allergies.map((allergy, index) => (
               <Box key={index} borderWidth="1px" borderRadius="md" p={4} mb={2}>
                 <FormControl isRequired>
                   <FormLabel>Nombre de la sustancia</FormLabel>
                   <Input
                     type="text"
-                    value={allergy.sustancia}
+                    value={allergy.substance}
                     onChange={(e) =>
                       handleAllergyChange(index, "sustancia", e.target.value)
                     }
@@ -454,7 +437,7 @@ export default function PersonForm() {
                 <FormControl isRequired>
                   <FormLabel>Tipo de reacción</FormLabel>
                   <Select
-                    value={allergy.reaccion}
+                    value={allergy.reaction}
                     onChange={(e) =>
                       handleAllergyChange(index, "reaccion", e.target.value)
                     }
@@ -468,7 +451,7 @@ export default function PersonForm() {
                   <FormLabel>Comentario sobre la alergia</FormLabel>
                   <Input
                     type="text"
-                    value={allergy.notas}
+                    value={allergy.notes}
                     onChange={(e) =>
                       handleAllergyChange(index, "notas", e.target.value)
                     }
@@ -488,11 +471,7 @@ export default function PersonForm() {
               Añadir Alergia
             </Button>
             {/* Botón de envío */}
-            <Button
-              colorScheme="orange"
-              type="submit"
-              isLoading={false} // Controla esto según tu lógica
-            >
+            <Button colorScheme="orange" type="submit" isLoading={false}>
               Registrar
             </Button>
           </Stack>

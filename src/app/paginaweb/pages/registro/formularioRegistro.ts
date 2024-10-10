@@ -1,25 +1,46 @@
 interface Allergy {
-  sustancia: string;
-  reaccion: string;
-  severidad: "mild" | "moderate" | "severe";
-  notas: string;
+  substance: string;
+  reaction: string;
+  severity: "mild" | "moderate" | "severe";
+  notes: string;
 }
 export default interface formularioPersona {
-  foto: string;
-  primerNombre: string;
-  segundoNombre: string;
-  apellido: string;
-  genero: string;
-  telefono: string;
-  celular: string;
-  correo: string;
-  fechaNacimiento: string;
-  direccion: string;
-  ciudad: string;
-  estadoCivil: string;
-  carnetDeIdentidad: string;
+  photoUrl: string;
+  firstName: string;
+  secondName: string;
+  familyName: string;
+  gender: string;
+  phone: string;
+  mobile: string;
+  email: string;
+  birthDate: string;
+  addressLine: string;
+  addressCity: string;
+  maritalStatus: "Married" | "Single";
+  identification: string;
   username: string;
   password: string;
   confirmPassword: string;
-  alergias: Allergy[];
+  allergies: Allergy[];
 }
+export const createEmptyFormularioPersona = (): formularioPersona => {
+  return {
+    photoUrl: "",
+    firstName: "",
+    secondName: "",
+    familyName: "",
+    gender: "",
+    phone: "",
+    mobile: "",
+    email: "",
+    birthDate: "",
+    addressLine: "",
+    addressCity: "",
+    maritalStatus: "Single",
+    identification: "",
+    username: "",
+    password: "",
+    confirmPassword: "",
+    allergies: [],
+  };
+};

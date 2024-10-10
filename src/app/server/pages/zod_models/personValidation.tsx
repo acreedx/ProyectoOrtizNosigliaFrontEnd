@@ -3,7 +3,7 @@ import { z } from "zod";
 const passwordRegex =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
 
-const schema = z
+const personValidation = z
   .object({
     firstName: z
       .string()
@@ -79,4 +79,4 @@ const schema = z
     message: "Las contraseñas no coinciden",
     path: ["confirmPassword"],
   });
-export default schema;
+export default personValidation;

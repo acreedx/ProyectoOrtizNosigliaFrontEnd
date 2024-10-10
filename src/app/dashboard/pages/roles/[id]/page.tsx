@@ -14,15 +14,15 @@ import {
   Heading,
   Spinner,
 } from "@chakra-ui/react";
-import DefaultLayout from "../../components/Layouts/DefaultLayout";
-import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb";
+import DefaultLayout from "../../../components/Layouts/DefaultLayout";
+import Breadcrumb from "../../../components/Breadcrumbs/Breadcrumb";
 import Role from "@/interfaces/Rol";
 import { RolService } from "@/repositories/RolService";
 import Permission from "@/interfaces/Permission";
 import { PermissionService } from "@/repositories/PermissionService";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
-import BotonVolver from "../../components/BotonVolver";
+import BotonVolver from "../../../components/BotonVolver";
 export default function Page({ params }: { params: { id: string } }) {
   const router = useRouter();
   const [loading, setloading] = useState(true);

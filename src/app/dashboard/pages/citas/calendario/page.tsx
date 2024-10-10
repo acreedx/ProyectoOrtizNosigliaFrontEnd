@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
-import DefaultLayout from "../../components/Layouts/DefaultLayout";
-import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb";
+import DefaultLayout from "../../../components/Layouts/DefaultLayout";
+import Breadcrumb from "../../../components/Breadcrumbs/Breadcrumb";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 

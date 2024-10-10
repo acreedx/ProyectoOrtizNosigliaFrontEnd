@@ -6,7 +6,7 @@ import Link from "next/link";
 import Image from "next/image";
 import SidebarItem from "@/app/dashboard/components/Sidebar/SidebarItem";
 import ClickOutside from "@/app/dashboard/components/ClickOutside";
-import useLocalStorage from "@/app/dashboard/hooks/useLocalStorage";
+import useLocalStorage from "@/app/dashboard/assets/hooks/useLocalStorage";
 import { menuOptions } from "../../configuration";
 import ArrowLeftIcon from "../Icons/ArrowLeftIcon";
 

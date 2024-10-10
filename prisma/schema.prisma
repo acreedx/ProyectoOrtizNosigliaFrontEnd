@@ -1,3 +1,4 @@
+
 datasource db {
   provider = "mongodb"
   url      = env("DATABASE_URL")
@@ -6,6 +7,17 @@ datasource db {
 generator client {
   provider = "prisma-client-js"
 }
+
+enum CivilState {
+  Married
+  Single
+}
+enum Severity {
+  mild
+  moderate
+  severe
+}
+
 // Modelo de prueba
 model Post {
   id       String    @id @default(auto()) @map("_id") @db.ObjectId
@@ -16,19 +28,17 @@ model Post {
   authorId String
   comments String[]
 }
-
-
 // Modelos de usuarios
 
 model Permission {
-  id          String      @id @default(auto()) @map("_id") @db.ObjectId
-  permissionName String   @unique
-  code        String      @unique
-  active      Boolean
-  rol       Rol @relation(fields: [rolID], references: [id])
-  rolID String @db.ObjectId @unique
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+  id              String      @id @default(auto()) @map("_id") @db.ObjectId
+  permissionName  String   @unique
+  code            String      @unique
+  active          Boolean
+  rol             Rol @relation(fields: [rolID], references: [id])
+  rolID           String @db.ObjectId @unique
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
 }
 
 model Rol {
@@ -36,107 +46,140 @@ model Rol {
   roleName    String      @unique
   description String      
   permissions Permission[]
-  systemUser   SystemUser   @relation(fields: [systemUserId], references: [id])
-  systemUserId String @db.ObjectId @unique
   active      Boolean
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
+  persons     Person[]   @relation
 }
-
 
 model Person {
-  id                 String   @id @default(auto()) @map("_id") @db.ObjectId
-  resourceType      String   @default("Patient")
-  active             Boolean
-  name               Name?
-  gender             String   
-  birthDate         String   
-  telecom           Telecom[]
-  photo              Photo?
-  address            Address?
-  maritalStatus      MaritalStatus?
-  carnetDeIdentidad  String   @unique
-  systemUser        SystemUser?
-  systemUserId      String   @map("systemUserId") @db.ObjectId
-  allergies          Allergy[]
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
+  id                String     @id @default(auto()) @map("_id") @db.ObjectId
+  resourceType      String     @default("Patient")
+  active            Boolean
+  firstName         String
+  secondName        String?
+  familyName        String
+  gender            String
+  birthDate         DateTime
+  phone             String?
+  mobile            String?
+  email             String
+  addressLine       String
+  addressCity       String
+  maritalStatus     CivilState
+  identification    String     @unique
+  username          String     @unique
+  password          String
+  lastLogin         DateTime?
+  passwordExpiration DateTime?
+  status            Boolean     @default(true)
+  photoUrl          String
+  allergies         Allergy[]
+  rolID             String      @db.ObjectId
+  rol               Rol         @relation(fields: [rolID], references: [id])
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+  @@map("persons")
 }
 
-model Name {
-  id      String   @id @default(auto()) @map("_id") @db.ObjectId
-  given    String[]
-  family   String
-  person   Person   @relation(fields: [personId], references: [id])
-  personId String @db.ObjectId @unique
-}
-
-model Telecom {
-  id      String   @id @default(auto()) @map("_id") @db.ObjectId
-  value   String   
-  person   Person   @relation(fields: [personId], references: [id])
-  personId String @db.ObjectId @unique
-}
-
-model Photo {
-  id      String   @id @default(auto()) @map("_id") @db.ObjectId
-  url     String   
-  person   Person   @relation(fields: [personId], references: [id])
-  personId String @db.ObjectId @unique
-}
-
-model Address {
-  id      String   @id @default(auto()) @map("_id") @db.ObjectId
-  line    String[]
-  city    String   
-  person   Person   @relation(fields: [personId], references: [id])
-  personId String @db.ObjectId @unique
-}
-
-model MaritalStatus {
-  id      String   @id @default(auto()) @map("_id") @db.ObjectId
-  coding  Coding[]
-  person   Person   @relation(fields: [personId], references: [id])
-  personId String @db.ObjectId @unique
-}
-
-enum CivilState {
-  M
-  S
-}
-model Coding {
-  id      String      @id @default(auto()) @map("_id") @db.ObjectId
-  code   CivilState 
-  display String 
-  maritalStatus   MaritalStatus   @relation(fields: [maritalStatusId], references: [id])
-  maritalStatusId String @db.ObjectId @unique  
-}
-
-model SystemUser {
-  id                String   @id @default(auto()) @map("_id") @db.ObjectId
-  username          String   @unique 
-  password          String   
-  rol               Rol?
-  lastLogin         String?
-  passwordExpiration String
-  status            Boolean  @default(true)
-  person   Person   @relation(fields: [personId], references: [id])
-  personId String @db.ObjectId @unique
-}
-enum Severity {
-  mild
-  moderate
-  severe
-}
 model Allergy {
   id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  substance   String   
-  reaction    String   
+  substance   String
+  reaction    String
   severity    Severity 
   notes       String?
-  person   Person   @relation(fields: [personId], references: [id])
-  personId String @db.ObjectId @unique
+  personId    String   @db.ObjectId
+  person      Person   @relation(fields: [personId], references: [id])
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  @@map("allergies")
 }
 
-//fin de modelo de usuarios
 
+
+//model Person {
+//  id                 String   @id @default(auto()) @map("_id") @db.ObjectId
+//  resourceType      String   @default("Patient")
+//  active             Boolean
+//  name               Name?
+//  gender             String   
+//  birthDate         String   
+//  telecom           Telecom[]
+//  photo              Photo?
+//  address            Address?
+//  maritalStatus      MaritalStatus?
+//  carnetDeIdentidad  String   @unique
+//  systemUser        SystemUser?
+//  systemUserId      String   @map("systemUserId") @db.ObjectId
+//  allergies          Allergy[]
+//  createdAt         DateTime @default(now())
+//  updatedAt         DateTime @updatedAt
+//}
+//
+//model Name {
+//  id      String   @id @default(auto()) @map("_id") @db.ObjectId
+//  given    String[]
+//  family   String
+//  person   Person   @relation(fields: [personId], references: [id])
+//  personId String @db.ObjectId @unique
+//}
+//
+//model Telecom {
+//  id      String   @id @default(auto()) @map("_id") @db.ObjectId
+//  value   String   
+//  person   Person   @relation(fields: [personId], references: [id])
+//  personId String @db.ObjectId @unique
+//}
+//
+//model Photo {
+//  id      String   @id @default(auto()) @map("_id") @db.ObjectId
+//  url     String   
+//  person   Person   @relation(fields: [personId], references: [id])
+//  personId String @db.ObjectId @unique
+//}
+//
+//model Address {
+//  id      String   @id @default(auto()) @map("_id") @db.ObjectId
+//  line    String[]
+//  city    String   
+//  person   Person   @relation(fields: [personId], references: [id])
+//  personId String @db.ObjectId @unique
+//}
+//
+//model MaritalStatus {
+//  id      String   @id @default(auto()) @map("_id") @db.ObjectId
+//  coding  Coding[]
+//  person   Person   @relation(fields: [personId], references: [id])
+//  personId String @db.ObjectId @unique
+//}
+//
+//enum CivilState {
+//  M
+//  S
+//}
+//model Coding {
+//  id      String      @id @default(auto()) @map("_id") @db.ObjectId
+//  code   CivilState 
+//  display String 
+//  maritalStatus   MaritalStatus   @relation(fields: [maritalStatusId], references: [id])
+//  maritalStatusId String @db.ObjectId @unique  
+//}
+//
+//model SystemUser {
+//  id                String   @id @default(auto()) @map("_id") @db.ObjectId
+//  username          String   @unique 
+//  password          String   
+//  rol               Rol?
+//  lastLogin         String?
+//  passwordExpiration String
+//  status            Boolean  @default(true)
+//  person   Person   @relation(fields: [personId], references: [id])
+//  personId String @db.ObjectId @unique
+//}
+//enum Severity {
+//  mild
+//  moderate
+//  severe
+//}
+
+//fin de modelo de usuarios
