@@ -42,8 +42,9 @@ export default function PersonForm() {
   const [errors, setErrors] = useState<any>({});
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
+    const { name, value } = e.target as any;
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -67,6 +68,7 @@ export default function PersonForm() {
       ],
     }));
   };
+
   const handleAllergyChange = (index: number, field: string, value: string) => {
     const updatedAllergies = formData.allergies.map((allergy, i) =>
       i === index ? { ...allergy, [field]: value } : allergy,
@@ -82,132 +84,35 @@ export default function PersonForm() {
   };
 
   const handleClick = () => setShowPassword((prev) => !prev);
-
   const handleClickConfirm = () => setShowConfirmPassword((prev) => !prev);
-  const obtenerUrlImagen = async () => {
-    try {
-      if (!image) {
-        return "https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg";
-      } else {
-        const storageRef = await ref(storage, `images/${image.name}`);
-        const snapshot = await uploadBytes(storageRef, image);
-        const downloadURL = await getDownloadURL(snapshot.ref);
-        return downloadURL;
-      }
-    } catch (error) {
-      console.log(error);
-      return "https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg";
-    }
-  };
-  const [isLoading, setIsLoading] = useState(false);
+
   const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsLoading(true);
     setErrors({});
     const formData = new FormData(event.currentTarget);
-    const response = await createPerson(formData);
-    if (!response.success) {
-      setErrors(response.errors);
-    } else {
-      Swal.fire({
-        title: "Éxito",
-        text: "Bienvenido al centro Ortiz Nosiglia",
-        icon: "success",
-        confirmButtonText: "Aceptar",
-        confirmButtonColor: "#28a745",
-      });
-    }
-    setIsLoading(false);
-  };
-  /*
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
     try {
-      schema.parse({
-        ...formData,
-        fechaNacimiento: new Date(formData.birthDate),
-      });
-      setErrors({});
-      let arrayAlergiass = [] as any[];
-      formData.allergies.forEach((allergy) => {
-        arrayAlergiass.push({
-          substance: allergy.substance,
-          reaction: allergy.reaction,
-          severity: allergy.severity as any,
-          notes: allergy.notes,
-        });
-      });
-      const person: Person = {
-        name: {
-          given: [formData.firstName, formData.secondName],
-          family: formData.familyName,
-        },
-        gender: formData.gender,
-        birthDate: formData.birthDate,
-        telecom: [
-          { value: formData.phone },
-          { value: formData.mobile },
-          { value: formData.email },
-        ],
-        photo: { _url: { id: await obtenerUrlImagen() } },
-        address: {
-          line: [formData.addressLine],
-          city: formData.addressCity,
-        },
-        maritalStatus: {
-          coding: [
-            {
-              code: formData.maritalStatus as any,
-              display:
-                formData.maritalStatus === "Married" ? "Casado" : "Soltero",
-            },
-          ],
-        },
-        carnetDeIdentidad: formData.identification,
-        systemUser: {
-          username: formData.username,
-          password: formData.password,
-        },
-        allergies: arrayAlergiass as any,
-      };
-      console.log(person);
-      const creada = await PersonService.createPerson(person);
-      console.log(creada);
-      if (creada.message) {
-        Swal.fire({
-          title: "Error",
-          text: creada.message,
-          icon: "error",
-          confirmButtonColor: "#28a745",
-        });
+      const response = await createPerson(formData);
+      if (!response.success) {
+        setErrors(response.errors);
       } else {
         Swal.fire({
           title: "Éxito",
-          text: `Bienvenido al Centro Odontológico Ortiz Nosiglia`,
+          text: "Bienvenido al centro Ortiz Nosiglia",
           icon: "success",
+          confirmButtonText: "Aceptar",
           confirmButtonColor: "#28a745",
-        }).then((result) => {
-          router.push("/paginaweb/pages/login");
+        }).then(() => {
+          router.push("/paginaweb/login");
         });
       }
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        const formErrors: Record<string, string> = {};
-        error.errors.forEach((err) => {
-          formErrors[err.path[0]] = err.message;
-        });
-        setErrors(formErrors);
-      } else {
-        Swal.fire({
-          title: "Error",
-          text: `Error al crear el Usuario`,
-          icon: "error",
-          confirmButtonColor: "#28a745",
-        });
-      }
+      setIsLoading(false);
+    } catch (e: any) {
+      console.log(e.message);
+    } finally {
+      setIsLoading(false);
     }
   };
-  */
   return (
     <Layout>
       <Box
@@ -260,40 +165,46 @@ export default function PersonForm() {
                 </Flex>
               </FormControl>
             </Flex>
-            <FormControl id="primerNombre" isRequired>
+            <FormControl id="firstName" isRequired>
               <FormLabel>Primer Nombre</FormLabel>
               <Input
                 name="firstName"
                 value={formData.firstName}
                 onChange={handleInputChange}
               />
-              {errors.primerNombre && (
-                <Text color="red.500">{errors.primerNombre}</Text>
+              {errors.firstName && (
+                <Text color="red.500">
+                  {errors.firstName._errors.join(", ")}
+                </Text>
               )}
             </FormControl>
-            <FormControl id="segundoNombre" isRequired>
+            <FormControl id="secondName" isRequired>
               <FormLabel>Segundo Nombre</FormLabel>
               <Input
                 name="secondName"
                 value={formData.secondName}
                 onChange={handleInputChange}
               />
-              {errors.segundoNombre && (
-                <Text color="red.500">{errors.segundoNombre}</Text>
+              {errors.secondName && (
+                <Text color="red.500">
+                  {errors.secondName._errors.join(", ")}
+                </Text>
               )}
             </FormControl>
-            <FormControl id="apellido" isRequired>
+            <FormControl id="familyName" isRequired>
               <FormLabel>Apellido</FormLabel>
               <Input
                 name="familyName"
                 value={formData.familyName}
                 onChange={handleInputChange}
               />
-              {errors.apellido && (
-                <Text color="red.500">{errors.apellido}</Text>
+              {errors.familyName && (
+                <Text color="red.500">
+                  {errors.familyName._errors.join(", ")}
+                </Text>
               )}
             </FormControl>
-            <FormControl id="genero" isRequired>
+            <FormControl id="gender" isRequired>
               <FormLabel>Género</FormLabel>
               <Select
                 name="gender"
@@ -305,7 +216,7 @@ export default function PersonForm() {
                 <option value="Otro">Otro</option>
               </Select>
             </FormControl>
-            <FormControl id="telefono" isRequired>
+            <FormControl id="phone" isRequired>
               <FormLabel>Teléfono</FormLabel>
               <Input
                 type="number"
@@ -313,11 +224,11 @@ export default function PersonForm() {
                 value={formData.phone}
                 onChange={handleInputChange}
               />
-              {errors.telefono && (
-                <Text color="red.500">{errors.telefono}</Text>
+              {errors.phone && (
+                <Text color="red.500">{errors.phone._errors.join(", ")}</Text>
               )}
             </FormControl>
-            <FormControl id="celular" isRequired>
+            <FormControl id="mobile" isRequired>
               <FormLabel>Celular</FormLabel>
               <Input
                 type="number"
@@ -325,9 +236,11 @@ export default function PersonForm() {
                 value={formData.mobile}
                 onChange={handleInputChange}
               />
-              {errors.celular && <Text color="red.500">{errors.celular}</Text>}
+              {errors.mobile && (
+                <Text color="red.500">{errors.mobile._errors.join(", ")}</Text>
+              )}
             </FormControl>
-            <FormControl id="correo" isRequired>
+            <FormControl id="email" isRequired>
               <FormLabel>Correo</FormLabel>
               <Input
                 type="text"
@@ -335,9 +248,11 @@ export default function PersonForm() {
                 value={formData.email}
                 onChange={handleInputChange}
               />
-              {errors.correo && <Text color="red.500">{errors.correo}</Text>}
+              {errors.email && (
+                <Text color="red.500">{errors.email._errors.join(", ")}</Text>
+              )}
             </FormControl>
-            <FormControl id="fechaNacimiento" isRequired>
+            <FormControl id="birthDate" isRequired>
               <FormLabel>Fecha de Nacimiento</FormLabel>
               <Input
                 type="date"
@@ -345,8 +260,10 @@ export default function PersonForm() {
                 value={formData.birthDate}
                 onChange={handleInputChange}
               />
-              {errors.fechaNacimiento && (
-                <Text color="red.500">{errors.fechaNacimiento}</Text>
+              {errors.birthDate && (
+                <Text color="red.500">
+                  {errors.birthDate._errors.join(", ")}
+                </Text>
               )}
             </FormControl>
             <FormControl id="direccion" isRequired>
@@ -356,8 +273,10 @@ export default function PersonForm() {
                 value={formData.addressLine}
                 onChange={handleInputChange}
               />
-              {errors.direccion && (
-                <Text color="red.500">{errors.direccion}</Text>
+              {errors.addressLine && (
+                <Text color="red.500">
+                  {errors.addressLine._errors.join(", ")}
+                </Text>
               )}
             </FormControl>
             <FormControl id="ciudad" isRequired>
@@ -367,7 +286,11 @@ export default function PersonForm() {
                 value={formData.addressCity}
                 onChange={handleInputChange}
               />
-              {errors.ciudad && <Text color="red.500">{errors.ciudad}</Text>}
+              {errors.addressCity && (
+                <Text color="red.500">
+                  {errors.addressCity._errors.join(", ")}
+                </Text>
+              )}
             </FormControl>
             <FormControl id="estadoCivil" isRequired>
               <FormLabel>Estado Civil</FormLabel>
@@ -380,7 +303,7 @@ export default function PersonForm() {
                 <option value="Married">Casado</option>
               </Select>
             </FormControl>
-            <FormControl id="carnetDeIdentidad" isRequired>
+            <FormControl id="identification" isRequired>
               <FormLabel>Carnet De Identidad</FormLabel>
               <Input
                 type="number"
@@ -388,8 +311,10 @@ export default function PersonForm() {
                 value={formData.identification}
                 onChange={handleInputChange}
               />
-              {errors.carnetDeIdentidad && (
-                <Text color="red.500">{errors.carnetDeIdentidad}</Text>
+              {errors.identification && (
+                <Text color="red.500">
+                  {errors.identification._errors.join(", ")}
+                </Text>
               )}
             </FormControl>
             <FormControl id="username" isRequired>
@@ -400,7 +325,9 @@ export default function PersonForm() {
                 onChange={handleInputChange}
               />
               {errors.username && (
-                <Text color="red.500">{errors.username}</Text>
+                <Text color="red.500">
+                  {errors.username._errors.join(", ")}
+                </Text>
               )}
             </FormControl>
             <FormControl id="password" isRequired>
@@ -419,7 +346,9 @@ export default function PersonForm() {
                 </InputRightElement>
               </InputGroup>
               {errors.password && (
-                <Text color="red.500">{errors.password}</Text>
+                <Text color="red.500">
+                  {errors.password._errors.join(", ")}
+                </Text>
               )}
             </FormControl>
             <FormControl id="confirmPassword" isRequired>
@@ -438,7 +367,9 @@ export default function PersonForm() {
                 </InputRightElement>
               </InputGroup>
               {errors.confirmPassword && (
-                <Text color="red.500">{errors.confirmPassword}</Text>
+                <Text color="red.500">
+                  {errors.confirmPassword._errors.join(", ")}
+                </Text>
               )}
             </FormControl>
             {/* Alergias */}

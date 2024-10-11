@@ -1,26 +1,36 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextApiRequest, NextApiResponse } from "next";
 import jwt from "jsonwebtoken";
 import { cookies } from "next/headers"; // Usamos cookies de Next.js
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
-const key = process.env.JWT_SECRET_KEY || "your_secret_key"; // Reemplaza con tu clave secreta real
+import { NextResponse } from "next/server";
+const key = process.env.JWT_SECRET_KEY;
 
-export async function POST(req: NextRequest) {
-  const { username, password } = await req.json();
+export async function POST(req: NextResponse) {
+  const { username, password } = await req.json(); // Cambia a req.json() para obtener el cuerpo
 
   try {
+    if (!key) {
+      return NextResponse.json(
+        { message: "No se tiene el token Jwt en las variables de entorno" },
+        { status: 500 },
+      );
+    }
+
     const prisma = new PrismaClient();
     const person = await prisma.person.findFirst({
       where: {
         username: username,
       },
     });
+
     if (!person) {
       return NextResponse.json(
         { message: "Usuario no encontrado" },
         { status: 500 },
       );
     }
+
     const isTokenValid = await bcrypt.compare(password, person.password);
     if (!isTokenValid) {
       return NextResponse.json(
@@ -28,7 +38,8 @@ export async function POST(req: NextRequest) {
         { status: 500 },
       );
     }
-    person.password = "_";
+
+    person.password = "_"; // Para no enviar la contraseña
     const token = jwt.sign(
       {
         _id: person.id,
@@ -43,13 +54,16 @@ export async function POST(req: NextRequest) {
         expiresIn: "1h",
       },
     );
+
     const response = NextResponse.json({ person });
     response.cookies.set("access_token", token, {
       httpOnly: true,
-      //secure: process.env.NODE_ENV === "production", // la cookie solo se puede acceder en https
+      // secure: process.env.NODE_ENV === "production", // la cookie solo se puede acceder en https
       sameSite: "strict",
-      maxAge: 1000 * 60 * 60,
+      maxAge: 3600, // 1 hora
+      path: "/", // Define el path para la cookie
     });
+
     return response;
   } catch (error: any) {
     return NextResponse.json({ message: error.message }, { status: 500 });

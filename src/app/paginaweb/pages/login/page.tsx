@@ -1,29 +1,30 @@
 "use client";
 import React, { useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import CandadoIcon from "@/app/dashboard/components/Icons/CandadoIcon";
 import PacienteIcon from "@/app/dashboard/components/Icons/PacienteIcon";
 import { useRouter } from "next/navigation";
 import { localDomain } from "@/types/domain";
 import Layout from "../../components/Layout";
 import Swal from "sweetalert2";
+import Banner from "./Banner";
 
 export default function Login() {
   const router = useRouter();
-  const [nombreUsuario, setnombreUsuario] = useState("");
+  const [username, setnombreUsuario] = useState("");
   const [password, setpassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+
   const handleLogin = async (e: any) => {
     e.preventDefault();
-    const url = localDomain + "user/login";
+    const url = "http://localhost:3000/api/login";
     try {
       const response = await fetch(url, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
         body: JSON.stringify({
-          nombreUsuario: nombreUsuario,
+          username: username,
           password: password,
         }),
       });
@@ -45,8 +46,13 @@ export default function Login() {
           router.push("/dashboard");
         });
       }
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+      Swal.fire({
+        title: "Error",
+        text: error,
+        icon: "error",
+        confirmButtonColor: "#28a745",
+      });
     }
   };
   return (
@@ -54,36 +60,7 @@ export default function Login() {
       <main>
         <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
           <div className="flex flex-wrap items-center ">
-            <div className="hidden w-full  xl:block xl:w-1/2">
-              <div className=" px-26 py-17.5 text-center ">
-                <div className="rounded-xl bg-orange-400 p-10 shadow-lg">
-                  <Link
-                    className="mb-5.5 inline-block transition hover:drop-shadow-xl"
-                    href="/paginaweb/pages/home"
-                  >
-                    <Image
-                      className="hidden shadow-lg dark:block"
-                      src={"/images/logo/logo.png"}
-                      alt="Logo"
-                      width={80}
-                      height={32}
-                    />
-                    <Image
-                      className="dark:hidden"
-                      src={"/images/logo/logo.png"}
-                      alt="Logo"
-                      width={80}
-                      height={32}
-                    />
-                  </Link>
-
-                  <p className="text-xl font-bold  text-white drop-shadow-sm 2xl:px-20">
-                    Bienvenido al Sistema Web del centro Ortiz Nosiglia
-                  </p>
-                </div>
-              </div>
-            </div>
-
+            <Banner />
             <div className="w-full border-stroke dark:border-strokedark xl:w-1/2 xl:border-l-2">
               <div className="w-full p-4 sm:p-12.5 xl:p-17.5">
                 <h2 className="mb-9 text-2xl font-bold text-black dark:text-white sm:text-title-xl2">
@@ -98,7 +75,7 @@ export default function Login() {
                     <div className="relative">
                       <input
                         required
-                        value={nombreUsuario}
+                        value={username}
                         onChange={(e: any) => {
                           setnombreUsuario(e.target.value);
                         }}

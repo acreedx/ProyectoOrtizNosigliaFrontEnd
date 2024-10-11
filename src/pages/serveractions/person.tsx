@@ -1,8 +1,5 @@
 "use server";
 import { PrismaClient } from "@prisma/client";
-import { revalidatePath } from "next/cache";
-import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
-import { storage } from "../../../firebase.config";
 import { subirFotoDePerfil } from "../utils/upload_image";
 import personValidation from "../zod_models/personValidation";
 
@@ -57,6 +54,12 @@ export async function createPerson(formData: FormData) {
       roleName: "Paciente",
     },
   });
+  if (!rolPaciente) {
+    return {
+      success: false,
+      error: "No existe el rol de paciente registrado",
+    };
+  }
   const personas = await prisma.person.findMany();
   console.log(personas);
   await prisma.person.create({
