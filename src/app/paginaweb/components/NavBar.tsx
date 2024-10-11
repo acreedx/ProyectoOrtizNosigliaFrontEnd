@@ -19,7 +19,7 @@ import {
 import Link from "next/link";
 export default function PersoNavBar() {
   const [isOpen, setIsOpen] = useState(false);
-  const { user, loading, error, logout } = useUser();
+  const { user, loading, error, logout, isInRole } = useUser();
   const LogOut = async () => {
     await logout();
     window.location.reload();
@@ -71,14 +71,16 @@ export default function PersoNavBar() {
             <Spinner />
           ) : user ? (
             <>
-              <li>
-                <Link
-                  href="/dashboard"
-                  className="rounded-xl  bg-orange-400 p-3 text-lg text-white no-underline transition-all  hover:text-orange-700 hover:drop-shadow-md "
-                >
-                  Ingresar al dashboard
-                </Link>
-              </li>
+              {!isInRole("Paciente") && (
+                <li>
+                  <Link
+                    href="/dashboard"
+                    className="rounded-xl  bg-orange-400 p-3 text-lg text-white no-underline transition-all  hover:text-orange-700 hover:drop-shadow-md "
+                  >
+                    Ingresar al dashboard
+                  </Link>
+                </li>
+              )}
 
               <li>
                 <button
@@ -141,7 +143,7 @@ export default function PersoNavBar() {
             </div>
             <div className="flex flex-col items-center justify-center gap-4">
               <Link
-                href="/paginaweb/pages/editar"
+                href="/paginaweb/pages/editarperfil"
                 className="rounded-xl bg-orange-400 p-2 text-lg text-white no-underline transition-all duration-300  hover:text-orange-700 hover:drop-shadow-md "
               >
                 Editar Perfil

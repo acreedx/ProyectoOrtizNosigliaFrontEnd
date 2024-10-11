@@ -1,6 +1,5 @@
 import { PrismaClient } from "@prisma/client";
 import { NextApiRequest, NextApiResponse } from "next";
-import { permission } from "process";
 
 const prisma = new PrismaClient();
 
@@ -9,58 +8,57 @@ export default async function handler(
   res: NextApiResponse,
 ) {
   if (req.method === "POST") {
-    const permisos = await prisma.permission.findMany();
-    let permisosEncontrados: string[] = [];
-    permisos.forEach((element) => {
-      permisosEncontrados.push(element.id);
-    });
-    const rolesData = [
-      {
-        roleName: "Paciente",
-        description: "Persona que adquiere servicios del centro",
-        active: true,
-        permissions: permisosEncontrados,
-      },
-      {
-        roleName: "Dentista",
-        description: "Persona encargada de tratar a los pacientes",
-        active: true,
-        permissions: permisosEncontrados,
-      },
-      {
-        roleName: "Secretario",
-        description:
-          "Personal encargado de administrar la informacion de los pacientes y citas",
-        active: true,
-        permissions: permisosEncontrados,
-      },
-      {
-        roleName: "Administrador",
-        description: "Personal que administra todo en el centro",
-        active: true,
-        permissions: permisosEncontrados,
-      },
-      {
-        roleName: "Enfermero",
-        description: "Ayudante del dentista y del medico temporal",
-        active: true,
-        permissions: permisosEncontrados,
-      },
-      {
-        roleName: "Medico Temporal",
-        description: "Medico que trabaja temporalmente en el centro",
-        active: true,
-        permissions: permisosEncontrados,
-      },
-    ];
-
     try {
-      const result = await prisma.rol.createMany({
-        data: rolesData,
-      });
+      const permisos = await prisma.permission.findMany();
+      const permisosEncontrados = permisos.map((element) => element.id);
+      const rolesData = [
+        {
+          roleName: "Paciente",
+          description: "Persona que adquiere servicios del centro",
+          active: true,
+        },
+        {
+          roleName: "Dentista",
+          description: "Persona encargada de tratar a los pacientes",
+          active: true,
+        },
+        {
+          roleName: "Secretario",
+          description:
+            "Personal encargado de administrar la información de los pacientes y citas",
+          active: true,
+        },
+        {
+          roleName: "Administrador",
+          description: "Personal que administra todo en el centro",
+          active: true,
+        },
+        {
+          roleName: "Enfermero",
+          description: "Ayudante del dentista y del médico temporal",
+          active: true,
+        },
+        {
+          roleName: "Médico Temporal",
+          description: "Médico que trabaja temporalmente en el centro",
+          active: true,
+        },
+      ];
+      const createdRoles = await Promise.all(
+        rolesData.map(async (role) => {
+          return await prisma.rol.create({
+            data: {
+              ...role,
+              permissions: {
+                connect: permisosEncontrados.map((id) => ({ id })),
+              },
+            },
+          });
+        }),
+      );
       res
         .status(200)
-        .json({ message: "Roles insertados correctamente", result });
+        .json({ message: "Roles insertados correctamente", createdRoles });
     } catch (error) {
       res
         .status(500)

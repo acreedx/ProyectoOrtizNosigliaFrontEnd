@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-const personValidation = z.object({
+const personUpdateValidation = z.object({
   firstName: z
     .string()
     .min(3, "Debe tener más de 3 caracteres")
@@ -15,14 +15,14 @@ const personValidation = z.object({
     .max(50, "Debe tener menos de 50 caracteres"),
   phone: z
     .string()
-    .length(7, "El teléfono debe tener 8 dígitos")
+    .length(7, "El teléfono debe tener 7 dígitos")
     .regex(
-      /^(?!.*(\d)\1{7})[234]\d{6}$/, // Valida 8 dígitos, empieza con 2, 3 o 4, y no contiene números repetidos
-      "El teléfono debe tener 8 dígitos, empezar con 2, 3 o 4, y contener solo números válidos.",
+      /^(?!.*(\d)\1{7})[234]\d{6}$/, // Valida 7 dígitos, empieza con 2, 3 o 4, y no contiene números repetidos
+      "El teléfono debe tener 7 dígitos, empezar con 2, 3 o 4, y contener solo números válidos.",
     )
     .refine(
       (value) => !/^(\d)\1{7}$/.test(value),
-      "Ingrese un telefono valido",
+      "Ingrese un teléfono válido",
     ),
   mobile: z
     .string()
@@ -31,7 +31,11 @@ const personValidation = z.object({
       /^(?!.*(\d)\1{7})[67]\d{7}$/, // Valida 8 dígitos, empieza con 6 o 7, y no contiene números repetidos
       "El celular debe tener 8 dígitos, empezar con 6 o 7, y contener solo números válidos.",
     )
-    .refine((value) => !/^(\d)\1{7}$/.test(value), "Ingrese un celular valido"),
+    .refine((value) => !/^(\d)\1{7}$/.test(value), "Ingrese un celular válido"),
+  gender: z
+    .string()
+    .min(1, "Debe seleccionar un género válido")
+    .max(10, "El género debe tener menos de 10 caracteres"),
   email: z
     .string()
     .email("El correo no es válido")
@@ -49,12 +53,17 @@ const personValidation = z.object({
     .string()
     .min(3, "Debe tener más de 3 caracteres")
     .max(50, "Debe tener menos de 50 caracteres"),
-  identification: z
-    .string()
-    .regex(/^\d+$/, "El carnet debe contener solo números"),
-  username: z
+  maritalStatus: z
     .string()
     .min(3, "Debe tener más de 3 caracteres")
     .max(50, "Debe tener menos de 50 caracteres"),
+  identification: z
+    .string()
+    .regex(/^\d+$/, "El carnet debe contener solo números"),
+  rolID: z
+    .string()
+    .min(1, "Debe seleccionar un rol válido")
+    .max(50, "El rol debe tener menos de 50 caracteres"),
 });
-export default personValidation;
+
+export default personUpdateValidation;

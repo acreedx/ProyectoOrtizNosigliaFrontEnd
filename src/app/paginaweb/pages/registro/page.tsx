@@ -18,23 +18,16 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
-import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
-import { ChangeEvent, useState } from "react"; // Asegúrate de que la ruta sea correcta
+import { ChangeEvent, useState } from "react";
 import Swal from "sweetalert2";
-
-import { z } from "zod";
-import { storage } from "../../../../../firebase.config";
-import formularioPersona, {
-  createEmptyFormularioPersona,
-} from "./formularioRegistro";
-import schema from "./validacionRegistro";
-import { PersonService } from "@/repositories/PersonService";
+import { createEmptyFormularioPersona } from "./formularioRegistro";
 import { useRouter } from "next/navigation";
 import { createPerson } from "@/pages/serveractions/person";
 
 interface FileWithPreview extends File {
   preview?: string;
 }
+
 export default function PersonForm() {
   const router = useRouter();
   const [formData, setFormData] = useState(createEmptyFormularioPersona());
@@ -43,6 +36,7 @@ export default function PersonForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target as any;
     setFormData((prevData) => ({ ...prevData, [name]: value }));
@@ -58,29 +52,31 @@ export default function PersonForm() {
       setImage(selectedImage);
     }
   };
-
-  const addAllergy = () => {
-    setFormData((prevData) => ({
-      ...prevData,
-      alergias: [
-        ...prevData.allergies,
-        { sustancia: "", reaccion: "", severidad: "mild", notas: "" },
-      ],
-    }));
-  };
+  const [allergies, setAllergies] = useState<
+    {
+      substance: string;
+      reaction: string;
+      severity: string;
+      notes: string;
+    }[]
+  >([]);
 
   const handleAllergyChange = (index: number, field: string, value: string) => {
-    const updatedAllergies = formData.allergies.map((allergy, i) =>
+    const updatedAllergies = allergies.map((allergy, i) =>
       i === index ? { ...allergy, [field]: value } : allergy,
     );
-    setFormData({ ...formData, allergies: updatedAllergies });
+    setAllergies(updatedAllergies);
+  };
+
+  const addAllergy = () => {
+    setAllergies((prevData) => [
+      ...prevData,
+      { substance: "", reaction: "", severity: "mild", notes: "" },
+    ]);
   };
 
   const handleRemoveAllergy = (index: number) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      alergias: prevData.allergies.filter((_, i) => i !== index),
-    }));
+    setAllergies((prevData) => prevData.filter((_, i) => i !== index));
   };
 
   const handleClick = () => setShowPassword((prev) => !prev);
@@ -94,7 +90,17 @@ export default function PersonForm() {
     try {
       const response = await createPerson(formData);
       if (!response.success) {
-        setErrors(response.errors);
+        if (response.error) {
+          Swal.fire({
+            title: "Error",
+            text: response.error,
+            icon: "error",
+            confirmButtonText: "Aceptar",
+            confirmButtonColor: "#28a745",
+          });
+        } else {
+          setErrors(response.errors);
+        }
       } else {
         Swal.fire({
           title: "Éxito",
@@ -103,7 +109,7 @@ export default function PersonForm() {
           confirmButtonText: "Aceptar",
           confirmButtonColor: "#28a745",
         }).then(() => {
-          router.push("/paginaweb/login");
+          router.push("/paginaweb/pages/login");
         });
       }
       setIsLoading(false);
@@ -317,84 +323,31 @@ export default function PersonForm() {
                 </Text>
               )}
             </FormControl>
-            <FormControl id="username" isRequired>
-              <FormLabel>Usuario</FormLabel>
-              <Input
-                name="username"
-                value={formData.username}
-                onChange={handleInputChange}
-              />
-              {errors.username && (
-                <Text color="red.500">
-                  {errors.username._errors.join(", ")}
-                </Text>
-              )}
-            </FormControl>
-            <FormControl id="password" isRequired>
-              <FormLabel>Contraseña</FormLabel>
-              <InputGroup>
-                <Input
-                  type={showPassword ? "text" : "password"}
-                  name="password"
-                  value={formData.password}
-                  onChange={handleInputChange}
-                />
-                <InputRightElement>
-                  <Button variant="link" onClick={handleClick}>
-                    {showPassword ? <ViewOffIcon /> : <ViewIcon />}
-                  </Button>
-                </InputRightElement>
-              </InputGroup>
-              {errors.password && (
-                <Text color="red.500">
-                  {errors.password._errors.join(", ")}
-                </Text>
-              )}
-            </FormControl>
-            <FormControl id="confirmPassword" isRequired>
-              <FormLabel>Confirmar contraseña</FormLabel>
-              <InputGroup>
-                <Input
-                  type={showConfirmPassword ? "text" : "password"}
-                  name="confirmPassword"
-                  value={formData.confirmPassword}
-                  onChange={handleInputChange}
-                />
-                <InputRightElement>
-                  <Button variant="link" onClick={handleClickConfirm}>
-                    {showConfirmPassword ? <ViewOffIcon /> : <ViewIcon />}
-                  </Button>
-                </InputRightElement>
-              </InputGroup>
-              {errors.confirmPassword && (
-                <Text color="red.500">
-                  {errors.confirmPassword._errors.join(", ")}
-                </Text>
-              )}
-            </FormControl>
             {/* Alergias */}
             <Heading as="h4" size="md">
               Alergias
             </Heading>
-            {formData.allergies.map((allergy, index) => (
+            {allergies.map((allergy, index) => (
               <Box key={index} borderWidth="1px" borderRadius="md" p={4} mb={2}>
                 <FormControl isRequired>
                   <FormLabel>Nombre de la sustancia</FormLabel>
                   <Input
                     type="text"
+                    name={`allergies[${index}][substance]`}
                     value={allergy.substance}
-                    onChange={(e) =>
-                      handleAllergyChange(index, "sustancia", e.target.value)
-                    }
+                    onChange={(e) => {
+                      handleAllergyChange(index, "substance", e.target.value);
+                    }}
                   />
                 </FormControl>
                 <FormControl isRequired>
                   <FormLabel>Tipo de reacción</FormLabel>
                   <Select
+                    name={`allergies[${index}][reaction]`}
                     value={allergy.reaction}
-                    onChange={(e) =>
-                      handleAllergyChange(index, "reaccion", e.target.value)
-                    }
+                    onChange={(e) => {
+                      handleAllergyChange(index, "reaction", e.target.value); // Asegúrate de manejar el cambio aquí
+                    }}
                   >
                     <option value="mild">Baja</option>
                     <option value="moderate">Moderada</option>
@@ -405,10 +358,11 @@ export default function PersonForm() {
                   <FormLabel>Comentario sobre la alergia</FormLabel>
                   <Input
                     type="text"
+                    name={`allergies[${index}][notes]`}
                     value={allergy.notes}
-                    onChange={(e) =>
-                      handleAllergyChange(index, "notas", e.target.value)
-                    }
+                    onChange={(e) => {
+                      handleAllergyChange(index, "notes", e.target.value);
+                    }}
                   />
                 </FormControl>
                 <Box textAlign="right" mt={2}>

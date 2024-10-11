@@ -1,4 +1,3 @@
-import { localDomain } from "@/types/domain";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -9,10 +8,11 @@ interface User {
   foto: string;
   nombre: string;
   apellido: string;
+  rol: string;
   permisos: String[];
 }
 const LogOut = async () => {
-  const res = await fetch(localDomain + "user/logout", {
+  const res = await fetch("/api/logout", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -21,7 +21,7 @@ const LogOut = async () => {
   });
   if (!res.ok) {
     const data = await res.json();
-    throw new Error(data.message);
+    console.log(data);
   }
   return true;
 };
@@ -47,18 +47,34 @@ const useUser = () => {
         setLoading(false);
       }
     };
-
     fetchUser();
   }, []);
+
   const logout = async () => {
     try {
       await LogOut();
-      setUser(null);
     } catch (err: any) {
       setError(err.message);
+    } finally {
+      setUser(null);
     }
   };
-  return { user, loading, error, logout };
+
+  const isInRole = (rol: string): boolean => {
+    if (!user) {
+      return false;
+    }
+    if (user.rol === rol) {
+      return true;
+    }
+    return false;
+  };
+
+  const hasPermission = (permission: string): boolean => {
+    return user ? user.permisos.includes(permission) : false;
+  };
+
+  return { user, loading, error, logout, isInRole, hasPermission };
 };
 
 export default useUser;

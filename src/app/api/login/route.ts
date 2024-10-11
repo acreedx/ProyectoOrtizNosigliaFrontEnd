@@ -1,26 +1,29 @@
-import { NextApiRequest, NextApiResponse } from "next";
 import jwt from "jsonwebtoken";
-import { cookies } from "next/headers"; // Usamos cookies de Next.js
 import { PrismaClient } from "@prisma/client";
-import bcrypt from "bcrypt";
-import { NextResponse } from "next/server";
-const key = process.env.JWT_SECRET_KEY;
+import bcrypt from "bcryptjs";
+import { NextRequest, NextResponse } from "next/server";
+const key = process.env.JWT_SECRET;
 
-export async function POST(req: NextResponse) {
-  const { username, password } = await req.json(); // Cambia a req.json() para obtener el cuerpo
-
+export async function POST(req: NextRequest) {
   try {
+    const { username, password } = await req.json();
     if (!key) {
       return NextResponse.json(
         { message: "No se tiene el token Jwt en las variables de entorno" },
         { status: 500 },
       );
     }
-
     const prisma = new PrismaClient();
     const person = await prisma.person.findFirst({
       where: {
         username: username,
+      },
+      include: {
+        rol: {
+          include: {
+            permissions: true,
+          },
+        },
       },
     });
 
@@ -31,15 +34,21 @@ export async function POST(req: NextResponse) {
       );
     }
 
-    const isTokenValid = await bcrypt.compare(password, person.password);
-    if (!isTokenValid) {
+    const isPasswordValid = await bcrypt.compare(password, person.password);
+    if (!isPasswordValid) {
       return NextResponse.json(
         { message: "Password o nombre de usuario incorrecto" },
         { status: 500 },
       );
     }
+    if (!person.active) {
+      return NextResponse.json(
+        { message: "Usuario bloquedo reestablezca su contraseña por favor" },
+        { status: 500 },
+      );
+    }
 
-    person.password = "_"; // Para no enviar la contraseña
+    person.password = "_";
     const token = jwt.sign(
       {
         _id: person.id,
@@ -48,6 +57,8 @@ export async function POST(req: NextResponse) {
         foto: person.photoUrl,
         nombre: person.firstName,
         apellido: person.familyName,
+        rol: person.rol.roleName,
+        permisos: person.rol.permissions?.map((permiso) => permiso.code),
       },
       key,
       {
@@ -58,10 +69,10 @@ export async function POST(req: NextResponse) {
     const response = NextResponse.json({ person });
     response.cookies.set("access_token", token, {
       httpOnly: true,
-      // secure: process.env.NODE_ENV === "production", // la cookie solo se puede acceder en https
+      // secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
       maxAge: 3600, // 1 hora
-      path: "/", // Define el path para la cookie
+      path: "/",
     });
 
     return response;

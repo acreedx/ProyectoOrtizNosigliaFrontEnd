@@ -1,11 +1,16 @@
 "use server";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, Severity } from "@prisma/client";
 import { subirFotoDePerfil } from "../utils/upload_image";
 import personValidation from "../zod_models/personValidation";
+import { sendEmail } from "./mailer";
+import { hashPassword } from "../utils/password_hasher";
+import { getPasswordExpiration } from "../utils/get_password_expiration";
+import { generatePassword } from "../utils/password_generator";
 
 export async function createPerson(formData: FormData) {
   const prisma = new PrismaClient();
   const profilePicture = formData.get("photoUrl") as File | undefined;
+  //Formar Alergias
   const allergies: {
     substance: string;
     reaction: string;
@@ -14,10 +19,20 @@ export async function createPerson(formData: FormData) {
   }[] = [];
   let i = 0;
   while (formData.get(`allergies[${i}][substance]`)) {
+    const reaction =
+      formData.get(`allergies[${i}][reaction]`)?.toString() || "";
+    const severity =
+      reaction === "mild"
+        ? "Baja"
+        : reaction === "moderate"
+          ? "Media"
+          : reaction === "severe"
+            ? "Severa"
+            : "Baja";
     allergies.push({
       substance: formData.get(`allergies[${i}][substance]`)?.toString() || "",
-      reaction: formData.get(`allergies[${i}][reaction]`)?.toString() || "",
-      severity: formData.get(`allergies[${i}][severity]`)?.toString() || "mild", // valor por defecto
+      reaction: severity,
+      severity: formData.get(`allergies[${i}][reaction]`)?.toString() || "",
       notes: formData.get(`allergies[${i}][notes]`)?.toString() || "",
     });
     i++;
@@ -35,18 +50,35 @@ export async function createPerson(formData: FormData) {
     addressCity: formData.get("addressCity")?.toString() || "",
     maritalStatus: formData.get("maritalStatus")?.toString() || "",
     identification: formData.get("identification")?.toString() || "",
-    username: formData.get("username")?.toString() || "",
-    password: formData.get("password")?.toString() || "",
-    confirmPassword: formData.get("confirmPassword")?.toString() || "",
     allergies: allergies,
   };
-  console.log(data);
   const result = personValidation.safeParse(data);
-  console.log(result);
   if (!result.success) {
     return {
       success: false,
       errors: result.error.format(),
+    };
+  }
+  const AnyPersonUserName = await prisma.person.findFirst({
+    where: {
+      username: data.identification,
+    },
+  });
+  if (AnyPersonUserName) {
+    return {
+      success: false,
+      error: "Ya existe un Usuario con ese Carnet de Identidad",
+    };
+  }
+  const AnyPersonIdentificationName = await prisma.person.findFirst({
+    where: {
+      identification: data.identification,
+    },
+  });
+  if (AnyPersonIdentificationName) {
+    return {
+      success: false,
+      error: "Ya existe un Usuario con ese Carnet de Identidad",
     };
   }
   const rolPaciente = await prisma.rol.findFirst({
@@ -60,34 +92,60 @@ export async function createPerson(formData: FormData) {
       error: "No existe el rol de paciente registrado",
     };
   }
-  const personas = await prisma.person.findMany();
-  console.log(personas);
-  await prisma.person.create({
+
+  const generatedPassword = await generatePassword(
+    data.firstName,
+    data.familyName,
+    data.identification,
+  );
+  const newPerson = await prisma.person.create({
     data: {
       photoUrl: await subirFotoDePerfil(profilePicture),
       firstName: data.firstName,
-      active: true,
+      active: false,
       secondName: data.secondName,
       familyName: data.familyName,
       gender: data.gender,
       email: data.email,
       birthDate: new Date(data.birthDate),
+      phone: data.phone,
+      mobile: data.mobile,
       addressLine: data.addressLine,
       addressCity: data.addressCity,
       maritalStatus: data.maritalStatus === "Married" ? "Married" : "Single",
       identification: data.identification,
-      username: data.username,
-      password: data.password,
+      username: data.identification,
+      password: await hashPassword(generatedPassword),
+      passwordExpiration: getPasswordExpiration(),
       allergies: {
         create: data.allergies.map((allergy) => ({
           substance: allergy.substance,
           reaction: allergy.reaction,
-          severity: allergy.severity as any,
+          severity: allergy.severity as Severity,
           notes: allergy.notes,
         })),
       },
       rolID: rolPaciente ? rolPaciente.id : "",
     },
+  });
+  await sendEmail({
+    email: newPerson.email,
+    subject: "Creación exitosa de cuenta",
+    message: `
+      ¡Hola ${newPerson.firstName}!
+  
+      Tu cuenta ha sido creada exitosamente. Aquí tienes tus credenciales:
+  
+      - **Nombre de usuario**: ${newPerson.username}
+      - **Contraseña**: ${generatedPassword}
+  
+      Por favor, guarda esta información en un lugar seguro.
+      
+      Despues de tu primer inicio de sesión se te pedirá que cambies tu contraseña
+
+
+      ¡Gracias por unirte a Ortiz Nosiglia!
+    `,
   });
   return { success: true };
 }

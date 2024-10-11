@@ -11,6 +11,7 @@ import { z } from "zod";
 import Swal from "sweetalert2";
 import { Text } from "@chakra-ui/react";
 import { localDomain } from "@/types/domain";
+import Banner from "../../components/Banner";
 
 export default function Editar() {
   const router = useRouter();
@@ -87,35 +88,7 @@ export default function Editar() {
       <main>
         <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
           <div className="flex flex-wrap items-center ">
-            <div className="hidden w-full  xl:block xl:w-1/2">
-              <div className=" px-26 py-17.5 text-center ">
-                <div className="rounded-xl bg-orange-400 p-10 shadow-lg">
-                  <Link
-                    className="mb-5.5 inline-block transition hover:drop-shadow-xl"
-                    href="/paginaweb/pages/home"
-                  >
-                    <Image
-                      className="hidden shadow-lg dark:block"
-                      src={"/images/logo/logo.png"}
-                      alt="Logo"
-                      width={80}
-                      height={32}
-                    />
-                    <Image
-                      className="dark:hidden"
-                      src={"/images/logo/logo.png"}
-                      alt="Logo"
-                      width={80}
-                      height={32}
-                    />
-                  </Link>
-
-                  <p className="text-xl font-bold  text-white drop-shadow-sm 2xl:px-20">
-                    Bienvenido al Sistema Web del centro Ortiz Nosiglia
-                  </p>
-                </div>
-              </div>
-            </div>
+            <Banner />
 
             <div className="w-full border-stroke dark:border-strokedark xl:w-1/2 xl:border-l-2">
               <div className="w-full p-4 sm:p-12.5 xl:p-17.5">
@@ -244,7 +217,7 @@ export default function Editar() {
                   </div>
 
                   <Link
-                    href={"/paginaweb/pages/editar"}
+                    href={"/paginaweb/pages/olvidarpassword"}
                     className="flex w-full items-center justify-center gap-3.5 rounded-lg border border-stroke bg-gray-2 p-4 text-black hover:bg-opacity-50 dark:border-strokedark dark:bg-meta-4 dark:hover:bg-opacity-50"
                   >
                     Olvidaste tu contraseña?

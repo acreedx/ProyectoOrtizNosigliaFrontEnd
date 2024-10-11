@@ -21,7 +21,10 @@ export const menuOptions = [
         label: "Gestión de pacientes",
         route: "#",
         children: [
-          { label: "Listado de pacientes", route: "/dashboard/pacientes" },
+          {
+            label: "Listado de pacientes",
+            route: "/dashboard/pages/pacientes",
+          },
         ],
       },
       {
@@ -42,14 +45,14 @@ export const menuOptions = [
         label: "Gestión de usuarios",
         route: "#",
         children: [
-          { label: "Listado de usuarios", route: "/dashboard/usuarios" },
+          { label: "Listado de usuarios", route: "/dashboard/pages/usuarios" },
           {
             label: "Roles y Permisos",
-            route: "/dashboard/roles",
+            route: "/dashboard/pages/roles",
           },
           {
             label: "Logs",
-            route: "/dashboard/logs",
+            route: "/dashboard/pages/logs",
           },
         ],
       },
