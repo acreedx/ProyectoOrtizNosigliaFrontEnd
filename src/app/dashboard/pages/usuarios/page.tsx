@@ -54,6 +54,7 @@ export default async function Usuarios() {
                 <Th>Teléfono</Th>
                 <Th>Celular</Th>
                 <Th>Rol</Th>
+                <Th>Acciones</Th>
               </Tr>
             </Thead>
             <Tbody>
@@ -70,14 +71,19 @@ export default async function Usuarios() {
                   <Td>{person.rol.roleName}</Td>
                   <Td>
                     <HStack spacing={3}>
-                      <BotonHabilitar
-                        userId={person.id}
-                        active={person.active}
-                      />
-                      <BotonInformacion />
-                      <BotonEditar
-                        route={`/dashboard/pages/usuarios/editar/${person.id}`}
-                      />
+                      {person.rol.roleName != "Administrador" ? (
+                        <>
+                          <BotonHabilitar
+                            userId={person.id}
+                            active={person.active}
+                          />
+                          <BotonEditar
+                            route={`/dashboard/pages/usuarios/editar/${person.id}`}
+                          />{" "}
+                        </>
+                      ) : (
+                        <></>
+                      )}
                     </HStack>
                   </Td>
                 </Tr>

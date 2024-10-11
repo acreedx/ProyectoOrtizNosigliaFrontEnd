@@ -89,6 +89,7 @@ export default function PersonForm() {
     const formData = new FormData(event.currentTarget);
     try {
       const response = await createPerson(formData);
+      console.log(response);
       if (!response.success) {
         if (response.error) {
           Swal.fire({

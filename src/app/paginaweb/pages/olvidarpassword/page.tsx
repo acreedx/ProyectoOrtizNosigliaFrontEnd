@@ -23,7 +23,7 @@ export default function OlvidarPassword() {
     Swal.fire({
       title: "Confirmación",
       text: "Al confirmar se enviara una nueva contraseña a tu correo electrónico",
-      icon: "error",
+      icon: "question",
       showCancelButton: true,
       cancelButtonText: "Cancelar",
       cancelButtonColor: "#a72828",

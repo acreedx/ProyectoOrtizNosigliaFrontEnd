@@ -146,7 +146,7 @@ export default function PersoNavBar() {
                 href="/paginaweb/pages/editarperfil"
                 className="rounded-xl bg-orange-400 p-2 text-lg text-white no-underline transition-all duration-300  hover:text-orange-700 hover:drop-shadow-md "
               >
-                Editar Perfil
+                Cambiar contraseña
               </Link>
               <button
                 onClick={LogOut}

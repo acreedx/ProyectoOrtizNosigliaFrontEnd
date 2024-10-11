@@ -52,9 +52,5 @@ const personValidation = z.object({
   identification: z
     .string()
     .regex(/^\d+$/, "El carnet debe contener solo números"),
-  username: z
-    .string()
-    .min(3, "Debe tener más de 3 caracteres")
-    .max(50, "Debe tener menos de 50 caracteres"),
 });
 export default personValidation;

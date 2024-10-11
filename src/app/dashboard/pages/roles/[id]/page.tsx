@@ -14,6 +14,7 @@ import DefaultLayout from "../../../components/Layouts/DefaultLayout";
 import Breadcrumb from "../../../components/Breadcrumbs/Breadcrumb";
 import BotonVolver from "../../../components/BotonVolver";
 import { PrismaClient } from "@prisma/client";
+import { updateRol } from "@/pages/serveractions/roleActions";
 export default async function Page({ params }: { params: { id: string } }) {
   const prisma = new PrismaClient();
   const rol = await prisma.rol.findFirst({
@@ -40,8 +41,9 @@ export default async function Page({ params }: { params: { id: string } }) {
         <Heading size="lg" mb={6}>
           Editar Rol
         </Heading>
-        <form>
+        <form action={updateRol}>
           {/* Campo para el nombre del rol */}
+          <Input type="hidden" name="id" defaultValue={rol?.id} />
           <FormControl id="roleName" mb={4}>
             <FormLabel>Nombre del rol</FormLabel>
             <Input
@@ -67,6 +69,7 @@ export default async function Page({ params }: { params: { id: string } }) {
                 {permisos.map((permission, index) => (
                   <Checkbox
                     key={index}
+                    name="permissions"
                     defaultChecked={rol?.permissions?.some(
                       (e) => e.permissionName === permission.permissionName,
                     )}
