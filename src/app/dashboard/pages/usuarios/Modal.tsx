@@ -29,7 +29,7 @@ import {
 import { useRouter } from "next/navigation";
 import Person from "@/interfaces/Person";
 import { PersonService } from "@/repositories/PersonService";
-export default async function Usuarios() {
+export default function Usuarios() {
   const router = useRouter();
   const toast = useToast();
 

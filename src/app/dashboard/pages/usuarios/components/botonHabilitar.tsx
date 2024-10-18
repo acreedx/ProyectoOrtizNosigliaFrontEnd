@@ -2,7 +2,7 @@
 import {
   dehabilitateUser,
   habilitateUser,
-} from "@/pages/serveractions/userActions";
+} from "@/app/api/pages/serveractions/userActions";
 import { Button } from "@chakra-ui/react";
 import Swal from "sweetalert2";
 

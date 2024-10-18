@@ -18,7 +18,7 @@ import {
 import { ChangeEvent, useState } from "react";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
-import { createPerson } from "@/pages/serveractions/person";
+import { createPerson } from "@/app/api/pages/serveractions/person";
 import Breadcrumb from "@/app/dashboard/components/Breadcrumbs/Breadcrumb";
 import DefaultLayout from "@/app/dashboard/components/Layouts/DefaultLayout";
 import { createEmptyFormularioPersona } from "@/app/paginaweb/pages/registro/formularioRegistro";

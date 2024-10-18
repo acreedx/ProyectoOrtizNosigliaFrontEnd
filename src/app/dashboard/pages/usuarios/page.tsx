@@ -17,7 +17,7 @@ import { PrismaClient } from "@prisma/client";
 import BotonHabilitar from "./components/botonHabilitar";
 import BotonInformacion from "./components/botonInformacion";
 import BotonEditar from "./components/botonEditar";
-import { birthDateFormater } from "@/pages/utils/birth_date_formater";
+import { birthDateFormater } from "@/app/api/pages/utils/birth_date_formater";
 export default async function Usuarios() {
   const prisma = new PrismaClient();
   const persons = await prisma.person.findMany({ include: { rol: true } });

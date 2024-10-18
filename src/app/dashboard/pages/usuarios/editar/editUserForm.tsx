@@ -13,9 +13,9 @@ import {
   Image,
 } from "@chakra-ui/react";
 import Swal from "sweetalert2";
-import { updateUserDashboard } from "@/pages/serveractions/updateUserDashboard";
+import { updateUserDashboard } from "@/app/api/pages/serveractions/updateUserDashboard";
 import { Person, Rol } from "@prisma/client";
-import { birthDateFormater } from "@/pages/utils/birth_date_formater";
+import { birthDateFormater } from "@/app/api/pages/utils/birth_date_formater";
 
 export default function EditUserForm({
   user,

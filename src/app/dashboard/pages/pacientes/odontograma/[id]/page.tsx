@@ -88,7 +88,7 @@ const Odontograma = ({ params }: { params: { id: string } }) => {
       setloading(false);
     }
     fetchOdontogram();
-  }, []);
+  }, [params.id]);
   return (
     <DefaultLayout>
       <BotonVolver direccion="/dashboard/pacientes" />

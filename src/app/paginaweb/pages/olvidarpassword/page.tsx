@@ -4,7 +4,7 @@ import Layout from "../../components/Layout";
 import Banner from "../../components/Banner";
 import Link from "next/link";
 import Swal from "sweetalert2";
-import { forgetPassword } from "@/pages/serveractions/forgetPassword";
+import { forgetPassword } from "@/app/api/pages/serveractions/forgetPassword";
 import { useRouter } from "next/navigation";
 import PacienteIcon from "@/app/dashboard/components/Icons/PacienteIcon";
 import { Text } from "@chakra-ui/react";

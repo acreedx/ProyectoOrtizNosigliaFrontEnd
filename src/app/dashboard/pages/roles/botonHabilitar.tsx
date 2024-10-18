@@ -2,7 +2,7 @@
 import {
   deshabilitarRol,
   habilitarRol,
-} from "@/pages/serveractions/roleActions";
+} from "@/app/api/pages/serveractions/roleActions";
 import { Button } from "@chakra-ui/react";
 import Swal from "sweetalert2";
 
