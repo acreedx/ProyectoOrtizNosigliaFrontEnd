@@ -22,7 +22,11 @@ import { ChangeEvent, useState } from "react";
 import Swal from "sweetalert2";
 import { createEmptyFormularioPersona } from "./formularioRegistro";
 import { useRouter } from "next/navigation";
+<<<<<<< HEAD:src/app/paginaweb/registro/page.tsx
 import { createPerson } from "@/app/serveractions/person";
+=======
+import { createPerson } from "@/app/api/pages/serveractions/person";
+>>>>>>> 94210b95966e13d3b0e080002bee3f21a5448582:src/app/paginaweb/pages/registro/page.tsx
 
 interface FileWithPreview extends File {
   preview?: string;

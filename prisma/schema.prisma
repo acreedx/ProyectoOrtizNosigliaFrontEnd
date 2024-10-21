@@ -95,3 +95,24 @@ model Person {
   @@map("persons")
 }
 
+model Appointment {
+  id                    String   @id @default(auto()) @map("_id") @db.ObjectId
+  resourceType          String
+  status                String
+  cancellationReason    String?
+  specialty             String
+  reason                String
+  description           String?
+  previousAppointment   String?  @db.ObjectId
+  originatingAppointment String? @db.ObjectId
+  start                 DateTime
+  end                   DateTime
+  account               String   @db.ObjectId
+  cancellationDate      DateTime?
+  note                  String?
+  patientInstruction    String?
+  subject               String   @db.ObjectId
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+  @@map("appointments")
+}
