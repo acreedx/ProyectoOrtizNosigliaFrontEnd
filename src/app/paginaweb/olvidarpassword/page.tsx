@@ -1,7 +1,5 @@
 "use client";
 import React, { useState } from "react";
-import Layout from "../../components/Layout";
-import Banner from "../../components/Banner";
 import Link from "next/link";
 import Swal from "sweetalert2";
 import { forgetPassword } from "@/app/serveractions/forgetPassword";
@@ -10,6 +8,8 @@ import PacienteIcon from "@/app/dashboard/components/Icons/PacienteIcon";
 import { Text } from "@chakra-ui/react";
 import CandadoIcon from "@/app/dashboard/components/Icons/CandadoIcon";
 import { EmailIcon } from "@chakra-ui/icons";
+import Layout from "../components/Layout";
+import Banner from "../components/Banner";
 
 export default function OlvidarPassword() {
   const router = useRouter();

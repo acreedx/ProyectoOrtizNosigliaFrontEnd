@@ -2,7 +2,7 @@ import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/prisma";
-import { Person } from "@prisma/client";
+import { Permission, Person, Rol } from "@prisma/client";
 
 const handler = NextAuth({
   providers: [
@@ -54,11 +54,11 @@ const handler = NextAuth({
   },
   callbacks: {
     async jwt({ account, token, user, profile, session }) {
-      if (user) token.user = user as Person;
+      if (user) token.user = user as any;
       return token;
     },
     async session({ session, token }) {
-      session.user = token.user as any;
+      session.user = token.user;
       return session;
     },
   },
@@ -70,12 +70,12 @@ const handler = NextAuth({
 
 declare module "next-auth" {
   interface Session {
-    user: Person;
+    user: Person & { rol: Rol & { permissions: Permission[] } };
   }
 }
 declare module "next-auth/jwt" {
   interface JWT {
-    user: Person;
+    user: Person & { rol: Rol & { permissions: Permission[] } };
   }
 }
 export { handler as GET, handler as POST };

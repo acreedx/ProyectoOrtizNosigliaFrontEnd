@@ -52,7 +52,7 @@ export default function OlvidarPassword() {
             confirmButtonText: "Aceptar",
             confirmButtonColor: "#28a745",
           }).then(() => {
-            router.push("/paginaweb/pages/login");
+            router.push("/paginaweb/login");
           });
         }
         setIsLoading(false);

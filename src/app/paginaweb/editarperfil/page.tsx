@@ -5,15 +5,11 @@ import Image from "next/image";
 import CandadoIcon from "@/app/dashboard/components/Icons/CandadoIcon";
 import PacienteIcon from "@/app/dashboard/components/Icons/PacienteIcon";
 import { useRouter } from "next/navigation";
-import Layout from "../../components/Layout";
-import Banner from "../../components/Banner";
 import Swal from "sweetalert2";
 import { Button, Spinner, Text } from "@chakra-ui/react";
-<<<<<<< HEAD:src/app/paginaweb/editarperfil/page.tsx
-import { changePassword } from "@/app/serveractions/changePassword";
-=======
 import { changePassword } from "@/app/api/pages/serveractions/changePassword";
->>>>>>> 94210b95966e13d3b0e080002bee3f21a5448582:src/app/paginaweb/pages/editarperfil/page.tsx
+import Layout from "../components/Layout";
+import Banner from "../components/Banner";
 
 export default function Editar() {
   const router = useRouter();

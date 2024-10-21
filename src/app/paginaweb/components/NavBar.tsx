@@ -17,14 +17,21 @@ import {
   HStack,
 } from "@chakra-ui/react";
 import Link from "next/link";
-export default function PersoNavBar() {
-  const [isOpen, setIsOpen] = useState(false);
-  const { user, loading, error, logout, isInRole } = useUser();
-  const LogOut = async () => {
-    await logout();
-    window.location.reload();
-  };
+import { signOut, useSession } from "next-auth/react";
+import { personFullNameFormater } from "@/utils/format_person_full_name";
+import { useRouter } from "next/navigation";
 
+export default function PersoNavBar() {
+  const router = useRouter();
+  const [isOpen, setIsOpen] = useState(false);
+  const { data: session, status } = useSession();
+  const LogOut = async () => {
+    await signOut({
+      redirect: false,
+    }).then(() => {
+      router.push("/paginaweb/login");
+    });
+  };
   const onOpen = () => setIsOpen(true);
   const onClose = () => setIsOpen(false);
   return (
@@ -67,11 +74,11 @@ export default function PersoNavBar() {
           */}
         </Flex>
         <div className="flex items-center gap-4">
-          {loading ? (
+          {status === "loading" ? (
             <Spinner />
-          ) : user ? (
+          ) : session?.user ? (
             <>
-              {!isInRole("Paciente") && (
+              {session.user && (
                 <li>
                   <Link
                     href="/dashboard"
@@ -81,7 +88,6 @@ export default function PersoNavBar() {
                   </Link>
                 </li>
               )}
-
               <li>
                 <button
                   onClick={onOpen}
@@ -90,12 +96,14 @@ export default function PersoNavBar() {
                   <HStack>
                     <Avatar
                       size="md"
-                      name={user.nombre + " " + user.apellido}
-                      src={user.foto}
+                      name={
+                        session.user.firstName + " " + session.user.familyName
+                      }
+                      src={session.user.photoUrl}
                     />
                     <div className="flex flex-col">
                       <Text fontWeight="bold">
-                        {user.nombre + " " + user.apellido}
+                        {session.user.firstName + " " + session.user.familyName}
                       </Text>
                       <Text fontSize="sm" color="black">
                         Ver perfil
@@ -130,33 +138,43 @@ export default function PersoNavBar() {
       {/* Drawer para ver el perfil del usuario */}
       <Drawer isOpen={isOpen} placement="right" onClose={onClose}>
         <DrawerOverlay />
-        <DrawerContent>
-          <DrawerCloseButton />
-          <DrawerHeader>Perfil del Usuario</DrawerHeader>
-          <DrawerBody>
-            <div className="mb-4 flex flex-col items-center">
-              <Avatar size="2xl" name={user?.nombreUsuario} src={user?.foto} />
-              <h2 className="mt-2 text-xl font-bold">
-                {user?.nombre + " " + user?.apellido}
-              </h2>
-              <p className="text-gray-600">{user?.email}</p>
-            </div>
-            <div className="flex flex-col items-center justify-center gap-4">
-              <Link
-                href="/paginaweb/editarperfil"
-                className="rounded-xl bg-orange-400 p-2 text-lg text-white no-underline transition-all duration-300  hover:text-orange-700 hover:drop-shadow-md "
-              >
-                Cambiar contraseña
-              </Link>
-              <button
-                onClick={LogOut}
-                className="rounded-xl border-2 border-orange-400 p-2 text-lg text-orange-400 no-underline transition-all duration-300 hover:bg-orange-400 hover:text-white hover:drop-shadow-md focus:no-underline focus:shadow-none focus:outline-none"
-              >
-                Cerrar Sesión
-              </button>
-            </div>
-          </DrawerBody>
-        </DrawerContent>
+        {status === "loading" ? (
+          <Spinner />
+        ) : session?.user ? (
+          <DrawerContent>
+            <DrawerCloseButton />
+            <DrawerHeader>Perfil del Usuario</DrawerHeader>
+            <DrawerBody>
+              <div className="mb-4 flex flex-col items-center">
+                <Avatar
+                  size="2xl"
+                  name={session.user.username}
+                  src={session.user.photoUrl}
+                />
+                <h2 className="mt-2 text-xl font-bold">
+                  {personFullNameFormater(session.user)}
+                </h2>
+                <p className="text-gray-600">{session.user.rolID}</p>
+              </div>
+              <div className="flex flex-col items-center justify-center gap-4">
+                <Link
+                  href="/paginaweb/editarperfil"
+                  className="rounded-xl bg-orange-400 p-2 text-lg text-white no-underline transition-all duration-300  hover:text-orange-700 hover:drop-shadow-md "
+                >
+                  Cambiar contraseña
+                </Link>
+                <button
+                  onClick={LogOut}
+                  className="rounded-xl border-2 border-orange-400 p-2 text-lg text-orange-400 no-underline transition-all duration-300 hover:bg-orange-400 hover:text-white hover:drop-shadow-md focus:no-underline focus:shadow-none focus:outline-none"
+                >
+                  Cerrar Sesión
+                </button>
+              </div>
+            </DrawerBody>
+          </DrawerContent>
+        ) : (
+          <>Usuario no encontrado</>
+        )}
       </Drawer>
     </nav>
   );

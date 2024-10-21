@@ -1,10 +1,5 @@
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
-<<<<<<<< HEAD:src/utils/upload_image.tsx
 import { storage } from "../../firebase.config";
-========
-import { storage } from "../../../../../firebase.config";
->>>>>>>> 94210b95966e13d3b0e080002bee3f21a5448582:src/app/api/pages/utils/upload_image.tsx
-
 export const subirFotoDePerfil = async (
   image: File | undefined,
 ): Promise<string> => {
