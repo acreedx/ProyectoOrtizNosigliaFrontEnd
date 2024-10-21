@@ -31,23 +31,6 @@ const ChartThree = dynamic(
 );
 
 const DashboardPage: React.FC = () => {
-  const [persons, setPersons] = useState<Person[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-  useEffect(() => {
-    const getData = async () => {
-      try {
-        const data = await PersonService.getLatestPersons();
-        setPersons(data);
-      } catch (err) {
-        setError("Error fetching data");
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    getData();
-  }, []);
   return (
     <>
       {/*Charts por defecto */}
@@ -165,7 +148,7 @@ const DashboardPage: React.FC = () => {
               </Tr>
             </Thead>
             <Tbody>
-              {persons.map((person) => (
+              {/*persons.map((person) => (
                 <Tr key={person._id}>
                   <Td>
                     <Avatar
@@ -177,7 +160,7 @@ const DashboardPage: React.FC = () => {
                   <Td>{person.telecom[0].value}</Td>
                   <Td>{person.maritalStatus.coding[0].display}</Td>
                 </Tr>
-              ))}
+              ))*/}
             </Tbody>
           </Table>
         </div>

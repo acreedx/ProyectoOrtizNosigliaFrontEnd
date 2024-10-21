@@ -1,4 +1,7 @@
 "use client";
+import Layout from "@/app/paginaweb/components/Layout";
+import Person from "@/interfaces/Person";
+import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import {
   Box,
   Button,
@@ -17,18 +20,15 @@ import {
 } from "@chakra-ui/react";
 import { ChangeEvent, useState } from "react";
 import Swal from "sweetalert2";
+import { createEmptyFormularioPersona } from "./formularioRegistro";
 import { useRouter } from "next/navigation";
 import { createPerson } from "@/app/serveractions/person";
-import Breadcrumb from "@/app/dashboard/components/Breadcrumbs/Breadcrumb";
-import DefaultLayout from "@/app/dashboard/components/Layouts/DefaultLayout";
-import { createEmptyFormularioPersona } from "@/app/paginaweb/registro/formularioRegistro";
-import BotonVolver from "@/app/dashboard/components/BotonVolver";
 
 interface FileWithPreview extends File {
   preview?: string;
 }
 
-export default function Page() {
+export default function PersonForm() {
   const router = useRouter();
   const [formData, setFormData] = useState(createEmptyFormularioPersona());
   const [image, setImage] = useState<FileWithPreview | null>(null);
@@ -89,6 +89,7 @@ export default function Page() {
     const formData = new FormData(event.currentTarget);
     try {
       const response = await createPerson(formData);
+      console.log(response);
       if (!response.success) {
         if (response.error) {
           Swal.fire({
@@ -120,9 +121,7 @@ export default function Page() {
     }
   };
   return (
-    <DefaultLayout>
-      <Breadcrumb pageName="Crear Usuario" />
-      <BotonVolver direccion="/dashboard/pages/usuarios" />
+    <Layout>
       <Box
         mx={12}
         my={4}
@@ -133,7 +132,7 @@ export default function Page() {
         bg="white"
       >
         <Heading as="h3" textAlign="center" my={10} color="orange">
-          Registrar Usuario
+          Formulario de registro
         </Heading>
         <form onSubmit={handleFormSubmit}>
           <Stack spacing={4}>
@@ -386,6 +385,6 @@ export default function Page() {
           </Stack>
         </form>
       </Box>
-    </DefaultLayout>
+    </Layout>
   );
 }

@@ -1,6 +1,4 @@
 import React from "react";
-import DefaultLayout from "../components/Layouts/DefaultLayout";
-import Breadcrumb from "../components/Breadcrumbs/Breadcrumb";
 import {
   Table,
   Thead,
@@ -11,6 +9,8 @@ import {
   TableCaption,
   Box,
 } from "@chakra-ui/react";
+import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb";
+import DefaultLayout from "../../components/Layouts/DefaultLayout";
 export default function Logs() {
   const logs = [
     {

@@ -35,7 +35,8 @@ model Permission {
   permissionName  String   @unique
   code            String   @unique
   active          Boolean
-  roles           String[] @db.ObjectId
+  rolIDs          String[]   @db.ObjectId
+  roles           Rol[] @relation(fields: [rolIDs], references: [id])
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 }
@@ -46,9 +47,23 @@ model Rol {
   description String
   active      Boolean
   persons     Person[]    @relation
-  permissions String[]    @db.ObjectId
+  permissionIDs String[] @db.ObjectId
+  permissions   Permission[]   @relation(fields: [permissionIDs], references: [id])
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
+}
+
+model Allergy {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  substance   String
+  reaction    String
+  severity    Severity 
+  notes       String?
+  personId    String   @db.ObjectId
+  person      Person   @relation(fields: [personId], references: [id])
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  @@map("allergies")
 }
 
 model Person {
@@ -70,8 +85,7 @@ model Person {
   username          String     @unique
   password          String
   lastLogin         DateTime?
-  passwordExpiration DateTime?
-  status            Boolean     @default(true)
+  passwordExpiration DateTime
   photoUrl          String
   allergies         Allergy[]
   rolID             String      @db.ObjectId
@@ -81,15 +95,3 @@ model Person {
   @@map("persons")
 }
 
-model Allergy {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  substance   String
-  reaction    String
-  severity    Severity 
-  notes       String?
-  personId    String   @db.ObjectId
-  person      Person   @relation(fields: [personId], references: [id])
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
-  @@map("allergies")
-}

@@ -19,7 +19,7 @@ import {
 import Link from "next/link";
 export default function PersoNavBar() {
   const [isOpen, setIsOpen] = useState(false);
-  const { user, loading, error, logout } = useUser();
+  const { user, loading, error, logout, isInRole } = useUser();
   const LogOut = async () => {
     await logout();
     window.location.reload();
@@ -49,11 +49,11 @@ export default function PersoNavBar() {
           <NavBarLinkChakra linkName="Inicio" linkUrl="/" />
           <NavBarLinkChakra
             linkName="Nuestro equipo"
-            linkUrl="/paginaweb/pages/equipo"
+            linkUrl="/paginaweb/equipo"
           />
           <NavBarLinkChakra
             linkName="Reserva una cita"
-            linkUrl="/paginaweb/pages/citas"
+            linkUrl="/paginaweb/citas"
           />
           {/*
           <NavBarLinkDropDownChakra
@@ -71,14 +71,16 @@ export default function PersoNavBar() {
             <Spinner />
           ) : user ? (
             <>
-              <li>
-                <Link
-                  href="/dashboard"
-                  className="rounded-xl  bg-orange-400 p-3 text-lg text-white no-underline transition-all  hover:text-orange-700 hover:drop-shadow-md "
-                >
-                  Ingresar al dashboard
-                </Link>
-              </li>
+              {!isInRole("Paciente") && (
+                <li>
+                  <Link
+                    href="/dashboard"
+                    className="rounded-xl  bg-orange-400 p-3 text-lg text-white no-underline transition-all  hover:text-orange-700 hover:drop-shadow-md "
+                  >
+                    Ingresar al dashboard
+                  </Link>
+                </li>
+              )}
 
               <li>
                 <button
@@ -107,7 +109,7 @@ export default function PersoNavBar() {
             <>
               <li>
                 <Link
-                  href="/paginaweb/pages/login"
+                  href="/paginaweb/login"
                   className="rounded-xl bg-orange-400 p-2 text-lg text-white no-underline transition-all duration-300  hover:text-orange-700 hover:drop-shadow-md "
                 >
                   Iniciar Sesión
@@ -115,7 +117,7 @@ export default function PersoNavBar() {
               </li>
               <li>
                 <Link
-                  href="/paginaweb/pages/registro"
+                  href="/paginaweb/registro"
                   className="rounded-xl border-2 border-orange-400 p-2 text-lg text-orange-400 no-underline transition-all hover:bg-orange-400 hover:text-white hover:drop-shadow-md"
                 >
                   Crear Cuenta
@@ -141,10 +143,10 @@ export default function PersoNavBar() {
             </div>
             <div className="flex flex-col items-center justify-center gap-4">
               <Link
-                href="/paginaweb/pages/editar"
+                href="/paginaweb/editarperfil"
                 className="rounded-xl bg-orange-400 p-2 text-lg text-white no-underline transition-all duration-300  hover:text-orange-700 hover:drop-shadow-md "
               >
-                Editar Perfil
+                Cambiar contraseña
               </Link>
               <button
                 onClick={LogOut}

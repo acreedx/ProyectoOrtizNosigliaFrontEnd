@@ -10,6 +10,7 @@ import "@/app/dashboard/assets/css/style.css";
 import { Inter } from "next/font/google";
 import { Metadata } from "next";
 import { Providers } from "./Providers";
+
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -23,11 +24,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="es">
       <body className={inter.className}>
-        <Providers>
-          <div className="dark:bg-boxdark-2 dark:text-bodydark">{children}</div>
-        </Providers>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );
