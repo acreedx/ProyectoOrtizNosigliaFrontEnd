@@ -1,25 +1,15 @@
 "use server";
 import { PrismaClient, Severity } from "@prisma/client";
-<<<<<<<< HEAD:src/app/serveractions/person.tsx
 import { subirFotoDePerfil } from "../../utils/upload_image";
 import personValidation from "../../zod_models/personValidation";
 import { sendEmail } from "./mailer";
 import { hashPassword } from "../../utils/password_hasher";
 import { getPasswordExpiration } from "../../utils/get_password_expiration";
 import { generatePassword } from "../../utils/password_generator";
-========
-import { subirFotoDePerfil } from "../utils/upload_image";
-import personValidation from "../zod_models/personValidation";
-import { sendEmail } from "./mailer";
-import { hashPassword } from "../utils/password_hasher";
-import { getPasswordExpiration } from "../utils/get_password_expiration";
-import { generatePassword } from "../utils/password_generator";
->>>>>>>> 94210b95966e13d3b0e080002bee3f21a5448582:src/app/api/pages/serveractions/person.tsx
 
 export async function createPerson(formData: FormData) {
   const prisma = new PrismaClient();
   const profilePicture = formData.get("photoUrl") as File | undefined;
-  //Formar Alergias
   const allergies: {
     substance: string;
     reaction: string;

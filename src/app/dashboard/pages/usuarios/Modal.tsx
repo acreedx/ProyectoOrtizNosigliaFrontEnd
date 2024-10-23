@@ -29,14 +29,13 @@ import {
 import { useRouter } from "next/navigation";
 import Person from "@/interfaces/Person";
 import { PersonService } from "@/repositories/PersonService";
-export default async function Usuarios() {
+export default function Usuarios() {
   const router = useRouter();
   const toast = useToast();
 
   const [users, setUsers] = useState<any[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedUser, setSelectedUser] = useState<any>(); // Almacena el usuario seleccionado para mostrar en el modal
-
+  const [selectedUser, setSelectedUser] = useState<any>();
   const toggleStatus = (index: any) => {
     const updatedUsers = [...users];
     updatedUsers[index].status =

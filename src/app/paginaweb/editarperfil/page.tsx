@@ -7,9 +7,9 @@ import PacienteIcon from "@/app/dashboard/components/Icons/PacienteIcon";
 import { useRouter } from "next/navigation";
 import Swal from "sweetalert2";
 import { Button, Spinner, Text } from "@chakra-ui/react";
-import { changePassword } from "@/app/api/pages/serveractions/changePassword";
 import Layout from "../components/Layout";
 import Banner from "../components/Banner";
+import { changePassword } from "@/app/serveractions/changePassword";
 
 export default function Editar() {
   const router = useRouter();

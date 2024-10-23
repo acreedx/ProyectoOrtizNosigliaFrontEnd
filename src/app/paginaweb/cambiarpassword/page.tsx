@@ -5,13 +5,13 @@ import Image from "next/image";
 import CandadoIcon from "@/app/dashboard/components/Icons/CandadoIcon";
 import PacienteIcon from "@/app/dashboard/components/Icons/PacienteIcon";
 import { useRouter } from "next/navigation";
-import Layout from "../../components/Layout";
 import schema from "./validation";
 import { z } from "zod";
 import Swal from "sweetalert2";
 import { Text } from "@chakra-ui/react";
 import { localDomain } from "@/types/domain";
-import Banner from "../../components/Banner";
+import Layout from "../components/Layout";
+import Banner from "../components/Banner";
 
 export default function Editar() {
   const router = useRouter();
