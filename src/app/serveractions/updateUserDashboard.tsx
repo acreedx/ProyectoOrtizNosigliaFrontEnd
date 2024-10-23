@@ -1,7 +1,7 @@
 "use server";
 import { PrismaClient } from "@prisma/client";
-import personValidation from "../zod_models/personValidation";
-import personUpdateValidation from "../zod_models/personUpdateValidation";
+import personValidation from "../../zod_models/personValidation";
+import personUpdateValidation from "../../zod_models/personUpdateValidation";
 import { revalidatePath } from "next/cache";
 
 export async function updateUserDashboard(formData: FormData) {

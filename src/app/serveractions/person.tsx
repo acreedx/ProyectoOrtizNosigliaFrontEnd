@@ -2,7 +2,7 @@
 import { PrismaClient, Severity } from "@prisma/client";
 <<<<<<<< HEAD:src/app/serveractions/person.tsx
 import { subirFotoDePerfil } from "../../utils/upload_image";
-import personValidation from "../zod_models/personValidation";
+import personValidation from "../../zod_models/personValidation";
 import { sendEmail } from "./mailer";
 import { hashPassword } from "../../utils/password_hasher";
 import { getPasswordExpiration } from "../../utils/get_password_expiration";
