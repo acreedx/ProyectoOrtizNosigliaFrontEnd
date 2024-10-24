@@ -1,43 +1,39 @@
 import { prisma } from "@/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
-export function GET() {
+export async function GET() {
   try {
-    const pacientes = prisma.person.findMany({
+    const pacientes = await prisma.person.findMany({
       where: {
         rol: {
           roleName: "Paciente",
         },
       },
-      include: {
-        rol: true,
+      select: {
+        id: true,
+        resourceType: true,
+        active: true,
+        firstName: true,
+        secondName: true,
+        familyName: true,
+        gender: true,
+        birthDate: true,
+        phone: true,
+        mobile: true,
+        email: true,
+        addressLine: true,
+        addressCity: true,
+        maritalStatus: true,
+        identification: true,
+        username: true,
+        password: true,
+        lastLogin: true,
+        passwordExpiration: true,
+        photoUrl: true,
+        allergies: true,
       },
     });
     return NextResponse.json({ pacientes });
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
-  }
-}
-
-export async function GET_BY_ID(
-  req: NextRequest,
-  { params }: { params: { id_paciente: string } },
-) {
-  const { id_paciente } = params;
-
-  try {
-    const paciente = await prisma.person.findFirst({
-      where: {
-        rol: {
-          roleName: "Paciente",
-        },
-        id: id_paciente,
-      },
-      include: {
-        rol: true,
-      },
-    });
-    return NextResponse.json({ paciente });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }

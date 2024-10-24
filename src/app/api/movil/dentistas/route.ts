@@ -1,17 +1,20 @@
+import { prisma } from "@/prisma";
 import { NextResponse } from "next/server";
 
-export function GET() {
-  return NextResponse.json({ message: "Hello World!" });
-}
-
-export function POST() {
-  return NextResponse.json({ message: "Hello World!" });
-}
-
-export function PUT() {
-  return NextResponse.json({ message: "Hello World!" });
-}
-
-export function PATCH() {
-  return NextResponse.json({ message: "Hello World!" });
+export async function GET() {
+  try {
+    const dentistas = await prisma.person.findMany({
+      where: {
+        rol: {
+          roleName: "Dentista",
+        },
+      },
+      include: {
+        rol: true,
+      },
+    });
+    return NextResponse.json({ dentistas });
+  } catch (error: any) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
 }

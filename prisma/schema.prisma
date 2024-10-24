@@ -98,7 +98,7 @@ model Person {
 model Appointment {
   id                    String   @id @default(auto()) @map("_id") @db.ObjectId
   resourceType          String   @default("Appointment")
-  status                String    
+  status                String   @default("creada")
   cancellationReason    String?
   specialty             String
   reason                String
