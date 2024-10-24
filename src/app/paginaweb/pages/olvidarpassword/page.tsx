@@ -9,7 +9,7 @@ import PacienteIcon from "@/app/dashboard/components/Icons/PacienteIcon";
 import { Text } from "@chakra-ui/react";
 import CandadoIcon from "@/app/dashboard/components/Icons/CandadoIcon";
 import { EmailIcon } from "@chakra-ui/icons";
-import { forgetPassword } from "@/app/serveractions/forgetPassword";
+import { forgetPassword } from "@/serveractions/forgetPassword";
 
 export default function OlvidarPassword() {
   const router = useRouter();

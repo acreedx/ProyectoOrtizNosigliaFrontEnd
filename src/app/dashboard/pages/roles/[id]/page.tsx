@@ -14,7 +14,7 @@ import DefaultLayout from "../../../components/Layouts/DefaultLayout";
 import Breadcrumb from "../../../components/Breadcrumbs/Breadcrumb";
 import BotonVolver from "../../../components/BotonVolver";
 import { PrismaClient } from "@prisma/client";
-import { updateRol } from "@/app/serveractions/roleActions";
+import { updateRol } from "@/serveractions/roleActions";
 export default async function Page({ params }: { params: { id: string } }) {
   const prisma = new PrismaClient();
   const rol = await prisma.rol.findFirst({

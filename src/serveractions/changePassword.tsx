@@ -1,8 +1,8 @@
 "use server";
 import { PrismaClient } from "@prisma/client";
-import { hashPassword } from "../../utils/password_hasher";
+import { hashPassword } from "../utils/password_hasher";
 import bcrypt from "bcryptjs";
-import changePasswordValidation from "../../zod_models/changePasswordValidation";
+import changePasswordValidation from "../zod_models/changePasswordValidation";
 
 export async function changePassword(formData: FormData) {
   const prisma = new PrismaClient();

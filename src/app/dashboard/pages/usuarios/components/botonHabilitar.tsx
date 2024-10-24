@@ -1,8 +1,5 @@
 "use client";
-import {
-  dehabilitateUser,
-  habilitateUser,
-} from "@/app/serveractions/userActions";
+import { dehabilitateUser, habilitateUser } from "@/serveractions/userActions";
 import { Button } from "@chakra-ui/react";
 import Swal from "sweetalert2";
 

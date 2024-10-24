@@ -22,7 +22,7 @@ import { ChangeEvent, useState } from "react";
 import Swal from "sweetalert2";
 import { createEmptyFormularioPersona } from "./formularioRegistro";
 import { useRouter } from "next/navigation";
-import { createPerson } from "@/app/serveractions/person";
+import { createPerson } from "@/serveractions/person";
 
 interface FileWithPreview extends File {
   preview?: string;

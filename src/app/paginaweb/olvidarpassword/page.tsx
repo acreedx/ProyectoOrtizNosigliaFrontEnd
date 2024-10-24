@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import Swal from "sweetalert2";
-import { forgetPassword } from "@/app/serveractions/forgetPassword";
+import { forgetPassword } from "@/serveractions/forgetPassword";
 import { useRouter } from "next/navigation";
 import PacienteIcon from "@/app/dashboard/components/Icons/PacienteIcon";
 import { Text } from "@chakra-ui/react";

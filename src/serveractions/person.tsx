@@ -1,11 +1,11 @@
 "use server";
 import { PrismaClient, Severity } from "@prisma/client";
-import { subirFotoDePerfil } from "../../utils/upload_image";
-import personValidation from "../../zod_models/personValidation";
+import { subirFotoDePerfil } from "../utils/upload_image";
+import personValidation from "../zod_models/personValidation";
 import { sendEmail } from "./mailer";
-import { hashPassword } from "../../utils/password_hasher";
-import { getPasswordExpiration } from "../../utils/get_password_expiration";
-import { generatePassword } from "../../utils/password_generator";
+import { hashPassword } from "../utils/password_hasher";
+import { getPasswordExpiration } from "../utils/get_password_expiration";
+import { generatePassword } from "../utils/password_generator";
 
 export async function createPerson(formData: FormData) {
   const prisma = new PrismaClient();

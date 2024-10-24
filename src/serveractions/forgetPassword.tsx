@@ -1,8 +1,8 @@
 "use server";
 import { PrismaClient } from "@prisma/client";
-import { hashPassword } from "../../utils/password_hasher";
-import { sendEmail } from "../../utils/mailer";
-import { generatePassword } from "../../utils/password_generator";
+import { hashPassword } from "../utils/password_hasher";
+import { sendEmail } from "../utils/mailer";
+import { generatePassword } from "../utils/password_generator";
 
 export async function forgetPassword(formData: FormData) {
   const prisma = new PrismaClient();

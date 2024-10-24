@@ -9,7 +9,7 @@ import Swal from "sweetalert2";
 import { Button, Spinner, Text } from "@chakra-ui/react";
 import Layout from "../components/Layout";
 import Banner from "../components/Banner";
-import { changePassword } from "@/app/serveractions/changePassword";
+import { changePassword } from "@/serveractions/changePassword";
 
 export default function Editar() {
   const router = useRouter();

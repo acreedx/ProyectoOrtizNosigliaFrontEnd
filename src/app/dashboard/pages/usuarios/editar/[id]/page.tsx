@@ -19,7 +19,7 @@ import {
 } from "@chakra-ui/react";
 import Image from "next/image";
 import BotonVolver from "@/app/dashboard/components/BotonVolver";
-import { updateUserDashboard } from "@/app/serveractions/updateUserDashboard";
+import { updateUserDashboard } from "@/serveractions/updateUserDashboard";
 import EditUserForm from "../editUserForm";
 export default async function page({ params }: { params: { id: string } }) {
   const prisma = new PrismaClient();
