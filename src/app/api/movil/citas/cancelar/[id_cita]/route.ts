@@ -27,7 +27,7 @@ export async function PUT(
         status: STATUS_TEXT,
       },
     });
-    return NextResponse.json({ message: "Cita cancelada con éxito" });
+    return NextResponse.json({ message: "Cita cancelada con exito" });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
