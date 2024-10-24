@@ -82,7 +82,8 @@ export async function POST(req: NextRequest) {
         mobile: "73744202",
         username: "DentistaInicial",
         password: await hashPassword("1234Aa@"),
-        photoUrl: "https://example.com/photo.jpg",
+        photoUrl:
+          "https://media.istockphoto.com/id/1371009338/photo/portrait-of-confident-a-young-dentist-working-in-his-consulting-room.jpg?s=612x612&w=0&k=20&c=I212vN7lPpAOwGKRoEY9kYWunJaMj9vH2g-8YBGc2MI=",
         passwordExpiration: getPasswordExpiration(),
         rol: {
           connect: { id: dentistaRole.id },
@@ -107,7 +108,7 @@ export async function POST(req: NextRequest) {
         mobile: "73744202",
         username: "PacienteInicial",
         password: await hashPassword("1234Aa@"),
-        photoUrl: "https://example.com/photo.jpg",
+        photoUrl: "https://cdn-icons-png.flaticon.com/512/1430/1430453.png",
         passwordExpiration: getPasswordExpiration(),
         rol: {
           connect: { id: pacienteRole.id },

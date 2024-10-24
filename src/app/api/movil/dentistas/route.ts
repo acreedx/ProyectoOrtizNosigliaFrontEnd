@@ -9,8 +9,21 @@ export async function GET() {
           roleName: "Dentista",
         },
       },
-      include: {
-        rol: true,
+      select: {
+        id: true,
+        firstName: true,
+        secondName: true,
+        familyName: true,
+        gender: true,
+        birthDate: true,
+        phone: true,
+        mobile: true,
+        email: true,
+        addressLine: true,
+        addressCity: true,
+        maritalStatus: true,
+        identification: true,
+        photoUrl: true,
       },
     });
     return NextResponse.json({ dentistas });
