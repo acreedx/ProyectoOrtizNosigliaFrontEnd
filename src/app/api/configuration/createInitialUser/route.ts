@@ -21,9 +21,21 @@ export async function POST(req: NextRequest) {
     const dentistaRole = await prisma.rol.findUnique({
       where: { roleName: "Dentista" },
     });
+
     if (!dentistaRole) {
       return NextResponse.json(
         { error: "Rol de Dentista no encontrado" },
+        { status: 404 },
+      );
+    }
+
+    const pacienteRole = await prisma.rol.findUnique({
+      where: { roleName: "Paciente" },
+    });
+
+    if (!pacienteRole) {
+      return NextResponse.json(
+        { error: "Rol de Paciente no encontrado" },
         { status: 404 },
       );
     }
@@ -78,10 +90,36 @@ export async function POST(req: NextRequest) {
       },
     });
 
+    const initialPatient = await prisma.person.create({
+      data: {
+        active: true,
+        firstName: "Juan",
+        secondName: "Pablo",
+        familyName: "Mendoza",
+        gender: "Masculino",
+        birthDate: new Date("2003-06-05"),
+        email: "adrianhlinares@gmail.com",
+        addressLine: "Calle Francisco Katari #1338",
+        addressCity: "La Paz",
+        maritalStatus: "Single",
+        identification: "13679995",
+        phone: "2285515",
+        mobile: "73744202",
+        username: "PacienteInicial",
+        password: await hashPassword("1234Aa@"),
+        photoUrl: "https://example.com/photo.jpg",
+        passwordExpiration: getPasswordExpiration(),
+        rol: {
+          connect: { id: pacienteRole.id },
+        },
+      },
+    });
+
     return NextResponse.json({
       message: "Usuarios creados correctamente",
       initialUser,
       initialDentist,
+      initialPatient,
     });
   } catch (error) {
     return NextResponse.json(

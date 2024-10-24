@@ -38,12 +38,12 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    //if (person.rol.roleName !== "Dentista") {
-    //  return NextResponse.json(
-    //    { error: "El usuario no tiene los permisos requeridos" },
-    //    { status: 500 },
-    //  );
-    //}
+    if (person.rol.roleName !== "Dentista") {
+      return NextResponse.json(
+        { error: "El usuario no tiene los permisos requeridos" },
+        { status: 500 },
+      );
+    }
 
     const isPasswordValid = await bcrypt.compare(password, person.password);
     if (!isPasswordValid) {
@@ -73,12 +73,4 @@ export async function POST(req: NextRequest) {
   } catch (error: any) {
     return NextResponse.json({ message: error.message }, { status: 500 });
   }
-}
-
-export async function PUT() {
-  return NextResponse.json({ message: "Hello World!" });
-}
-
-export async function PATCH() {
-  return NextResponse.json({ message: "Hello World!" });
 }

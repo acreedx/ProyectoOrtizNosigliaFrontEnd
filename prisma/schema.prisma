@@ -97,20 +97,21 @@ model Person {
 
 model Appointment {
   id                    String   @id @default(auto()) @map("_id") @db.ObjectId
-  resourceType          String
-  status                String
+  resourceType          String   @default("Appointment")
+  status                String    
   cancellationReason    String?
   specialty             String
   reason                String
   description           String?
-  previousAppointment   String?  @db.ObjectId
-  originatingAppointment String? @db.ObjectId
   start                 DateTime
   end                   DateTime
-  account               String   @db.ObjectId
   cancellationDate      DateTime?
   note                  String?
   patientInstruction    String?
+  practitionerId        String  @db.ObjectId
+  previousAppointment   String?  @db.ObjectId
+  originatingAppointment String? @db.ObjectId
+  account               String?   @db.ObjectId
   subject               String   @db.ObjectId
   createdAt         DateTime    @default(now())
   updatedAt         DateTime    @updatedAt
