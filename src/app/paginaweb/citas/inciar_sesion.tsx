@@ -1,4 +1,5 @@
-import { Box, Button, Flex, Link, Text } from "@chakra-ui/react";
+"use client";
+import { Box, Button, Flex, Text } from "@chakra-ui/react";
 import React from "react";
 
 export default function IniciarSesion() {
@@ -10,27 +11,25 @@ export default function IniciarSesion() {
           realizar una cita.
         </Text>
         <Flex gap={4}>
-          <Link href="/paginaweb/login">
-            <Button
-              as="a"
-              colorScheme="orange"
-              size="lg"
-              className="no-underline transition duration-300 "
-              variant="solid" // Button with solid background
-            >
-              Iniciar Sesión
-            </Button>
-          </Link>
-          <Link href="/paginaweb/registro">
-            <Button
-              as="a"
-              size="lg"
-              className="border border-orange-400 text-orange-400 no-underline transition duration-300 hover:bg-orange-500 "
-              variant="outline"
-            >
-              Crear Cuenta
-            </Button>
-          </Link>
+          <Button
+            href="/paginaweb/login"
+            as="a"
+            colorScheme="orange"
+            size="lg"
+            className="no-underline transition duration-300 "
+            variant="solid"
+          >
+            Iniciar Sesión
+          </Button>
+          <Button
+            href="/paginaweb/registro"
+            as="a"
+            size="lg"
+            className="border border-orange-400 text-orange-400 no-underline transition duration-300 hover:bg-orange-500 "
+            variant="outline"
+          >
+            Crear Cuenta
+          </Button>
         </Flex>
       </Box>
     </div>

@@ -118,7 +118,7 @@ export default function Login() {
                   </div>
 
                   <Link
-                    href={"/paginaweb/pages/editarperfil"}
+                    href={"/paginaweb/editarperfil"}
                     className="flex w-full items-center justify-center gap-3.5 rounded-lg border border-stroke bg-gray-2 p-4 text-black hover:bg-opacity-50 dark:border-strokedark dark:bg-meta-4 dark:hover:bg-opacity-50"
                   >
                     Cambio de contraseña?
@@ -128,7 +128,7 @@ export default function Login() {
                     <p className="text-black">
                       No tienes una cuenta?{" "}
                       <Link
-                        href="/paginaweb/pages/registro"
+                        href="/paginaweb/registro"
                         className="text-orange-400 hover:text-orange-500"
                       >
                         Registrate

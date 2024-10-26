@@ -153,7 +153,7 @@ export default function PersoNavBar() {
                 <h2 className="mt-2 text-xl font-bold">
                   {personFullNameFormater(session.user)}
                 </h2>
-                <p className="text-gray-600">{session.user.rolID}</p>
+                <p className="text-gray-600">{session.user.email}</p>
               </div>
               <div className="flex flex-col items-center justify-center gap-4">
                 <Link

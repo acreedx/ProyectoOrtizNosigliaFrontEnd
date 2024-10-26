@@ -4,7 +4,7 @@ import bcrypt from "bcryptjs";
 import { prisma } from "@/prisma";
 import { Permission, Person, Rol } from "@prisma/client";
 
-const handler = NextAuth({
+export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -66,7 +66,7 @@ const handler = NextAuth({
     signIn: "/paginaweb/login",
     signOut: "/paginaweb/login",
   },
-});
+};
 
 declare module "next-auth" {
   interface Session {
@@ -78,4 +78,6 @@ declare module "next-auth/jwt" {
     user: Person & { rol: Rol & { permissions: Permission[] } };
   }
 }
+const handler = NextAuth(authOptions);
+
 export { handler as GET, handler as POST };

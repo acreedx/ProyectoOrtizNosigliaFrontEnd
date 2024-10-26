@@ -1,6 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import LoadingMessage from "@/app/dashboard/components/LoadingMessage";
+import React from "react";
 import IniciarSesion from "./inciar_sesion";
 import Layout from "../components/Layout";
 import { useSession } from "next-auth/react";
@@ -12,7 +11,9 @@ export default function Citas() {
     <Layout>
       <main>
         {status === "loading" ? (
-          <Spinner />
+          <div className="flex h-80 items-center justify-center">
+            <Spinner />
+          </div>
         ) : session ? (
           <CrearCitas />
         ) : (

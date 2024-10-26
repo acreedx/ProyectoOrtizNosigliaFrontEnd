@@ -15,7 +15,7 @@ export default function Banner() {
         <div className="rounded-xl bg-orange-400 p-10 shadow-lg">
           <Link
             className="mb-5.5 inline-block transition hover:drop-shadow-xl"
-            href="/paginaweb/pages/home"
+            href="/paginaweb/home"
           >
             <Image
               className="hidden shadow-lg dark:block"

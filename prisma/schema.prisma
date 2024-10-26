@@ -111,7 +111,6 @@ model Appointment {
   practitionerId        String  @db.ObjectId
   previousAppointment   String?  @db.ObjectId
   originatingAppointment String? @db.ObjectId
-  account               String?   @db.ObjectId
   subject               String   @db.ObjectId
   createdAt         DateTime    @default(now())
   updatedAt         DateTime    @updatedAt
