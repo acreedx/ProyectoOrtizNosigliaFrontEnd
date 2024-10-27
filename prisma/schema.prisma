@@ -116,3 +116,21 @@ model Appointment {
   updatedAt         DateTime    @updatedAt
   @@map("appointments")
 }
+
+model AuditEvent {
+  id                String   @id @default(auto()) @map("_id") @db.ObjectId
+  resourceType      String   @default("AuditEvent")
+  type              String
+  action            String
+  severity          String
+  outcome           String?
+  module            String
+  detail            String
+  requestor         Boolean
+  occurredDateTime  DateTime  
+  network           String
+  personName        String
+  personRole        String
+  personId          String  @db.ObjectId
+  createdAt         DateTime @default(now())
+}
