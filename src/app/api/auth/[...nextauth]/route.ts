@@ -3,6 +3,13 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/prisma";
 import { Permission, Person, Rol } from "@prisma/client";
+import { logEvent } from "@/utils/logger";
+import {
+  auditEventAction,
+  auditEventOutcome,
+  auditEventTypes,
+  modulos,
+} from "@/enums/auditEventTypes";
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -37,8 +44,27 @@ export const authOptions: NextAuthOptions = {
           user.password,
         );
         if (!isPasswordValid) {
+          await logEvent({
+            type: auditEventTypes.AUTHENTICATION,
+            action: auditEventAction.ACCION_INICIAR_SESION,
+            moduleName: modulos.MODULO_PAGINA_WEB,
+            personName: user.firstName,
+            personRole: user.rol.roleName,
+            detail: "Intento de inicio de sesión fallido",
+            personId: user.id,
+            outcome: auditEventOutcome.OUTCOME_ERROR,
+          });
           throw new Error("Credenciales Incorrectas");
         }
+        user.firstName;
+        await logEvent({
+          type: auditEventTypes.AUTHENTICATION,
+          action: auditEventAction.ACCION_INICIAR_SESION,
+          moduleName: modulos.MODULO_PAGINA_WEB,
+          personName: user.firstName,
+          personRole: user.rol.roleName,
+          personId: user.id,
+        });
         user.password = "";
         return user;
       },

@@ -1,10 +1,57 @@
 import { prisma } from "@/prisma";
-import { auditEventOutcome, auditEventSeverity } from "@/types/auditEventTypes";
+import {
+  auditEventOutcome,
+  auditEventSeverity,
+  auditEventTypes,
+} from "@/enums/auditEventTypes";
 import { AuditEvent } from "@prisma/client";
 
-export const logAuditEvent = async (eventData: Partial<AuditEvent>) => {
+export async function logEvent({
+  type,
+  action,
+  severity,
+  outcome,
+  moduleName,
+  detail,
+  requestor,
+  ocurredDateTime,
+  network,
+  personName,
+  personRole,
+  personId,
+}: {
+  type?: string;
+  action: string;
+  severity?: string;
+  outcome?: string;
+  moduleName: string;
+  detail?: string;
+  requestor?: boolean;
+  ocurredDateTime?: Date;
+  network?: string;
+  personName: string;
+  personRole: string;
+  personId: string;
+}) {
+  await logAuditEvent({
+    type: type,
+    action,
+    severity: severity,
+    outcome: outcome,
+    module: moduleName,
+    detail: detail,
+    requestor: requestor,
+    occurredDateTime: ocurredDateTime,
+    network: network,
+    personName: personName,
+    personRole: personRole,
+    personId: personId,
+  } as Partial<AuditEvent>);
+}
+
+const logAuditEvent = async (eventData: Partial<AuditEvent>) => {
   const auditEvent: AuditEvent = {
-    type: "Action",
+    type: eventData.type || auditEventTypes.SYSTEM,
     action: eventData.action,
     severity: eventData.severity || auditEventSeverity.SEVERIDAD_BAJA,
     outcome: eventData.outcome || auditEventOutcome.OUTCOME_EXITO,
@@ -12,7 +59,7 @@ export const logAuditEvent = async (eventData: Partial<AuditEvent>) => {
     detail: eventData.detail || "No hay detalles",
     requestor: eventData.requestor || false,
     occurredDateTime: eventData.occurredDateTime || new Date(),
-    network: eventData.network || "Desconocido",
+    network: eventData.network || "Red no proporcionada",
     personName: eventData.personName,
     personRole: eventData.personRole,
     personId: eventData.personId,

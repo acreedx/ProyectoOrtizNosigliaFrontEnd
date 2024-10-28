@@ -1,0 +1,266 @@
+"use client";
+import DefaultLayout from "@/app/dashboard/components/Layouts/DefaultLayout";
+import React, { FormEventHandler, useEffect, useState } from "react";
+import Breadcrumb from "@/app/dashboard/components/Breadcrumbs/Breadcrumb";
+import DataTable, { TableColumn } from "react-data-table-component";
+import { Organization } from "@prisma/client";
+import { mostrarAlertaError } from "@/utils/show_error_alert";
+import { listarOrganizaciones } from "@/serveractions/dashboard/pacientes/organizaciones/listarOrganizaciones";
+import {
+  Badge,
+  Box,
+  Button,
+  FormControl,
+  FormLabel,
+  Heading,
+  IconButton,
+  Input,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalHeader,
+  ModalOverlay,
+  Select,
+  Spinner,
+  Textarea,
+  useDisclosure,
+} from "@chakra-ui/react";
+import {
+  noDataFoundComponent,
+  paginationOptions,
+} from "@/utils/pagination_options";
+import { EditIcon } from "@chakra-ui/icons";
+import DeleteIcon from "@/app/dashboard/components/Icons/DeleteIcon";
+import RestoreIcon from "@/app/dashboard/components/Icons/RestoreIcon";
+import { eliminarOrganizacion } from "@/serveractions/dashboard/pacientes/organizaciones/eliminarOrganizacion";
+import { rehabilitarOrganizacion } from "@/serveractions/dashboard/pacientes/organizaciones/restaurarOrganizacion";
+import { mostrarAlertaExito } from "@/utils/show_success_alert";
+import { crearCita } from "@/serveractions/paginaweb/citas/crearCita";
+export default function Page() {
+  const [loading, setloading] = useState(true);
+  const [organizations, setorganizations] = useState<Organization[]>([]);
+  const [organization, setorganization] = useState<Organization>();
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const fetchData = async () => {
+    try {
+      setorganizations(await listarOrganizaciones());
+      setloading(false);
+    } catch (e: any) {
+      mostrarAlertaError(e);
+    }
+  };
+  useEffect(() => {
+    fetchData();
+  }, []);
+  const columns: TableColumn<Organization>[] = [
+    {
+      name: "Nombre",
+      cell: (row) => row.name,
+      ignoreRowClick: true,
+      sortable: true,
+    },
+    {
+      name: "Direccion",
+      selector: (row) => row.address,
+      sortable: true,
+    },
+    {
+      name: "Estado",
+      cell: (row) => (
+        <Badge
+          colorScheme={row.active ? "green" : "red"}
+          padding={2}
+          rounded={20}
+        >
+          {row.active ? "Activo" : "Inactivo"}
+        </Badge>
+      ),
+      sortable: true,
+    },
+    {
+      name: "Acciones",
+      cell: (row) => (
+        <div className="flex gap-4">
+          <IconButton
+            aria-label="Editar"
+            icon={<EditIcon color={"blue"} />}
+            onClick={() => handleClickEdit(row)}
+          />
+          {row.active ? (
+            <IconButton
+              aria-label="Eliminar"
+              icon={<DeleteIcon />}
+              onClick={() => handleDelete(row)}
+            />
+          ) : (
+            <IconButton
+              aria-label="Eliminar"
+              icon={<RestoreIcon />}
+              onClick={() => handleRestore(row)}
+            />
+          )}
+        </div>
+      ),
+      ignoreRowClick: true,
+    },
+  ];
+  const handleClickEdit = (organization: Organization) => {
+    try {
+      setorganization(organization);
+      onOpen();
+    } catch (e: any) {
+      mostrarAlertaError(e);
+    }
+  };
+  const handleSubmitEdit: FormEventHandler<HTMLFormElement> = async (event) => {
+    event.preventDefault();
+    try {
+      setorganization(organization);
+      onOpen();
+    } catch (e: any) {
+      mostrarAlertaError(e);
+    }
+  };
+  const handleDelete = async (organization: Organization) => {
+    try {
+      const res = await eliminarOrganizacion(organization.id);
+      if (res.message) {
+        mostrarAlertaExito(res.message);
+        await fetchData();
+      }
+    } catch (e: any) {
+      mostrarAlertaError(e);
+    }
+  };
+  const handleRestore = async (organization: Organization) => {
+    try {
+      const res = await rehabilitarOrganizacion(organization.id);
+      if (res.message) {
+        mostrarAlertaExito(res.message);
+        await fetchData();
+      }
+    } catch (e: any) {
+      mostrarAlertaError(e);
+    }
+  };
+  const handleCreate = async () => {};
+  return (
+    <DefaultLayout>
+      <Breadcrumb pageName="Gestión de Organizacionces" />
+      {loading ? (
+        <Spinner />
+      ) : (
+        <Box className="w-full rounded-sm border border-stroke bg-white py-6 shadow-default">
+          <Heading as="h4" size="md" className="mb-6 px-7.5 text-black">
+            Listado de Organizaciones
+          </Heading>
+          <Button
+            colorScheme="teal"
+            onClick={handleCreate}
+            float="right"
+            mr={4}
+            mb={4}
+          >
+            Crear Organización
+          </Button>
+          <DataTable
+            columns={columns}
+            data={organizations}
+            pagination
+            responsive
+            paginationPerPage={10}
+            paginationRowsPerPageOptions={[10, 15, 20]}
+            paginationComponentOptions={paginationOptions}
+            noDataComponent={noDataFoundComponent}
+            customStyles={{
+              headCells: {
+                style: {
+                  fontSize: "1rem",
+                  fontWeight: "bold",
+                  justifyContent: "center",
+                },
+              },
+              cells: {
+                style: {
+                  justifyContent: "center",
+                },
+              },
+            }}
+          />
+        </Box>
+      )}
+      <Modal isOpen={isOpen} onClose={onClose} isCentered>
+        <ModalOverlay />
+        <ModalContent p={8}>
+          <ModalHeader>
+            <Heading fontSize="2xl" color="black" _dark={{ color: "white" }}>
+              Editar la organización
+            </Heading>
+          </ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <Box w="full">
+              <Box>
+                <form onSubmit={handleSubmitEdit}>
+                  <FormControl mb={4} isRequired>
+                    <FormLabel color="black" _dark={{ color: "white" }}>
+                      Nombre
+                    </FormLabel>
+                    <Input
+                      name="name"
+                      type="text"
+                      bg="transparent"
+                      borderColor="gray.400"
+                      defaultValue={organization?.name}
+                      _hover={{ borderColor: "orange.500" }}
+                      _focus={{ borderColor: "orange.500" }}
+                      _dark={{
+                        bg: "gray.700",
+                        color: "white",
+                        borderColor: "gray.600",
+                        _hover: { borderColor: "orange.500" },
+                      }}
+                    />
+                  </FormControl>
+                  <FormControl mb={6} isRequired>
+                    <FormLabel color="black" _dark={{ color: "white" }}>
+                      Dirección
+                    </FormLabel>
+                    <Input
+                      name="hora"
+                      type="text"
+                      bg="transparent"
+                      borderColor="gray.400"
+                      defaultValue={organization?.address}
+                      _hover={{ borderColor: "orange.500" }}
+                      _focus={{ borderColor: "orange.500" }}
+                      _dark={{
+                        bg: "gray.700",
+                        color: "white",
+                        borderColor: "gray.600",
+                        _hover: { borderColor: "orange.500" },
+                      }}
+                    />
+                  </FormControl>
+
+                  <Button
+                    type="submit"
+                    w="full"
+                    bg="orange.400"
+                    color="white"
+                    _hover={{ bg: "orange.500" }}
+                    p={4}
+                    borderRadius="lg"
+                  >
+                    Editar Organización
+                  </Button>
+                </form>
+              </Box>
+            </Box>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
+    </DefaultLayout>
+  );
+}

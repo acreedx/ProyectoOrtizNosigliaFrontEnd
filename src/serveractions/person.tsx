@@ -1,5 +1,5 @@
 "use server";
-import { PrismaClient, Severity } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import { subirFotoDePerfil } from "../utils/upload_image";
 import personValidation from "../zod_models/personValidation";
 import { sendEmail } from "./mailer";
@@ -38,7 +38,7 @@ export async function createPerson(formData: FormData) {
   }
   const data = {
     firstName: formData.get("firstName")?.toString() || "",
-    secondName: formData.get("secondName")?.toString() || "",
+    secondName: formData.get("secondName")?.toString(),
     familyName: formData.get("familyName")?.toString() || "",
     phone: formData.get("phone")?.toString() || "",
     mobile: formData.get("mobile")?.toString() || "",
@@ -101,7 +101,6 @@ export async function createPerson(formData: FormData) {
     data: {
       photoUrl: await subirFotoDePerfil(profilePicture),
       firstName: data.firstName,
-      active: false,
       secondName: data.secondName,
       familyName: data.familyName,
       gender: data.gender,
@@ -117,14 +116,19 @@ export async function createPerson(formData: FormData) {
       password: await hashPassword(generatedPassword),
       passwordExpiration: getPasswordExpiration(),
       allergies: {
-        create: data.allergies.map((allergy) => ({
-          substance: allergy.substance,
-          reaction: allergy.reaction,
-          severity: allergy.severity as Severity,
-          notes: allergy.notes,
-        })),
+        create: data.allergies.map(
+          (allergy) =>
+            ({
+              substance: allergy.substance,
+              reaction: allergy.reaction,
+              severity: allergy.severity,
+              notes: allergy.notes,
+            }) as Allergy,
+        ),
       },
-      rolID: rolPaciente ? rolPaciente.id : "",
+      rol: {
+        connect: { id: rolPaciente.id },
+      },
     },
   });
   await sendEmail({

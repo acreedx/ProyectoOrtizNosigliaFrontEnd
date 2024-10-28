@@ -1,6 +1,6 @@
 "use server";
 import { prisma } from "@/prisma";
-import { AppointmentStatus } from "@/types/appointmentsStatus";
+import { AppointmentStatus } from "@/enums/appointmentsStatus";
 
 export async function listarCitasTotales() {
   try {

@@ -9,7 +9,11 @@ export async function getDentistas() {
           roleName: "Dentista",
         },
       },
+      include: {
+        qualifications: true,
+      },
     });
+    console.log(dentistas);
     return dentistas;
   } catch (error) {
     throw new Error("Error al listar los dentistas");

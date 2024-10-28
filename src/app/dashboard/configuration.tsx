@@ -25,6 +25,10 @@ export const menuOptions = [
             label: "Listado de pacientes",
             route: "/dashboard/pages/pacientes",
           },
+          {
+            label: "Organizaciones",
+            route: "/dashboard/pages/pacientes/organizaciones",
+          },
         ],
       },
       {
@@ -32,11 +36,9 @@ export const menuOptions = [
         label: "Gestión de citas",
         route: "#",
         children: [
-          /*
-            { label: "Listado de citas", route: "/dashboard/citas" },*/
           {
             label: "Calendario de citas",
-            route: "/dashboard/citas/calendario",
+            route: "/dashboard/pages/citas/calendario",
           },
         ],
       },

@@ -1,4 +1,5 @@
-import React from "react";
+"use client";
+import React, { useEffect, useState } from "react";
 import {
   Table,
   Thead,
@@ -8,74 +9,108 @@ import {
   Td,
   TableCaption,
   Box,
+  Spinner,
+  Heading,
 } from "@chakra-ui/react";
 import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb";
 import DefaultLayout from "../../components/Layouts/DefaultLayout";
+import Swal from "sweetalert2";
+import { AuditEvent } from "@prisma/client";
+import { listarLogs } from "@/serveractions/dashboard/usuarios/logs/listarLogs";
+import DataTable, { TableColumn } from "react-data-table-component";
+import {
+  noDataFoundComponent,
+  paginationOptions,
+} from "@/utils/pagination_options";
 export default function Logs() {
-  const logs = [
+  const [loading, setloading] = useState(true);
+  const [auditEvents, setauditEvents] = useState<AuditEvent[]>([]);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setauditEvents((await listarLogs()) as AuditEvent[]);
+        setloading(false);
+      } catch (e) {
+        Swal.fire("Error");
+      }
+    };
+    fetchData();
+  }, []);
+  const columns: TableColumn<AuditEvent>[] = [
     {
-      timestamp: "2024-09-26 10:30:00",
-      user: "Administrador 1",
-      messageType: "Paciente",
-      event: "Creación de paciente",
-      status: "Exitoso",
-      description: "Se registro un nuevo paciente",
+      name: "Fecha",
+      cell: (row) => row.occurredDateTime.toLocaleDateString(),
+      ignoreRowClick: true,
+      sortable: true,
     },
     {
-      timestamp: "2024-09-26 10:45:00",
-      user: "Administrador 1",
-      messageType: "Usuario",
-      event: "Creación de usuario",
-      status: "Pendiente",
-      description: "Se registro un nuevo usuario",
+      name: "Hora",
+      selector: (row) => row.occurredDateTime.toLocaleTimeString(),
+      sortable: true,
     },
     {
-      timestamp: "2024-09-26 11:00:00",
-      user: "Administrador 1",
-      messageType: "Historia clínica",
-      event: "Solicitud de historia clínica",
-      status: "Error",
-      description: "El dentista solicito una historia clínica",
+      name: "Usuario",
+      selector: (row) => row.personName,
+      sortable: true,
     },
     {
-      timestamp: "2024-09-26 11:00:00",
-      user: "Administrador 1",
-      messageType: "Cita",
-      event: "Creación de cita",
-      status: "Exitoso",
-      description: "El paciente creo una cita el día 18",
+      name: "Rol",
+      selector: (row) => row.personRole,
+      sortable: true,
+    },
+    {
+      name: "Evento",
+      selector: (row) => row.severity,
+      sortable: true,
+    },
+    {
+      name: "Estado",
+      selector: (row) => row.outcome || "desconocido",
+      sortable: true,
+    },
+    {
+      name: "Detalle",
+      selector: (row) => row.detail,
+      sortable: true,
     },
   ];
   return (
     <DefaultLayout>
-      <Breadcrumb pageName="Listado de Actividades" />
-      <Box p={4} bg="gray.50" borderRadius="md" boxShadow="md">
-        <Table variant="striped" colorScheme="orange">
-          <TableCaption>Tabla de Logs</TableCaption>
-          <Thead>
-            <Tr>
-              <Th>Fecha</Th>
-              <Th>Usuario</Th>
-              <Th>Recurso solicitado</Th>
-              <Th>Evento</Th>
-              <Th>Estado</Th>
-              <Th>Descripción</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {logs.map((log, index) => (
-              <Tr key={index}>
-                <Td>{log.timestamp}</Td>
-                <Td>{log.user}</Td>
-                <Td>{log.messageType}</Td>
-                <Td>{log.event}</Td>
-                <Td>{log.status}</Td>
-                <Td>{log.description}</Td>
-              </Tr>
-            ))}
-          </Tbody>
-        </Table>
-      </Box>
+      <Breadcrumb pageName="Listado de Actividad" />
+      {loading ? (
+        <Spinner />
+      ) : (
+        <Box className="w-full rounded-sm border border-stroke bg-white py-6 shadow-default">
+          <Heading as="h4" size="md" className="mb-6 px-7.5 text-black">
+            Últimas actividades registradas
+          </Heading>
+          <DataTable
+            columns={columns}
+            data={auditEvents}
+            pagination
+            highlightOnHover
+            responsive
+            paginationPerPage={10}
+            paginationRowsPerPageOptions={[10, 15, 20]}
+            paginationComponentOptions={paginationOptions}
+            noDataComponent={noDataFoundComponent}
+            customStyles={{
+              headCells: {
+                style: {
+                  fontSize: "1rem",
+                  fontWeight: "bold",
+                  justifyContent: "center",
+                },
+              },
+              cells: {
+                style: {
+                  justifyContent: "center",
+                },
+              },
+            }}
+          />
+        </Box>
+      )}
     </DefaultLayout>
   );
 }

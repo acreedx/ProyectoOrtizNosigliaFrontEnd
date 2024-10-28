@@ -1,4 +1,3 @@
-
 datasource db {
   provider = "mongodb"
   url      = env("DATABASE_URL")
@@ -8,17 +7,6 @@ generator client {
   provider = "prisma-client-js"
 }
 
-enum CivilState {
-  Married
-  Single
-}
-enum Severity {
-  mild
-  moderate
-  severe
-}
-
-// Modelo de prueba
 model Post {
   id       String    @id @default(auto()) @map("_id") @db.ObjectId
   slug     String    @unique
@@ -29,97 +17,309 @@ model Post {
   comments String[]
 }
 
-// Modelos de usuarios
-model Permission {
-  id              String   @id @default(auto()) @map("_id") @db.ObjectId
-  permissionName  String   @unique
-  code            String   @unique
-  active          Boolean
-  rolIDs          String[]   @db.ObjectId
-  roles           Rol[] @relation(fields: [rolIDs], references: [id])
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+model Person {
+  id                        String            @id @default(auto()) @map("_id") @db.ObjectId
+  resourceType              String            @default("Person")
+  photoUrl                  String
+  firstName                 String
+  secondName                String?
+  familyName                String
+  gender                    String
+  birthDate                 DateTime
+  phone                     String
+  mobile                    String
+  email                     String
+  addressLine               String
+  addressCity               String
+  maritalStatus             String
+  identification            String            @unique
+  username                  String            @unique
+  password                  String
+  passwordExpiration        DateTime
+  passwordAttempts          Int               @default(0)
+  lastLogin                 DateTime?
+  status                    String            @default("nuevo")
+  allergies                 Allergy[]
+  contacts                  Contact[]
+  qualifications            Qualification[]
+  odontograma               OdontogramRows[]
+  imagingStudies            ImagingStudy[]
+  auditEvents               AuditEvent[]       
+  organizationId            String?           @db.ObjectId
+  organization              Organization?     @relation(fields: [organizationId], references: [id])
+  rolId                     String            @db.ObjectId
+  rol                       Rol               @relation(fields: [rolId], references: [id])
+  subject_appointments      Appointment[]     @relation("subject_appointment")
+  practitioner_appointments Appointment[]     @relation("practitioner_appointment")
+  subject_encounters        Encounter[]       @relation("subject_encounter")
+  practitioner_encounters   Encounter[]       @relation("practitioner_encounter")
+  subjects                  Account[]         @relation("person_account")     
+  createdAt                 DateTime          @default(now())
+  updatedAt                 DateTime          @updatedAt
+  @@map("Persons")
 }
 
-model Rol {
-  id          String      @id @default(auto()) @map("_id") @db.ObjectId
-  roleName    String      @unique
-  description String
-  active      Boolean
-  persons     Person[]    @relation
-  permissionIDs String[] @db.ObjectId
-  permissions   Permission[]   @relation(fields: [permissionIDs], references: [id])
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+model OdontogramRows {
+  id                String          @id @default(auto()) @map("_id") @db.ObjectId
+  resourceType      String          @default("OdontogramRows")
+  msc               String
+  temp              String?
+  piezas            String?
+  fecha             DateTime?
+  diagnostico       String?
+  tratamiento       String?
+  active            Boolean         @default(true)
+  imagingStudyId    String?         @db.ObjectId
+  imagingStudy      ImagingStudy?   @relation(fields: [imagingStudyId], references: [id])
+  personId          String          @db.ObjectId
+  person            Person          @relation(fields: [personId], references: [id])
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+  @@map("OdontogramRows")
 }
 
 model Allergy {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  substance   String
-  reaction    String
-  severity    Severity 
-  notes       String?
-  personId    String   @db.ObjectId
-  person      Person   @relation(fields: [personId], references: [id])
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
-  @@map("allergies")
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  resourceType  String    @default("Allergy")
+  substance     String
+  reaction      String
+  severity      String 
+  notes         String?
+  active        Boolean   @default(true)
+  personId      String    @db.ObjectId
+  person        Person    @relation(fields: [personId], references: [id])
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  @@map("Allergies")
 }
 
-model Person {
+model Contact {
   id                String     @id @default(auto()) @map("_id") @db.ObjectId
-  resourceType      String     @default("Patient")
-  active            Boolean
-  firstName         String
-  secondName        String?
-  familyName        String
-  gender            String
-  birthDate         DateTime
-  phone             String?
-  mobile            String?
+  resourceType      String     @default("Organization")
+  relationship      String
+  name              String
+  phone             String 
+  mobile            String
   email             String
   addressLine       String
   addressCity       String
-  maritalStatus     CivilState
-  identification    String     @unique
-  username          String     @unique
-  password          String
-  lastLogin         DateTime?
-  passwordExpiration DateTime
-  photoUrl          String
-  allergies         Allergy[]
-  rolID             String      @db.ObjectId
-  rol               Rol         @relation(fields: [rolID], references: [id])
+  gender            String
+  active            Boolean
+  personId          String     @db.ObjectId
+  person            Person     @relation(fields: [personId], references: [id])
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
+  @@map("Contacts")
+}
+
+model Organization {
+  id                String      @id @default(auto()) @map("_id") @db.ObjectId
+  resourceType      String      @default("Organization")
+  name              String
+  address           String
+  active            Boolean     @default(true)
+  persons           Person[]    @relation
   createdAt         DateTime    @default(now())
   updatedAt         DateTime    @updatedAt
-  @@map("persons")
+  @@map("Organizations")
+}
+
+model Qualification {
+  id                String     @id @default(auto()) @map("_id") @db.ObjectId
+  resourceType      String     @default("Qualification")
+  start             DateTime
+  end               DateTime  
+  name              String
+  issuer            String
+  active            Boolean    @default(true)
+  personId          String     @db.ObjectId
+  persons           Person     @relation(fields: [personId], references: [id])
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
+  @@map("Qualification")
+}
+
+model Rol {
+  id                String        @id @default(auto()) @map("_id") @db.ObjectId
+  resourceType      String        @default("Rol")
+  roleName          String        @unique
+  description       String  
+  active            Boolean       @default(true)
+  persons           Person[]      @relation
+  permissionIDs     String[]      @db.ObjectId
+  permissions       Permission[]  @relation(fields: [permissionIDs], references: [id])
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+  @@map("Roles")
+}
+
+model Permission {
+  id              String    @id @default(auto()) @map("_id") @db.ObjectId
+  resourceType    String    @default("Permission")
+  code            String    @unique
+  permissionName  String    @unique
+  active          Boolean   @default(true)
+  rolIDs          String[]  @db.ObjectId
+  roles           Rol[]     @relation(fields: [rolIDs], references: [id])
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  @@map("Permissions")
+}
+
+model Consultorio {
+  id                      String        @id @default(auto()) @map("_id") @db.ObjectId
+  resourceType            String        @default("Consultorio")
+  name                    String
+  description             String
+  number                  Int
+  active                  Boolean       @default(true)
+  appointments            Appointment[] @relation
+  encounters              Encounter[]   @relation
+  createdAt               DateTime      @default(now())
+  updatedAt               DateTime      @updatedAt
+  @@map("Consultorios")
 }
 
 model Appointment {
-  id                    String   @id @default(auto()) @map("_id") @db.ObjectId
-  resourceType          String   @default("Appointment")
-  status                String   @default("creada")
-  cancellationReason    String?
-  specialty             String
-  reason                String
-  description           String?
-  start                 DateTime
-  end                   DateTime
-  cancellationDate      DateTime?
-  note                  String?
-  patientInstruction    String?
-  practitionerId        String  @db.ObjectId
-  previousAppointment   String?  @db.ObjectId
-  originatingAppointment String? @db.ObjectId
-  subject               String   @db.ObjectId
-  createdAt         DateTime    @default(now())
-  updatedAt         DateTime    @updatedAt
-  @@map("appointments")
+  id                        String      @id @default(auto()) @map("_id") @db.ObjectId
+  resourceType              String      @default("Appointment")
+  start                     DateTime
+  end                       DateTime
+  specialty                 String
+  reason                    String
+  description               String?
+  note                      String?
+  patientInstruction        String?
+  cancellationDate          DateTime?
+  cancellationReason        String?
+  status                    String      @default("Pendiente")
+  consultorioId             String      @db.ObjectId
+  consultorio               Consultorio @relation(fields: [consultorioId], references: [id])
+  subjectId                 String      @db.ObjectId
+  subject                   Person      @relation("subject_appointment",fields: [subjectId], references: [id])
+  practitionerId            String      @db.ObjectId
+  practitioner              Person      @relation("practitioner_appointment",fields: [subjectId], references: [id])
+  encounters                Encounter[] @relation()
+  createdAt                 DateTime    @default(now())
+  updatedAt                 DateTime    @updatedAt
+  @@map("Appointments")
+}
+
+model Encounter {
+  id                        String      @id @default(auto()) @map("_id") @db.ObjectId
+  resourceType              String      @default("Encounter")
+  type                      String
+  start                     DateTime
+  end                       DateTime
+  reason                    String
+  diagnosis                 String 
+  status                    String      @default("completado")
+  subjectId                 String      @db.ObjectId
+  subject                   Person      @relation("subject_encounter",fields: [subjectId], references: [id])
+  practitionerId            String      @db.ObjectId
+  practitioner              Person      @relation("practitioner_encounter",fields: [practitionerId], references: [id])
+  appointmentId             String      @db.ObjectId
+  appointment               Appointment @relation(fields: [appointmentId], references: [id])     
+  consultorioId             String      @db.ObjectId
+  consultorio               Consultorio @relation(fields: [consultorioId], references: [id])
+  accountIds                String[]    @db.ObjectId
+  accounts                  Account[]   @relation(fields: [accountIds], references: [id])
+  createdAt                 DateTime    @default(now())
+  updatedAt                 DateTime    @updatedAt
+  @@map("Encounters")
+}
+
+model Account {
+  id                        String      @id @default(auto()) @map("_id") @db.ObjectId
+  resourceType              String      @default("Account")
+  billingStatus             String
+  balance                   Float
+  status                    String
+  calculatedAt              DateTime
+  encounterIds              String[]    @db.ObjectId
+  encounters                Encounter[] @relation(fields: [encounterIds], references: [id])
+  carePlanIds               String[]    @db.ObjectId
+  carePlans                 CarePlan[]  @relation(fields: [carePlanIds], references: [id])
+  subjectId                 String      @db.ObjectId
+  subject                   Person      @relation("person_account",fields: [subjectId], references: [id])
+  createdAt                 DateTime    @default(now())
+  updatedAt                 DateTime    @updatedAt
+  @@map("Accounts")
+}
+
+model CarePlan {
+  id                        String      @id @default(auto()) @map("_id") @db.ObjectId
+  resourceType              String      @default("CarePlan")
+  treatmentType             String   
+  title                     String  
+  description               String
+  startDate                 DateTime
+  endDate                   DateTime?
+  estimatedAppointments     Int
+  daysBetweenAppointments   Int
+  totalAppointments         Int
+  costEstimation            Float
+  status                    String      @default("Pendiente")
+  appointmentIds            String[]    @db.ObjectId
+  subjectId                 String      @db.ObjectId
+  practitionerId            String      @db.ObjectId
+  accountIds                String[]    @db.ObjectId
+  accounts                  Account[]   @relation(fields: [accountIds], references: [id])
+  createdAt                 DateTime    @default(now())
+  updatedAt                 DateTime    @updatedAt
+  @@map("CarePlans")
+}
+
+model Treatments {
+  id                        String      @id @default(auto()) @map("_id") @db.ObjectId
+  resourceType              String      @default("Treatment")
+  treatmentType             String
+  title                     String
+  description               String
+  startDate                 DateTime
+  endDate                   DateTime
+  estimatedAppointments     Int
+  daysBetweenAppointments   Int
+  totalAppointments         Int
+  costEstimation            Float
+  active                    Boolean
+  createdAt                 DateTime    @default(now())
+  updatedAt                 DateTime    @updatedAt
+  @@map("Treatments")
+}
+
+model ImagingStudy {
+  id                        String            @id @default(auto()) @map("_id") @db.ObjectId
+  resourceType              String            @default("ImagingStudy")
+  modality                  String
+  reason                    String
+  description               String
+  active                    Boolean
+  mediaIds                  String[]          @db.ObjectId
+  medias                    Media[]           @relation(fields: [mediaIds], references: [id])
+  odontograms               OdontogramRows[]  
+  personId                  String            @db.ObjectId
+  person                    Person            @relation(fields: [personId], references: [id])
+  createdAt                 DateTime          @default(now())
+  updatedAt                 DateTime          @updatedAt
+  @@map("ImagingStudies")
+}
+
+model Media {
+  id                        String      @id @default(auto()) @map("_id") @db.ObjectId
+  resourceType              String      @default("Media")
+  url                       String
+  active                    Boolean
+  imagingStudyIds           String[]  @db.ObjectId
+  imagingStudys             ImagingStudy[]     @relation(fields: [imagingStudyIds], references: [id])
+  createdAt                 DateTime    @default(now())
+  updatedAt                 DateTime    @updatedAt
+  @@map("Medias")
 }
 
 model AuditEvent {
-  id                String   @id @default(auto()) @map("_id") @db.ObjectId
-  resourceType      String   @default("AuditEvent")
+  id                String    @id @default(auto()) @map("_id") @db.ObjectId
+  resourceType      String    @default("AuditEvent")
   type              String
   action            String
   severity          String
@@ -131,6 +331,8 @@ model AuditEvent {
   network           String
   personName        String
   personRole        String
-  personId          String  @db.ObjectId
-  createdAt         DateTime @default(now())
+  personId          String    @db.ObjectId
+  person            Person    @relation(fields: [personId], references: [id])
+  createdAt         DateTime  @default(now())
+  @@map("AuditEvents")
 }

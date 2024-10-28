@@ -1,6 +1,8 @@
+import { userStatus } from "@/enums/userStatus";
+import { odontogramaPorDefecto } from "@/utils/default_odontograma";
 import { getPasswordExpiration } from "@/utils/get_password_expiration";
 import { hashPassword } from "@/utils/password_hasher";
-import { PrismaClient } from "@prisma/client";
+import { Allergy, OdontogramRows, Person, PrismaClient } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
 const prisma = new PrismaClient();
@@ -40,76 +42,165 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const initialUser = await prisma.person.create({
+    const initialAdministrador = await prisma.person.create({
       data: {
-        active: true,
+        photoUrl:
+          "https://media.istockphoto.com/id/1371009338/photo/portrait-of-confident-a-young-dentist-working-in-his-consulting-room.jpg?s=612x612&w=0&k=20&c=I212vN7lPpAOwGKRoEY9kYWunJaMj9vH2g-8YBGc2MI=",
         firstName: "Jaime",
         secondName: "Adrian",
         familyName: "Herrera",
-        gender: "Masculino",
+        gender: "masculino",
         birthDate: new Date("2003-06-05"),
+        phone: "2285515",
+        mobile: "73744202",
         email: "adrianhlinares@gmail.com",
         addressLine: "Calle Francisco Katari #1338",
         addressCity: "La Paz",
-        maritalStatus: "Single",
+        maritalStatus: "soltero",
         identification: "13679995",
-        phone: "2285515",
-        mobile: "73744202",
         username: "AdrianHerrera",
         password: await hashPassword("1234Aa@"),
-        photoUrl: "https://example.com/photo.jpg",
         passwordExpiration: getPasswordExpiration(),
+        status: userStatus.ACTIVO,
+        odontograma: {
+          create: odontogramaPorDefecto,
+        },
         rol: {
           connect: { id: administradorRole.id },
         },
       },
     });
 
-    const initialDentist = await prisma.person.create({
+    const dentist1 = await prisma.person.create({
       data: {
-        active: true,
-        firstName: "Jaime",
-        secondName: "Adrian",
-        familyName: "Herrera",
-        gender: "Masculino",
+        firstName: "Fernando",
+        familyName: "Ortiz Nosiglia",
+        gender: "masculino",
         birthDate: new Date("2003-06-05"),
         email: "adrianhlinares@gmail.com",
         addressLine: "Calle Francisco Katari #1338",
         addressCity: "La Paz",
-        maritalStatus: "Single",
-        identification: "13679995",
+        maritalStatus: "soltero",
+        identification: "13679988",
         phone: "2285515",
         mobile: "73744202",
-        username: "DentistaInicial",
+        username: "DentistaFernando",
         password: await hashPassword("1234Aa@"),
-        photoUrl:
-          "https://media.istockphoto.com/id/1371009338/photo/portrait-of-confident-a-young-dentist-working-in-his-consulting-room.jpg?s=612x612&w=0&k=20&c=I212vN7lPpAOwGKRoEY9kYWunJaMj9vH2g-8YBGc2MI=",
+        photoUrl: "/images/paginaweb/team/Fernando.png",
         passwordExpiration: getPasswordExpiration(),
+        status: userStatus.ACTIVO,
+        odontograma: {
+          create: odontogramaPorDefecto,
+        },
+        qualifications: {
+          create: [
+            {
+              start: new Date("2003-08-19"),
+              end: new Date("2007-08-19"),
+              name: "Odontólogo",
+              issuer: "Universidad Internacional de Los Andes",
+            },
+          ],
+        },
         rol: {
           connect: { id: dentistaRole.id },
         },
       },
     });
-
-    const initialPatient = await prisma.person.create({
+    const dentist2 = await prisma.person.create({
       data: {
-        active: true,
-        firstName: "Juan",
-        secondName: "Pablo",
-        familyName: "Mendoza",
-        gender: "Masculino",
+        firstName: "Álvaro",
+        familyName: "Ortiz Nosiglia",
+        gender: "masculino",
         birthDate: new Date("2003-06-05"),
         email: "adrianhlinares@gmail.com",
         addressLine: "Calle Francisco Katari #1338",
         addressCity: "La Paz",
-        maritalStatus: "Single",
-        identification: "13679995",
+        maritalStatus: "soltero",
+        identification: "13679989",
+        phone: "2285515",
+        mobile: "73744202",
+        username: "DentistaFernando",
+        password: await hashPassword("1234Aa@"),
+        photoUrl: "/images/paginaweb/team/Alvaro.png",
+        passwordExpiration: getPasswordExpiration(),
+        status: userStatus.ACTIVO,
+        odontograma: {
+          create: odontogramaPorDefecto,
+        },
+        qualifications: {
+          create: [
+            {
+              start: new Date("2003-08-19"),
+              end: new Date("2007-08-19"),
+              name: "Odontólogo",
+              issuer: "Universidad Internacional de Los Andes",
+            },
+          ],
+        },
+        rol: {
+          connect: { id: dentistaRole.id },
+        },
+      },
+    });
+    const dentist3 = await prisma.person.create({
+      data: {
+        firstName: "Javier",
+        familyName: "Ortiz Nosiglia",
+        gender: "masculino",
+        birthDate: new Date("2003-06-05"),
+        email: "adrianhlinares@gmail.com",
+        addressLine: "Calle Francisco Katari #1338",
+        addressCity: "La Paz",
+        maritalStatus: "soltero",
+        identification: "13679990",
+        phone: "2285515",
+        mobile: "73744202",
+        username: "DentistaFernando",
+        password: await hashPassword("1234Aa@"),
+        photoUrl: "/images/paginaweb/team/Javier.png",
+        passwordExpiration: getPasswordExpiration(),
+        status: userStatus.ACTIVO,
+        odontograma: {
+          create: odontogramaPorDefecto,
+        },
+        qualifications: {
+          create: [
+            {
+              start: new Date("2003-08-19"),
+              end: new Date("2007-08-19"),
+              name: "Odontólogo",
+              issuer: "Universidad Internacional de Los Andes",
+            },
+          ],
+        },
+        rol: {
+          connect: { id: dentistaRole.id },
+        },
+      },
+    });
+    const initialPatient = await prisma.person.create({
+      data: {
+        firstName: "Juan",
+        secondName: "Pablo",
+        familyName: "Mendoza Fernandez",
+        gender: "masculino",
+        birthDate: new Date("2003-06-05"),
+        email: "adrianhlinares@gmail.com",
+        addressLine: "Calle Francisco Katari #1338",
+        addressCity: "La Paz",
+        maritalStatus: "soltero",
+        identification: "13679997",
         phone: "2285515",
         mobile: "73744202",
         username: "PacienteInicial",
         password: await hashPassword("1234Aa@"),
         photoUrl: "https://cdn-icons-png.flaticon.com/512/1430/1430453.png",
         passwordExpiration: getPasswordExpiration(),
+        status: userStatus.ACTIVO,
+        odontograma: {
+          create: odontogramaPorDefecto,
+        },
         rol: {
           connect: { id: pacienteRole.id },
         },
@@ -118,8 +209,10 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({
       message: "Usuarios creados correctamente",
-      initialUser,
-      initialDentist,
+      initialAdministrador,
+      dentist1,
+      dentist2,
+      dentist3,
       initialPatient,
     });
   } catch (error) {

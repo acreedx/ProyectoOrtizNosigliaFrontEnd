@@ -1,9 +1,23 @@
 "use client";
-import React from "react";
-import Image from "next/image";
+import React, { useEffect, useState } from "react";
 import TeamCard from "../components/TeamCard";
 import Layout from "../components/Layout";
-export default function page() {
+import { Spinner } from "@chakra-ui/react";
+import { Person, Qualification } from "@prisma/client";
+import { getDentistas } from "@/serveractions/paginaweb/dentistas/listarDentistas";
+import { personFullNameFormater } from "@/utils/format_person_full_name";
+export default function Page() {
+  const [loading, setloading] = useState(true);
+  const [dentistas, setdentistas] = useState<
+    (Person & { qualifications: Qualification[] })[]
+  >([]);
+  useEffect(() => {
+    const fetchData = async () => {
+      setdentistas(await getDentistas());
+      setloading(false);
+    };
+    fetchData();
+  }, []);
   return (
     <Layout>
       <section className="h-[750px] bg-[url('/images/paginaweb/team.png')] bg-cover bg-center">
@@ -13,26 +27,25 @@ export default function page() {
         <h1 className="text-orange mb-8 py-4 text-center text-3xl font-bold text-orange-400">
           Nuestro equipo
         </h1>
-        <div className="flex flex-wrap items-start justify-center gap-12">
-          <TeamCard
-            imgRoute="/images/paginaweb/team/Fernando.png"
-            imgAlt="Foto de Fernando Ortiz"
-            name="Dr. Fernando Ortiz Nosiglia"
-            description="Periodoncia, tratamientos anti-ronquidos y odontopediatría"
-          />
-          <TeamCard
-            imgRoute="/images/paginaweb/team/Alvaro.png"
-            imgAlt="Foto de Álvaro Ortiz"
-            name="Dr. Álvaro Ortiz Nosiglia"
-            description="Implantes dentales, cirugías y ortodoncia"
-          />
-          <TeamCard
-            imgRoute="/images/paginaweb/team/Javier.png"
-            imgAlt="Foto de Javier Ortiz"
-            name="Dr. Javier Ortiz Nosiglia"
-            description="Implantes dentales, endodoncia y estética facial."
-          />
-        </div>
+        {loading ? (
+          <div className="flex  justify-center p-40">
+            <Spinner />
+          </div>
+        ) : (
+          <div className="flex flex-wrap items-start justify-center gap-12">
+            {dentistas.map((dentista, index) => (
+              <TeamCard
+                key={index}
+                imgRoute={dentista.photoUrl}
+                imgAlt={personFullNameFormater(dentista)}
+                name={`Dr. ${personFullNameFormater(dentista)}`}
+                description={dentista.qualifications
+                  .map((q) => `${q.name} - ${q.issuer}`)
+                  .join(", ")}
+              />
+            ))}
+          </div>
+        )}
       </section>
     </Layout>
   );
