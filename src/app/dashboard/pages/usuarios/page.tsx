@@ -18,6 +18,7 @@ import BotonHabilitar from "./components/botonHabilitar";
 import BotonInformacion from "./components/botonInformacion";
 import BotonEditar from "./components/botonEditar";
 import { birthDateFormater } from "@/utils/birth_date_formater";
+import { userStatus } from "@/enums/userStatus";
 export default async function Usuarios() {
   const prisma = new PrismaClient();
   const persons = await prisma.person.findMany({ include: { rol: true } });
@@ -75,7 +76,7 @@ export default async function Usuarios() {
                         <>
                           <BotonHabilitar
                             userId={person.id}
-                            active={person.active}
+                            active={person.status === userStatus.ELIMINADO}
                           />
                           <BotonEditar
                             route={`/dashboard/pages/usuarios/editar/${person.id}`}

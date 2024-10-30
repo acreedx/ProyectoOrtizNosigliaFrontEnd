@@ -1,7 +1,10 @@
+import { ListIcon } from "@chakra-ui/react";
 import CitasIcon from "./components/Icons/CitasIcon";
 import DashboardIcon from "./components/Icons/DashboardIcon";
 import PacienteIcon from "./components/Icons/PacienteIcon";
 import UserIcon from "./components/Icons/UserIcon";
+import { SettingsIcon } from "@chakra-ui/icons";
+import { MdMedicalServices } from "react-icons/md";
 
 export const menuOptions = [
   {
@@ -55,6 +58,21 @@ export const menuOptions = [
           {
             label: "Logs",
             route: "/dashboard/pages/logs",
+          },
+        ],
+      },
+      {
+        icon: <MdMedicalServices />,
+        label: "Gestión de Tratamientos",
+        route: "#",
+        children: [
+          {
+            label: "Listado de tratamientos",
+            route: "/dashboard/pages/tratamientos",
+          },
+          {
+            label: "Tipos de tratamiento",
+            route: "/dashboard/pages/tratamientos/tipos_de_tratamiento",
           },
         ],
       },
