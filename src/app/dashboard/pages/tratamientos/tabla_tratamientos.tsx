@@ -31,7 +31,7 @@ import Swal from "sweetalert2";
 import { personFullNameFormater } from "@/utils/format_person_full_name";
 import { title } from "process";
 import { carePlanStatus } from "@/enums/carePlanStatus";
-import { MdBookOnline } from "react-icons/md";
+import { MdBookmark, MdBookOnline, MdLibraryBooks } from "react-icons/md";
 
 export default function TablaTratamientos({
   carePlans,
@@ -43,6 +43,11 @@ export default function TablaTratamientos({
     isOpen: isSecondModalOpen,
     onOpen: onOpenSecondModal,
     onClose: onCloseSecondModal,
+  } = useDisclosure();
+  const {
+    isOpen: isThirdModalOpen,
+    onOpen: onOpenThirdModal,
+    onClose: onCloseThirdModal,
   } = useDisclosure();
   const [selectedTreatment, setselectedTreatment] = useState<CarePlan>();
   const columns: TableColumn<CarePlan>[] = [
@@ -102,6 +107,14 @@ export default function TablaTratamientos({
       name: "Acciones",
       cell: (row) => (
         <div className="flex gap-4">
+          <IconButton
+            aria-label="Añadir radiografías"
+            icon={<MdLibraryBooks color="purple" />}
+            onClick={() => {
+              setselectedTreatment(row);
+              onOpenThirdModal();
+            }}
+          />
           <IconButton
             aria-label="Editar"
             icon={<EditIcon color={"blue"} />}
@@ -168,13 +181,25 @@ export default function TablaTratamientos({
       ignoreRowClick: true,
     },
   ];
+  const [files, setFiles] = useState({
+    xray1: null,
+    xray2: null,
+    xray3: null,
+  });
+
+  const handleFileChange = (e: any, key: any) => {
+    setFiles((prevFiles) => ({
+      ...prevFiles,
+      [key]: e.target.files[0],
+    }));
+  };
   return (
     <>
       <DataTable
         columns={columns}
         data={carePlans}
         pagination
-        highlightOnHover
+        highlightOnHover={false}
         responsive
         paginationPerPage={10}
         paginationRowsPerPageOptions={[10, 15, 20]}
@@ -498,6 +523,29 @@ export default function TablaTratamientos({
                   </FormControl>
                   <FormControl mb={4}>
                     <FormLabel color="black" _dark={{ color: "white" }}>
+                      Fecha de Fin
+                    </FormLabel>
+                    <Input
+                      name="name"
+                      type="date"
+                      bg="transparent"
+                      borderColor="gray.400"
+                      defaultValue={
+                        selectedTreatment?.endDate?.toISOString().split("T")[0]
+                      }
+                      _hover={{ borderColor: "orange.500" }}
+                      _focus={{ borderColor: "orange.500" }}
+                      _dark={{
+                        bg: "gray.700",
+                        color: "white",
+                        borderColor: "gray.600",
+                        _hover: { borderColor: "orange.500" },
+                      }}
+                      readOnly
+                    />
+                  </FormControl>
+                  <FormControl mb={4}>
+                    <FormLabel color="black" _dark={{ color: "white" }}>
                       Costo Estimado
                     </FormLabel>
                     <Input
@@ -519,6 +567,98 @@ export default function TablaTratamientos({
                   </FormControl>
                 </form>
               </Box>
+            </Box>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
+      <Modal isOpen={isThirdModalOpen} onClose={onCloseThirdModal} isCentered>
+        <ModalOverlay />
+        <ModalContent p={8}>
+          <ModalHeader>
+            <Heading fontSize="2xl" color="black" _dark={{ color: "white" }}>
+              Subir Radiografías
+            </Heading>
+          </ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <Box w="full">
+              <form onSubmit={() => {}}>
+                <FormControl mb={4}>
+                  <FormLabel color="black" _dark={{ color: "white" }}>
+                    Radiografía 1
+                  </FormLabel>
+                  <Input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => handleFileChange(e, "xray1")}
+                    bg="transparent"
+                    borderColor="gray.400"
+                    _hover={{ borderColor: "orange.500" }}
+                    _focus={{ borderColor: "orange.500" }}
+                    _dark={{
+                      bg: "gray.700",
+                      color: "white",
+                      borderColor: "gray.600",
+                      _hover: { borderColor: "orange.500" },
+                    }}
+                  />
+                </FormControl>
+
+                <FormControl mb={4}>
+                  <FormLabel color="black" _dark={{ color: "white" }}>
+                    Radiografía 2
+                  </FormLabel>
+                  <Input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => handleFileChange(e, "xray2")}
+                    bg="transparent"
+                    borderColor="gray.400"
+                    _hover={{ borderColor: "orange.500" }}
+                    _focus={{ borderColor: "orange.500" }}
+                    _dark={{
+                      bg: "gray.700",
+                      color: "white",
+                      borderColor: "gray.600",
+                      _hover: { borderColor: "orange.500" },
+                    }}
+                  />
+                </FormControl>
+
+                <FormControl mb={4}>
+                  <FormLabel color="black" _dark={{ color: "white" }}>
+                    Radiografía 3
+                  </FormLabel>
+                  <Input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => handleFileChange(e, "xray3")}
+                    bg="transparent"
+                    borderColor="gray.400"
+                    _hover={{ borderColor: "orange.500" }}
+                    _focus={{ borderColor: "orange.500" }}
+                    _dark={{
+                      bg: "gray.700",
+                      color: "white",
+                      borderColor: "gray.600",
+                      _hover: { borderColor: "orange.500" },
+                    }}
+                  />
+                </FormControl>
+
+                <Button
+                  mt={4}
+                  colorScheme="orange"
+                  type="submit"
+                  w="full"
+                  _dark={{
+                    bg: "orange.500",
+                    _hover: { bg: "orange.600" },
+                  }}
+                >
+                  Guardar Radiografías
+                </Button>
+              </form>
             </Box>
           </ModalBody>
         </ModalContent>

@@ -17,7 +17,7 @@ export default function Page() {
       try {
         setcarePlans([
           {
-            treatmentType: "Ortodoncia",
+            treatmentType: "Endodoncia",
             title: "Plan de tratamiento ortodóntico",
             description: "Plan para corregir la alineación dental.",
             startDate: new Date("2024-01-01"),
@@ -41,7 +41,7 @@ export default function Page() {
             status: carePlanStatus.CANCELADO,
           } as CarePlan,
           {
-            treatmentType: "Ortodoncia",
+            treatmentType: "Rinoplastia",
             title: "Plan de tratamiento ortodóntico",
             description: "Plan para corregir la alineación dental.",
             startDate: new Date("2024-01-01"),
