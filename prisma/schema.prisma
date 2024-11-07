@@ -44,6 +44,7 @@ model Person {
   qualifications            Qualification[]
   odontograma               OdontogramRows[]
   imagingStudies            ImagingStudy[]
+  carePlans                 CarePlan[]
   auditEvents               AuditEvent[]       
   organizationId            String?           @db.ObjectId
   organization              Organization?     @relation(fields: [organizationId], references: [id])
@@ -248,8 +249,8 @@ model Account {
 }
 
 model CarePlan {
-  id                        String      @id @default(auto()) @map("_id") @db.ObjectId
-  resourceType              String      @default("CarePlan")
+  id                        String          @id @default(auto()) @map("_id") @db.ObjectId
+  resourceType              String          @default("CarePlan")
   treatmentType             String   
   title                     String  
   description               String
@@ -257,16 +258,18 @@ model CarePlan {
   endDate                   DateTime?
   estimatedAppointments     Int
   daysBetweenAppointments   Int
-  totalAppointments         Int
+  totalAppointments         Int?
   costEstimation            Float
-  status                    String      @default("Pendiente")
-  appointmentIds            String[]    @db.ObjectId
-  subjectId                 String      @db.ObjectId
-  practitionerId            String      @db.ObjectId
-  accountIds                String[]    @db.ObjectId
-  accounts                  Account[]   @relation(fields: [accountIds], references: [id])
-  createdAt                 DateTime    @default(now())
-  updatedAt                 DateTime    @updatedAt
+  status                    String          @default("Pendiente")
+  appointmentIds            String[]        @db.ObjectId
+  subjectId                 String          @db.ObjectId
+  subject                   Person          @relation(fields: [subjectId], references: [id])
+  imagingStudies            ImagingStudy[]
+  practitionerId            String          @db.ObjectId
+  accountIds                String[]        @db.ObjectId
+  accounts                  Account[]       @relation(fields: [accountIds], references: [id])
+  createdAt                 DateTime        @default(now())
+  updatedAt                 DateTime        @updatedAt
   @@map("CarePlans")
 }
 
@@ -276,13 +279,10 @@ model Treatments {
   treatmentType             String
   title                     String
   description               String
-  startDate                 DateTime
-  endDate                   DateTime
   estimatedAppointments     Int
   daysBetweenAppointments   Int
-  totalAppointments         Int
   costEstimation            Float
-  active                    Boolean
+  active                    Boolean 
   createdAt                 DateTime    @default(now())
   updatedAt                 DateTime    @updatedAt
   @@map("Treatments")
@@ -291,15 +291,18 @@ model Treatments {
 model ImagingStudy {
   id                        String            @id @default(auto()) @map("_id") @db.ObjectId
   resourceType              String            @default("ImagingStudy")
-  modality                  String
-  reason                    String
-  description               String
+  //modality                  String
+  //reason                    String
+  //description               String
   active                    Boolean
-  mediaIds                  String[]          @db.ObjectId
-  medias                    Media[]           @relation(fields: [mediaIds], references: [id])
+  media                     String[]          @db.ObjectId
+  //media                     String[]          @db.ObjectId
+  //medias                    Media[]           @relation(fields: [mediaIds], references: [id])
   odontograms               OdontogramRows[]  
   personId                  String            @db.ObjectId
   person                    Person            @relation(fields: [personId], references: [id])
+  carePlanId                String?           @db.ObjectId
+  carePlans                 CarePlan?         @relation(fields: [carePlanId], references: [id])
   createdAt                 DateTime          @default(now())
   updatedAt                 DateTime          @updatedAt
   @@map("ImagingStudies")
@@ -310,8 +313,8 @@ model Media {
   resourceType              String      @default("Media")
   url                       String
   active                    Boolean
-  imagingStudyIds           String[]  @db.ObjectId
-  imagingStudys             ImagingStudy[]     @relation(fields: [imagingStudyIds], references: [id])
+  //imagingStudyIds           String[]  @db.ObjectId
+  //imagingStudys             ImagingStudy[]     @relation(fields: [imagingStudyIds], references: [id])
   createdAt                 DateTime    @default(now())
   updatedAt                 DateTime    @updatedAt
   @@map("Medias")

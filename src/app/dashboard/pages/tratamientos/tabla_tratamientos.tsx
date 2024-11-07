@@ -3,7 +3,7 @@ import {
   noDataFoundComponent,
   paginationOptions,
 } from "@/utils/pagination_options";
-import { EditIcon, DeleteIcon } from "@chakra-ui/icons";
+import { EditIcon, DeleteIcon, CheckIcon } from "@chakra-ui/icons";
 import {
   Badge,
   Box,
@@ -23,20 +23,33 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { formatDate } from "@fullcalendar/core/index.js";
-import { CarePlan } from "@prisma/client";
-import React, { useState } from "react";
+import { CarePlan, ImagingStudy, Person } from "@prisma/client";
+import React, { useEffect, useState } from "react";
 import DataTable, { TableColumn } from "react-data-table-component";
 import RestoreIcon from "../../components/Icons/RestoreIcon";
 import Swal from "sweetalert2";
 import { personFullNameFormater } from "@/utils/format_person_full_name";
-import { title } from "process";
 import { carePlanStatus } from "@/enums/carePlanStatus";
-import { MdBookmark, MdBookOnline, MdLibraryBooks } from "react-icons/md";
+import { MdBookOnline, MdLibraryBooks } from "react-icons/md";
+import {
+  completarTratamiento,
+  deshabilitarTratamiento,
+  habilitarTratamiento,
+} from "@/serveractions/dashboard/tratamientos/cambiarEstadoTratamiento";
+import { mostrarAlertaError } from "@/utils/show_error_alert";
+import { mostrarAlertaExito } from "@/utils/show_success_alert";
+import { listarPacientes } from "@/serveractions/dashboard/pacientes/listarPacientes";
+import { editarTratamiento } from "@/serveractions/dashboard/tratamientos/editarTratamiento";
+import { listarRadiografias } from "@/serveractions/dashboard/tratamientos/listarRadiografias";
+import { subirFotoDePerfil } from "@/utils/upload_image";
+import { agregarRadiografias } from "@/serveractions/dashboard/tratamientos/agregarRadiografias";
 
 export default function TablaTratamientos({
   carePlans,
+  reloadData,
 }: {
-  carePlans: CarePlan[];
+  carePlans: (CarePlan & { subject: Person })[];
+  reloadData: Function;
 }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const {
@@ -50,7 +63,42 @@ export default function TablaTratamientos({
     onClose: onCloseThirdModal,
   } = useDisclosure();
   const [selectedTreatment, setselectedTreatment] = useState<CarePlan>();
-  const columns: TableColumn<CarePlan>[] = [
+  const [pacientes, setpacientes] = useState<Person[]>([]);
+
+  const [isLoading, setIsLoading] = useState(false);
+  const fetchData = async () => {
+    setpacientes(await listarPacientes());
+  };
+  const handleSubmitEditar = async (event: React.FormEvent) => {
+    event.preventDefault();
+    setIsLoading(true);
+    const formData = new FormData(event.currentTarget as HTMLFormElement);
+    const tratamiento: CarePlan = {
+      treatmentType: formData.get("treatmentType") as string,
+      title: formData.get("title") as string,
+      description: formData.get("description") as string,
+      startDate: new Date(formData.get("fecha_inicio") as string),
+      estimatedAppointments: Number(formData.get("estimatedAppointments")),
+      daysBetweenAppointments: Number(formData.get("daysBetweenAppointments")),
+      costEstimation: Number(formData.get("costEstimation")),
+      subjectId: formData.get("paciente") as string,
+    } as CarePlan;
+    try {
+      const response = await editarTratamiento(
+        formData.get("id") as string,
+        tratamiento,
+      );
+      onClose();
+      mostrarAlertaExito(response.message);
+      reloadData();
+    } catch (error: any) {
+      onClose();
+      mostrarAlertaError(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  const columns: TableColumn<CarePlan & { subject: Person }>[] = [
     {
       name: "Nro",
       cell: (_, index) => index + 1,
@@ -79,7 +127,7 @@ export default function TablaTratamientos({
     },
     {
       name: "Paciente Asignado",
-      selector: (row) => "Paciente Nuevo",
+      selector: (row) => personFullNameFormater(row.subject),
       sortable: true,
     },
     {
@@ -110,40 +158,79 @@ export default function TablaTratamientos({
           <IconButton
             aria-label="Añadir radiografías"
             icon={<MdLibraryBooks color="purple" />}
-            onClick={() => {
+            onClick={async () => {
               setselectedTreatment(row);
+              setFields(await listarRadiografias(row.id));
               onOpenThirdModal();
             }}
           />
-          <IconButton
-            aria-label="Editar"
-            icon={<EditIcon color={"blue"} />}
-            onClick={() => {
-              setselectedTreatment(row);
-              onOpen();
-            }}
-          />
+
           <>
             {row.status === carePlanStatus.ENCURSO ? (
-              <IconButton
-                aria-label="Eliminar"
-                icon={<DeleteIcon color="#dc3545" />}
-                onClick={() => {
-                  Swal.fire({
-                    title: "Confirmación",
-                    text: "Quiere Deshabilitar este Tratamiento ?",
-                    icon: "question",
-                    showCancelButton: true,
-                    confirmButtonText: "Sí",
-                    cancelButtonText: "No, cancelar",
-                    confirmButtonColor: "#28a745",
-                    cancelButtonColor: "#dc3545",
-                  }).then((result) => {
-                    if (result.isConfirmed) {
-                    }
-                  });
-                }}
-              />
+              <>
+                <IconButton
+                  aria-label="Editar"
+                  icon={<EditIcon color={"blue"} />}
+                  onClick={() => {
+                    setselectedTreatment(row);
+                    onOpen();
+                  }}
+                />
+                <IconButton
+                  aria-label="Completar"
+                  icon={<CheckIcon color="green" />}
+                  onClick={() => {
+                    Swal.fire({
+                      title: "Confirmación",
+                      text: "Quiere Completar este Tratamiento ?",
+                      icon: "question",
+                      showCancelButton: true,
+                      confirmButtonText: "Sí",
+                      cancelButtonText: "No, cancelar",
+                      confirmButtonColor: "#28a745",
+                      cancelButtonColor: "#dc3545",
+                    }).then(async (result) => {
+                      if (result.isConfirmed) {
+                        try {
+                          const response = await completarTratamiento(row.id);
+                          mostrarAlertaExito(response.message);
+                          reloadData();
+                        } catch (error: any) {
+                          mostrarAlertaError(error);
+                        }
+                      }
+                    });
+                  }}
+                />
+                <IconButton
+                  aria-label="Eliminar"
+                  icon={<DeleteIcon color="#dc3545" />}
+                  onClick={() => {
+                    Swal.fire({
+                      title: "Confirmación",
+                      text: "Quiere Deshabilitar este Tratamiento ?",
+                      icon: "question",
+                      showCancelButton: true,
+                      confirmButtonText: "Sí",
+                      cancelButtonText: "No, cancelar",
+                      confirmButtonColor: "#28a745",
+                      cancelButtonColor: "#dc3545",
+                    }).then(async (result) => {
+                      if (result.isConfirmed) {
+                        try {
+                          const response = await deshabilitarTratamiento(
+                            row.id,
+                          );
+                          mostrarAlertaExito(response.message);
+                          reloadData();
+                        } catch (error: any) {
+                          mostrarAlertaError(error);
+                        }
+                      }
+                    });
+                  }}
+                />
+              </>
             ) : (
               <IconButton
                 aria-label="Habilitar"
@@ -158,8 +245,15 @@ export default function TablaTratamientos({
                     cancelButtonText: "No, cancelar",
                     confirmButtonColor: "#28a745",
                     cancelButtonColor: "#dc3545",
-                  }).then((result) => {
+                  }).then(async (result) => {
                     if (result.isConfirmed) {
+                      try {
+                        const response = await habilitarTratamiento(row.id);
+                        mostrarAlertaExito(response.message);
+                        reloadData();
+                      } catch (error: any) {
+                        mostrarAlertaError(error);
+                      }
                     }
                   });
                 }}
@@ -171,6 +265,7 @@ export default function TablaTratamientos({
                 icon={<MdBookOnline color="#919191" />}
                 onClick={() => {
                   setselectedTreatment(row);
+                  console.log(row);
                   onOpenSecondModal();
                 }}
               />
@@ -181,18 +276,72 @@ export default function TablaTratamientos({
       ignoreRowClick: true,
     },
   ];
-  const [files, setFiles] = useState({
-    xray1: null,
-    xray2: null,
-    xray3: null,
-  });
+  const handleFileChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    field: ImagingStudy,
+  ) => {
+    const filesList = e.target.files;
+    if (filesList) {
+      const newFiles = Array.from(filesList);
 
-  const handleFileChange = (e: any, key: any) => {
-    setFiles((prevFiles) => ({
-      ...prevFiles,
-      [key]: e.target.files[0],
-    }));
+      setFiles((prevFiles) => {
+        const updatedFiles = { ...prevFiles };
+        updatedFiles[field.id] = newFiles;
+        return updatedFiles;
+      });
+
+      setFields((prevFields: any) => {
+        return prevFields.map((item: any) => {
+          if (item.id === field.id) {
+            return { ...item, media: newFiles };
+          }
+          return item;
+        });
+      });
+    }
   };
+
+  const handleAddField = () => {
+    const newField: ImagingStudy = {
+      id: `xray${fields.length + 1}`,
+      media: [] as string[],
+      active: true,
+    } as ImagingStudy;
+
+    setFields((prevFields) => [...prevFields, newField]);
+  };
+  const handleSubmitRadiografias = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const imagingStudies: ImagingStudy[] = fields.map(
+      (field) =>
+        ({
+          active: true,
+          personId: selectedTreatment?.subjectId,
+          carePlanId: selectedTreatment?.id,
+        }) as ImagingStudy,
+    );
+
+    const filesToUpload = {} as any;
+    fields.forEach((field: any) => {
+      filesToUpload[field.id] = field.files;
+    });
+    try {
+      const response = await agregarRadiografias(imagingStudies, filesToUpload);
+      onCloseThirdModal();
+      mostrarAlertaExito(response.message);
+    } catch (error: any) {
+      console.log(error);
+    }
+  };
+  const [fields, setFields] = useState<ImagingStudy[]>([]);
+  const [files, setFiles] = useState<{ [key: string]: File[] }>({});
+  useEffect(() => {
+    try {
+      fetchData();
+    } catch (e: any) {
+      mostrarAlertaError(e);
+    }
+  }, []);
   return (
     <>
       <DataTable
@@ -232,15 +381,22 @@ export default function TablaTratamientos({
           <ModalBody>
             <Box w="full">
               <Box>
-                <form onSubmit={() => {}}>
+                <form onSubmit={handleSubmitEditar}>
+                  <input
+                    type="hidden"
+                    name="id"
+                    defaultValue={selectedTreatment?.id}
+                  />
                   <FormControl mb={4} isRequired>
                     <FormLabel color="black" _dark={{ color: "white" }}>
-                      Tipo de Tratamiento
+                      Tipo de tratamiento
                     </FormLabel>
-                    <Select
-                      name="paciente"
+                    <Input
+                      name="treatmentType"
+                      type="text"
                       bg="transparent"
                       borderColor="gray.400"
+                      defaultValue={selectedTreatment?.treatmentType}
                       _hover={{ borderColor: "orange.500" }}
                       _focus={{ borderColor: "orange.500" }}
                       _dark={{
@@ -249,11 +405,27 @@ export default function TablaTratamientos({
                         borderColor: "gray.600",
                         _hover: { borderColor: "orange.500" },
                       }}
-                    >
-                      <option value={1} selected>
-                        {"Tratamiento para corregir la alineación dental"}
-                      </option>
-                    </Select>
+                    />
+                  </FormControl>
+                  <FormControl mb={4} isRequired>
+                    <FormLabel color="black" _dark={{ color: "white" }}>
+                      Título
+                    </FormLabel>
+                    <Input
+                      name="title"
+                      type="text"
+                      bg="transparent"
+                      borderColor="gray.400"
+                      defaultValue={selectedTreatment?.title}
+                      _hover={{ borderColor: "orange.500" }}
+                      _focus={{ borderColor: "orange.500" }}
+                      _dark={{
+                        bg: "gray.700",
+                        color: "white",
+                        borderColor: "gray.600",
+                        _hover: { borderColor: "orange.500" },
+                      }}
+                    />
                   </FormControl>
                   <FormControl mb={4} isRequired>
                     <FormLabel color="black" _dark={{ color: "white" }}>
@@ -262,6 +434,7 @@ export default function TablaTratamientos({
                     <Select
                       name="paciente"
                       bg="transparent"
+                      placeholder="Seleccione un Paciente"
                       borderColor="gray.400"
                       _hover={{ borderColor: "orange.500" }}
                       _focus={{ borderColor: "orange.500" }}
@@ -271,13 +444,17 @@ export default function TablaTratamientos({
                         borderColor: "gray.600",
                         _hover: { borderColor: "orange.500" },
                       }}
+                      defaultValue={selectedTreatment?.subjectId}
                     >
-                      <option
-                        defaultValue={selectedTreatment?.subjectId}
-                        selected
-                      >
-                        {"Juan Mendoza Fernandez - 13679997"}
-                      </option>
+                      {pacientes.map((paciente, index) => {
+                        return (
+                          <option key={index} value={paciente.id}>
+                            {personFullNameFormater(paciente) +
+                              " - " +
+                              paciente.identification}
+                          </option>
+                        );
+                      })}
                     </Select>
                   </FormControl>
                   <FormControl mb={4} isRequired>
@@ -285,7 +462,7 @@ export default function TablaTratamientos({
                       Descripción
                     </FormLabel>
                     <Input
-                      name="name"
+                      name="description"
                       type="text"
                       bg="transparent"
                       borderColor="gray.400"
@@ -305,7 +482,7 @@ export default function TablaTratamientos({
                       Citas estimadas
                     </FormLabel>
                     <Input
-                      name="name"
+                      name="estimatedAppointments"
                       type="number"
                       bg="transparent"
                       borderColor="gray.400"
@@ -325,7 +502,7 @@ export default function TablaTratamientos({
                       Costo Estimado
                     </FormLabel>
                     <Input
-                      name="costo_estimado"
+                      name="costEstimation"
                       type="number"
                       bg="transparent"
                       borderColor="gray.400"
@@ -373,7 +550,16 @@ export default function TablaTratamientos({
                       bg="transparent"
                       borderColor="gray.400"
                       defaultValue={
-                        selectedTreatment?.endDate?.toISOString().split("T")[0]
+                        new Date(
+                          new Date().setDate(
+                            new Date().getDate() +
+                              (selectedTreatment?.estimatedAppointments || 0) *
+                                (selectedTreatment?.daysBetweenAppointments ||
+                                  0),
+                          ),
+                        )
+                          .toISOString()
+                          .split("T")[0]
                       }
                       _hover={{ borderColor: "orange.500" }}
                       _focus={{ borderColor: "orange.500" }}
@@ -421,7 +607,7 @@ export default function TablaTratamientos({
                       Tipo de Tratamiento
                     </FormLabel>
                     <Input
-                      name="name"
+                      name="treatmentType"
                       type="text"
                       bg="transparent"
                       borderColor="gray.400"
@@ -442,7 +628,7 @@ export default function TablaTratamientos({
                       Título
                     </FormLabel>
                     <Input
-                      name="name"
+                      name="title"
                       type="text"
                       bg="transparent"
                       borderColor="gray.400"
@@ -481,14 +667,14 @@ export default function TablaTratamientos({
                   </FormControl>
                   <FormControl mb={4}>
                     <FormLabel color="black" _dark={{ color: "white" }}>
-                      Citas estimadas
+                      Citas totales
                     </FormLabel>
                     <Input
                       name="name"
                       type="number"
                       bg="transparent"
                       borderColor="gray.400"
-                      defaultValue={selectedTreatment?.estimatedAppointments}
+                      defaultValue={selectedTreatment?.totalAppointments || 0}
                       _hover={{ borderColor: "orange.500" }}
                       _focus={{ borderColor: "orange.500" }}
                       _dark={{
@@ -510,6 +696,31 @@ export default function TablaTratamientos({
                       bg="transparent"
                       borderColor="gray.400"
                       defaultValue={selectedTreatment?.daysBetweenAppointments}
+                      _hover={{ borderColor: "orange.500" }}
+                      _focus={{ borderColor: "orange.500" }}
+                      _dark={{
+                        bg: "gray.700",
+                        color: "white",
+                        borderColor: "gray.600",
+                        _hover: { borderColor: "orange.500" },
+                      }}
+                      readOnly
+                    />
+                  </FormControl>
+                  <FormControl mb={4}>
+                    <FormLabel color="black" _dark={{ color: "white" }}>
+                      Fecha Inicio
+                    </FormLabel>
+                    <Input
+                      name="name"
+                      type="date"
+                      bg="transparent"
+                      borderColor="gray.400"
+                      defaultValue={
+                        selectedTreatment?.startDate
+                          ?.toISOString()
+                          .split("T")[0]
+                      }
                       _hover={{ borderColor: "orange.500" }}
                       _focus={{ borderColor: "orange.500" }}
                       _dark={{
@@ -546,7 +757,7 @@ export default function TablaTratamientos({
                   </FormControl>
                   <FormControl mb={4}>
                     <FormLabel color="black" _dark={{ color: "white" }}>
-                      Costo Estimado
+                      Costo Total
                     </FormLabel>
                     <Input
                       name="costo_estimado"
@@ -575,87 +786,48 @@ export default function TablaTratamientos({
         <ModalOverlay />
         <ModalContent p={8}>
           <ModalHeader>
-            <Heading fontSize="2xl" color="black" _dark={{ color: "white" }}>
+            <Heading fontSize="2xl" color="black">
               Subir Radiografías
             </Heading>
           </ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <Box w="full">
-              <form onSubmit={() => {}}>
-                <FormControl mb={4}>
-                  <FormLabel color="black" _dark={{ color: "white" }}>
-                    Radiografía 1
-                  </FormLabel>
-                  <Input
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => handleFileChange(e, "xray1")}
-                    bg="transparent"
-                    borderColor="gray.400"
-                    _hover={{ borderColor: "orange.500" }}
-                    _focus={{ borderColor: "orange.500" }}
-                    _dark={{
-                      bg: "gray.700",
-                      color: "white",
-                      borderColor: "gray.600",
-                      _hover: { borderColor: "orange.500" },
-                    }}
-                  />
-                </FormControl>
-
-                <FormControl mb={4}>
-                  <FormLabel color="black" _dark={{ color: "white" }}>
-                    Radiografía 2
-                  </FormLabel>
-                  <Input
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => handleFileChange(e, "xray2")}
-                    bg="transparent"
-                    borderColor="gray.400"
-                    _hover={{ borderColor: "orange.500" }}
-                    _focus={{ borderColor: "orange.500" }}
-                    _dark={{
-                      bg: "gray.700",
-                      color: "white",
-                      borderColor: "gray.600",
-                      _hover: { borderColor: "orange.500" },
-                    }}
-                  />
-                </FormControl>
-
-                <FormControl mb={4}>
-                  <FormLabel color="black" _dark={{ color: "white" }}>
-                    Radiografía 3
-                  </FormLabel>
-                  <Input
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => handleFileChange(e, "xray3")}
-                    bg="transparent"
-                    borderColor="gray.400"
-                    _hover={{ borderColor: "orange.500" }}
-                    _focus={{ borderColor: "orange.500" }}
-                    _dark={{
-                      bg: "gray.700",
-                      color: "white",
-                      borderColor: "gray.600",
-                      _hover: { borderColor: "orange.500" },
-                    }}
-                  />
-                </FormControl>
-
-                <Button
-                  mt={4}
-                  colorScheme="orange"
-                  type="submit"
-                  w="full"
-                  _dark={{
-                    bg: "orange.500",
-                    _hover: { bg: "orange.600" },
-                  }}
-                >
+              <form onSubmit={handleSubmitRadiografias}>
+                {fields.length === 0 ? (
+                  <>No se encontraron estudios radiográficos</>
+                ) : (
+                  fields.map((field, index) => (
+                    <FormControl mb={4} key={field.id}>
+                      <FormLabel color="black">{`Estudio Radiográfico ${index + 1}`}</FormLabel>
+                      <Input
+                        type="file"
+                        accept="image/*,application/pdf"
+                        multiple
+                        onChange={(e) => handleFileChange(e, field)}
+                        bg="transparent"
+                        borderColor="gray.400"
+                        _hover={{ borderColor: "orange.500" }}
+                        _focus={{ borderColor: "orange.500" }}
+                        required
+                      />
+                      {files[field.id]?.length > 0 && (
+                        <Box mt={2}>
+                          <strong>Archivos seleccionados:</strong>
+                          <ul>
+                            {files[field.id].map((file, fileIndex) => (
+                              <li key={fileIndex}>{file.name}</li>
+                            ))}
+                          </ul>
+                        </Box>
+                      )}
+                    </FormControl>
+                  ))
+                )}
+                <Button mt={4} colorScheme="teal" onClick={handleAddField}>
+                  Agregar Radiografía
+                </Button>
+                <Button mt={4} colorScheme="orange" type="submit" w="full">
                   Guardar Radiografías
                 </Button>
               </form>

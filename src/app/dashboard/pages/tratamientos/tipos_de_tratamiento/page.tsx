@@ -8,6 +8,7 @@ import {
 } from "@/utils/pagination_options";
 import { EditIcon, DeleteIcon } from "@chakra-ui/icons";
 import {
+  Badge,
   Box,
   Button,
   FormControl,
@@ -22,6 +23,7 @@ import {
   ModalHeader,
   ModalOverlay,
   Select,
+  Spinner,
   useDisclosure,
 } from "@chakra-ui/react";
 import { CarePlan, Treatments } from "@prisma/client";
@@ -30,51 +32,27 @@ import DataTable, { TableColumn } from "react-data-table-component";
 import Swal from "sweetalert2";
 import BotonCreacion from "../boton_creacion";
 import CreacionTipoTratamiento from "./creacionTipoTratamiento";
+import { listarTiposTratamiento } from "@/serveractions/dashboard/tratamientos/tipos_de_tratamiento/listarTiposTratamiento";
+import { mostrarAlertaExito } from "@/utils/show_success_alert";
+import { mostrarAlertaError } from "@/utils/show_error_alert";
+import { editarTipoTratamiento } from "@/serveractions/dashboard/tratamientos/tipos_de_tratamiento/editarTiposTratamiento";
+import {
+  deshabilitarTipoTratamiento,
+  habilitarTipoTratamiento,
+} from "@/serveractions/dashboard/tratamientos/tipos_de_tratamiento/cambiarEstadoTratamiento";
 
 export default function Page() {
   const { isOpen, onOpen, onClose } = useDisclosure();
-
+  const [loading, setloading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [selectedTreatment, setselectedTreatment] = useState<Treatments>();
   const [tratamientos, settratamientos] = useState<Treatments[]>([]);
+  const fetchData = async () => {
+    settratamientos(await listarTiposTratamiento());
+    setloading(false);
+  };
   useEffect(() => {
-    settratamientos([
-      {
-        treatmentType: "Ortodoncia",
-        title: "Tratamiento de ortodoncia básico",
-        description: "Tratamiento para corregir la alineación dental.",
-        startDate: new Date("2024-01-01"),
-        endDate: new Date("2024-12-31"),
-        estimatedAppointments: 10,
-        active: false,
-        daysBetweenAppointments: 30,
-        totalAppointments: 10,
-        costEstimation: 1200.0,
-      } as Treatments,
-      {
-        treatmentType: "Blanqueamiento",
-        title: "Blanqueamiento dental avanzado",
-        description: "Tratamiento para mejorar la apariencia de los dientes.",
-        startDate: new Date("2024-02-01"),
-        endDate: new Date("2024-02-15"),
-        estimatedAppointments: 2,
-        daysBetweenAppointments: 7,
-        totalAppointments: 2,
-        active: true,
-        costEstimation: 300.0,
-      } as Treatments,
-      {
-        treatmentType: "Implantes",
-        title: "Implante dental",
-        description: "Colocación de un implante dental.",
-        startDate: new Date("2024-03-01"),
-        endDate: new Date("2024-06-01"),
-        estimatedAppointments: 5,
-        daysBetweenAppointments: 30,
-        totalAppointments: 5,
-        active: false,
-        costEstimation: 2000.0,
-      } as Treatments,
-    ]);
+    fetchData();
   }, []);
   const columns: TableColumn<Treatments>[] = [
     {
@@ -114,6 +92,19 @@ export default function Page() {
       sortable: true,
     },
     {
+      name: "Estado",
+      cell: (row) => (
+        <Badge
+          colorScheme={row.active ? "green" : "red"}
+          padding={2}
+          rounded={20}
+        >
+          {row.active ? "Activo" : "Inactivo"}
+        </Badge>
+      ),
+      sortable: true,
+    },
+    {
       name: "Acciones",
       cell: (row) => (
         <div className="flex gap-4">
@@ -139,8 +130,17 @@ export default function Page() {
                   cancelButtonText: "No, cancelar",
                   confirmButtonColor: "#28a745",
                   cancelButtonColor: "#dc3545",
-                }).then((result) => {
+                }).then(async (result) => {
                   if (result.isConfirmed) {
+                    try {
+                      const response = await deshabilitarTipoTratamiento(
+                        row.id,
+                      );
+                      mostrarAlertaExito(response.message);
+                      fetchData();
+                    } catch (error: any) {
+                      mostrarAlertaError(error);
+                    }
                   }
                 });
               }}
@@ -159,8 +159,15 @@ export default function Page() {
                   cancelButtonText: "No, cancelar",
                   confirmButtonColor: "#28a745",
                   cancelButtonColor: "#dc3545",
-                }).then((result) => {
+                }).then(async (result) => {
                   if (result.isConfirmed) {
+                    try {
+                      const response = await habilitarTipoTratamiento(row.id);
+                      mostrarAlertaExito(response.message);
+                      fetchData();
+                    } catch (error: any) {
+                      mostrarAlertaError(error);
+                    }
                   }
                 });
               }}
@@ -171,40 +178,72 @@ export default function Page() {
       ignoreRowClick: true,
     },
   ];
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    setIsLoading(true);
+    const formData = new FormData(event.currentTarget as HTMLFormElement);
+    const tratamiento: Treatments = {
+      treatmentType: formData.get("treatmentType") as string,
+      title: formData.get("title") as string,
+      description: formData.get("description") as string,
+      estimatedAppointments: Number(formData.get("estimatedAppointments")),
+      daysBetweenAppointments: Number(formData.get("daysBetweenAppointments")),
+      costEstimation: Number(formData.get("costEstimation")),
+    } as Treatments;
+    console.log(tratamiento);
+    try {
+      const response = await editarTipoTratamiento(
+        formData.get("id") as string,
+        tratamiento,
+      );
+      onClose();
+      mostrarAlertaExito(response.message);
+      fetchData();
+    } catch (error: any) {
+      onClose();
+      mostrarAlertaError(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
   return (
     <DefaultLayout>
       <Breadcrumb pageName="Tipos de Tratamiento" />
-      <Box className="w-full rounded-sm border border-stroke bg-white py-6 shadow-default">
-        <CreacionTipoTratamiento />
-        <Heading as="h4" size="md" className="mb-6 px-7.5 text-black">
-          Tabla de Tipos de tratamiento
-        </Heading>
-        <DataTable
-          columns={columns}
-          data={tratamientos}
-          pagination
-          highlightOnHover
-          responsive
-          paginationPerPage={10}
-          paginationRowsPerPageOptions={[10, 15, 20]}
-          paginationComponentOptions={paginationOptions}
-          noDataComponent={noDataFoundComponent}
-          customStyles={{
-            headCells: {
-              style: {
-                fontSize: "1rem",
-                fontWeight: "bold",
-                justifyContent: "center",
+      {loading ? (
+        <Spinner />
+      ) : (
+        <Box className="w-full rounded-sm border border-stroke bg-white py-6 shadow-default">
+          <CreacionTipoTratamiento reloadData={fetchData} />
+          <Heading as="h4" size="md" className="mb-6 px-7.5 text-black">
+            Tabla de Tipos de tratamiento
+          </Heading>
+          <DataTable
+            columns={columns}
+            data={tratamientos}
+            pagination
+            highlightOnHover
+            responsive
+            paginationPerPage={10}
+            paginationRowsPerPageOptions={[10, 15, 20]}
+            paginationComponentOptions={paginationOptions}
+            noDataComponent={noDataFoundComponent}
+            customStyles={{
+              headCells: {
+                style: {
+                  fontSize: "1rem",
+                  fontWeight: "bold",
+                  justifyContent: "center",
+                },
               },
-            },
-            cells: {
-              style: {
-                justifyContent: "center",
+              cells: {
+                style: {
+                  justifyContent: "center",
+                },
               },
-            },
-          }}
-        />
-      </Box>
+            }}
+          />
+        </Box>
+      )}
       <Modal isOpen={isOpen} onClose={onClose} isCentered>
         <ModalOverlay />
         <ModalContent p={8}>
@@ -217,13 +256,18 @@ export default function Page() {
           <ModalBody>
             <Box w="full">
               <Box>
-                <form onSubmit={() => {}}>
+                <form onSubmit={handleSubmit}>
+                  <input
+                    name="id"
+                    type="hidden"
+                    defaultValue={selectedTreatment?.id}
+                  />
                   <FormControl mb={4} isRequired>
                     <FormLabel color="black" _dark={{ color: "white" }}>
                       Tipo de Tratamiento
                     </FormLabel>
                     <Input
-                      name="name"
+                      name="treatmentType"
                       type="text"
                       bg="transparent"
                       borderColor="gray.400"
@@ -243,7 +287,7 @@ export default function Page() {
                       Título
                     </FormLabel>
                     <Input
-                      name="name"
+                      name="title"
                       type="text"
                       bg="transparent"
                       borderColor="gray.400"
@@ -263,7 +307,7 @@ export default function Page() {
                       Descripción
                     </FormLabel>
                     <Input
-                      name="name"
+                      name="description"
                       type="text"
                       bg="transparent"
                       borderColor="gray.400"
@@ -283,7 +327,7 @@ export default function Page() {
                       Citas estimadas
                     </FormLabel>
                     <Input
-                      name="name"
+                      name="estimatedAppointments"
                       type="number"
                       bg="transparent"
                       borderColor="gray.400"
@@ -303,7 +347,7 @@ export default function Page() {
                       Días entre tratamientos
                     </FormLabel>
                     <Input
-                      name="name"
+                      name="daysBetweenAppointments"
                       type="number"
                       bg="transparent"
                       borderColor="gray.400"
@@ -323,7 +367,7 @@ export default function Page() {
                       Costo Estimado
                     </FormLabel>
                     <Input
-                      name="costo_estimado"
+                      name="costEstimation"
                       type="number"
                       bg="transparent"
                       borderColor="gray.400"
@@ -346,6 +390,7 @@ export default function Page() {
                     _hover={{ bg: "orange.500" }}
                     p={4}
                     borderRadius="lg"
+                    isLoading={isLoading}
                   >
                     Editar el tipo de Tratamiento
                   </Button>

@@ -1,6 +1,10 @@
+"use client";
 import { listarPacientes } from "@/serveractions/dashboard/pacientes/listarPacientes";
+import { crearTratamiento } from "@/serveractions/dashboard/tratamientos/crearTratamiento";
+import { listarTiposTratamiento } from "@/serveractions/dashboard/tratamientos/tipos_de_tratamiento/listarTiposTratamiento";
 import { personFullNameFormater } from "@/utils/format_person_full_name";
 import { mostrarAlertaError } from "@/utils/show_error_alert";
+import { mostrarAlertaExito } from "@/utils/show_success_alert";
 import {
   Box,
   Button,
@@ -17,64 +21,30 @@ import {
   Select,
   useDisclosure,
 } from "@chakra-ui/react";
-import { CarePlan, Organization, Person, Treatments } from "@prisma/client";
+import { CarePlan, Person, Treatments } from "@prisma/client";
+import { useSession } from "next-auth/react";
 import React, { useEffect, useState } from "react";
 
-export default function BotonCreacion() {
+export default function BotonCreacion({
+  reloadData,
+}: {
+  reloadData: Function;
+}) {
   const [careplan, setcareplan] = useState<CarePlan>();
   const [pacientes, setpacientes] = useState<Person[]>([]);
   const [tratamientos, settratamientos] = useState<Treatments[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
   const [nuevotratamiento, setnuevotratamiento] = useState<Treatments>();
   const [selectedtreatmentType, setselectedtreatmentType] =
     useState<Treatments>();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { data: session, status } = useSession();
+  const fetchData = async () => {
+    setpacientes(await listarPacientes());
+    settratamientos(await listarTiposTratamiento());
+  };
   useEffect(() => {
     try {
-      const fetchData = async () => {
-        setpacientes(await listarPacientes());
-        settratamientos([
-          {
-            id: "1",
-            resourceType: "Treatment",
-            treatmentType: "Ortodoncia",
-            title: "Tratamiento de ortodoncia básico",
-            description: "Tratamiento para corregir la alineación dental.",
-            startDate: new Date("2024-01-01"),
-            endDate: new Date("2024-12-31"),
-            estimatedAppointments: 10,
-            daysBetweenAppointments: 30,
-            totalAppointments: 10,
-            costEstimation: 1200.0,
-          } as Treatments,
-          {
-            id: "2",
-            resourceType: "Treatment",
-            treatmentType: "Blanqueamiento",
-            title: "Blanqueamiento dental avanzado",
-            description:
-              "Tratamiento para mejorar la apariencia de los dientes.",
-            startDate: new Date("2024-02-01"),
-            endDate: new Date("2024-02-15"),
-            estimatedAppointments: 2,
-            daysBetweenAppointments: 7,
-            totalAppointments: 2,
-            costEstimation: 300.0,
-          } as Treatments,
-          {
-            id: "3",
-            resourceType: "Treatment",
-            treatmentType: "Implantes",
-            title: "Implante dental",
-            description: "Colocación de un implante dental.",
-            startDate: new Date("2024-03-01"),
-            endDate: new Date("2024-06-01"),
-            estimatedAppointments: 5,
-            daysBetweenAppointments: 30,
-            totalAppointments: 5,
-            costEstimation: 2000.0,
-          } as Treatments,
-        ]);
-      };
       fetchData();
     } catch (e: any) {
       mostrarAlertaError(e);
@@ -83,37 +53,65 @@ export default function BotonCreacion() {
   const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedId = event.target.value;
     const selectedTreatment = tratamientos.find(
-      (tratamiento) => tratamiento.id === selectedId,
+      (tratamiento) => tratamiento.treatmentType === selectedId,
     );
     setselectedtreatmentType(selectedTreatment);
+  };
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    setIsLoading(true);
+    const formData = new FormData(event.currentTarget as HTMLFormElement);
+    const tratamiento: CarePlan = {
+      treatmentType: formData.get("treatmentType") as string,
+      title: formData.get("title") as string,
+      description: formData.get("description") as string,
+      startDate: new Date(formData.get("fecha_inicio") as string),
+      estimatedAppointments: Number(formData.get("estimatedAppointments")),
+      daysBetweenAppointments: Number(formData.get("daysBetweenAppointments")),
+      costEstimation: Number(formData.get("costEstimation")),
+      subjectId: formData.get("paciente") as string,
+      practitionerId: session?.user.id,
+    } as CarePlan;
+    try {
+      const response = await crearTratamiento(tratamiento);
+      onClose();
+      mostrarAlertaExito(response.message);
+      reloadData();
+    } catch (error: any) {
+      onClose();
+      mostrarAlertaError(error);
+    } finally {
+      setIsLoading(false);
+    }
   };
   return (
     <>
       <Button colorScheme="teal" onClick={onOpen} float="right" mr={4} mb={4}>
-        Crear Tratamiento
+        Asignar Tratamiento
       </Button>
       <Modal isOpen={isOpen} onClose={onClose} isCentered>
         <ModalOverlay />
         <ModalContent p={8}>
           <ModalHeader>
             <Heading fontSize="2xl" color="black" _dark={{ color: "white" }}>
-              Crear nuevo Tratamiento
+              Asignar Tratamiento
             </Heading>
           </ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <Box w="full">
               <Box>
-                <form onSubmit={() => {}}>
+                <form onSubmit={handleSubmit}>
                   <FormControl mb={4} isRequired>
                     <FormLabel color="black" _dark={{ color: "white" }}>
                       Tipo de Tratamiento
                     </FormLabel>
                     <Select
-                      name="tipo_tratamiento"
+                      name="treatmentType"
+                      placeholder="Selecciona un tipo de tratamiento"
                       bg="transparent"
                       borderColor="gray.400"
-                      value={selectedtreatmentType?.id || ""}
+                      defaultValue={selectedtreatmentType?.treatmentType || ""}
                       onChange={handleSelectChange}
                       _hover={{ borderColor: "orange.500" }}
                       _focus={{ borderColor: "orange.500" }}
@@ -126,12 +124,32 @@ export default function BotonCreacion() {
                     >
                       {tratamientos.map((tratamiento, index) => {
                         return (
-                          <option key={index} value={tratamiento.id}>
-                            {tratamiento.description}
+                          <option key={index} value={tratamiento.treatmentType}>
+                            {tratamiento.treatmentType}
                           </option>
                         );
                       })}
                     </Select>
+                  </FormControl>
+                  <FormControl mb={4} isRequired>
+                    <FormLabel color="black" _dark={{ color: "white" }}>
+                      Título
+                    </FormLabel>
+                    <Input
+                      name="title"
+                      type="text"
+                      bg="transparent"
+                      defaultValue={selectedtreatmentType?.title || ""}
+                      borderColor="gray.400"
+                      _hover={{ borderColor: "orange.500" }}
+                      _focus={{ borderColor: "orange.500" }}
+                      _dark={{
+                        bg: "gray.700",
+                        color: "white",
+                        borderColor: "gray.600",
+                        _hover: { borderColor: "orange.500" },
+                      }}
+                    />
                   </FormControl>
                   <FormControl mb={4} isRequired>
                     <FormLabel color="black" _dark={{ color: "white" }}>
@@ -167,10 +185,10 @@ export default function BotonCreacion() {
                       Descripción
                     </FormLabel>
                     <Input
-                      name="name"
+                      name="description"
                       type="text"
                       bg="transparent"
-                      value={selectedtreatmentType?.description}
+                      defaultValue={selectedtreatmentType?.description || ""}
                       borderColor="gray.400"
                       _hover={{ borderColor: "orange.500" }}
                       _focus={{ borderColor: "orange.500" }}
@@ -187,9 +205,33 @@ export default function BotonCreacion() {
                       Citas estimadas
                     </FormLabel>
                     <Input
-                      name="name"
+                      name="estimatedAppointments"
                       type="number"
-                      value={selectedtreatmentType?.estimatedAppointments}
+                      defaultValue={
+                        selectedtreatmentType?.estimatedAppointments || ""
+                      }
+                      bg="transparent"
+                      borderColor="gray.400"
+                      _hover={{ borderColor: "orange.500" }}
+                      _focus={{ borderColor: "orange.500" }}
+                      _dark={{
+                        bg: "gray.700",
+                        color: "white",
+                        borderColor: "gray.600",
+                        _hover: { borderColor: "orange.500" },
+                      }}
+                    />
+                  </FormControl>
+                  <FormControl mb={4} isRequired>
+                    <FormLabel color="black" _dark={{ color: "white" }}>
+                      Días entre citas
+                    </FormLabel>
+                    <Input
+                      name="daysBetweenAppointments"
+                      type="number"
+                      defaultValue={
+                        selectedtreatmentType?.daysBetweenAppointments || ""
+                      }
                       bg="transparent"
                       borderColor="gray.400"
                       _hover={{ borderColor: "orange.500" }}
@@ -207,11 +249,11 @@ export default function BotonCreacion() {
                       Costo Estimado
                     </FormLabel>
                     <Input
-                      name="costo_estimado"
+                      name="costEstimation"
                       type="number"
                       bg="transparent"
                       borderColor="gray.400"
-                      value={selectedtreatmentType?.costEstimation}
+                      defaultValue={selectedtreatmentType?.costEstimation || ""}
                       _hover={{ borderColor: "orange.500" }}
                       _focus={{ borderColor: "orange.500" }}
                       _dark={{
@@ -253,7 +295,15 @@ export default function BotonCreacion() {
                       bg="transparent"
                       borderColor="gray.400"
                       defaultValue={
-                        new Date(new Date().setMonth(new Date().getMonth() + 3))
+                        new Date(
+                          new Date().setDate(
+                            new Date().getDate() +
+                              (selectedtreatmentType?.estimatedAppointments ||
+                                0) *
+                                (selectedtreatmentType?.daysBetweenAppointments ||
+                                  0),
+                          ),
+                        )
                           .toISOString()
                           .split("T")[0]
                       }

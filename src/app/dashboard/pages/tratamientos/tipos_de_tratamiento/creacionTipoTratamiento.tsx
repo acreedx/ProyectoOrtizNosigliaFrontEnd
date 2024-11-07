@@ -1,3 +1,6 @@
+import { crearTipoTratamiento } from "@/serveractions/dashboard/tratamientos/tipos_de_tratamiento/crearTiposTratamiento";
+import { mostrarAlertaError } from "@/utils/show_error_alert";
+import { mostrarAlertaExito } from "@/utils/show_success_alert";
 import {
   useDisclosure,
   Button,
@@ -16,10 +19,37 @@ import {
 import { Treatments } from "@prisma/client";
 import React, { useState } from "react";
 
-export default function CreacionTipoTratamiento() {
-  const [selectedtreatmentType, setselectedtreatmentType] =
-    useState<Treatments>();
+export default function CreacionTipoTratamiento({
+  reloadData,
+}: {
+  reloadData: Function;
+}) {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [isLoading, setIsLoading] = useState(false);
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    setIsLoading(true);
+    const formData = new FormData(event.currentTarget as HTMLFormElement);
+    const tratamiento: Treatments = {
+      treatmentType: formData.get("treatmentType") as string,
+      title: formData.get("title") as string,
+      description: formData.get("description") as string,
+      estimatedAppointments: Number(formData.get("estimatedAppointments")),
+      daysBetweenAppointments: Number(formData.get("daysBetweenAppointments")),
+      costEstimation: Number(formData.get("costEstimation")),
+    } as Treatments;
+    try {
+      const response = await crearTipoTratamiento(tratamiento);
+      onClose();
+      mostrarAlertaExito(response.message);
+      reloadData();
+    } catch (error: any) {
+      onClose();
+      mostrarAlertaError(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
   return (
     <>
       <Button colorScheme="teal" onClick={onOpen} float="right" mr={4} mb={4}>
@@ -37,17 +67,16 @@ export default function CreacionTipoTratamiento() {
           <ModalBody>
             <Box w="full">
               <Box>
-                <form onSubmit={() => {}}>
+                <form onSubmit={handleSubmit}>
                   <FormControl mb={4} isRequired>
                     <FormLabel color="black" _dark={{ color: "white" }}>
                       Tipo de tratamiento
                     </FormLabel>
                     <Input
-                      name="name"
+                      name="treatmentType"
                       type="text"
                       bg="transparent"
                       borderColor="gray.400"
-                      defaultValue={selectedtreatmentType?.treatmentType}
                       _hover={{ borderColor: "orange.500" }}
                       _focus={{ borderColor: "orange.500" }}
                       _dark={{
@@ -63,11 +92,10 @@ export default function CreacionTipoTratamiento() {
                       Título
                     </FormLabel>
                     <Input
-                      name="name"
+                      name="title"
                       type="text"
                       bg="transparent"
                       borderColor="gray.400"
-                      defaultValue={selectedtreatmentType?.title}
                       _hover={{ borderColor: "orange.500" }}
                       _focus={{ borderColor: "orange.500" }}
                       _dark={{
@@ -83,11 +111,10 @@ export default function CreacionTipoTratamiento() {
                       Descripción
                     </FormLabel>
                     <Input
-                      name="name"
+                      name="description"
                       type="text"
                       bg="transparent"
                       borderColor="gray.400"
-                      defaultValue={selectedtreatmentType?.description}
                       _hover={{ borderColor: "orange.500" }}
                       _focus={{ borderColor: "orange.500" }}
                       _dark={{
@@ -103,13 +130,10 @@ export default function CreacionTipoTratamiento() {
                       Citas estimadas
                     </FormLabel>
                     <Input
-                      name="name"
-                      type="text"
+                      name="estimatedAppointments"
+                      type="number"
                       bg="transparent"
                       borderColor="gray.400"
-                      defaultValue={
-                        selectedtreatmentType?.estimatedAppointments
-                      }
                       _hover={{ borderColor: "orange.500" }}
                       _focus={{ borderColor: "orange.500" }}
                       _dark={{
@@ -122,16 +146,13 @@ export default function CreacionTipoTratamiento() {
                   </FormControl>
                   <FormControl mb={4} isRequired>
                     <FormLabel color="black" _dark={{ color: "white" }}>
-                      Días entre tratamientos
+                      Días entre citas
                     </FormLabel>
                     <Input
-                      name="name"
+                      name="daysBetweenAppointments"
                       type="number"
                       bg="transparent"
                       borderColor="gray.400"
-                      defaultValue={
-                        selectedtreatmentType?.estimatedAppointments
-                      }
                       _hover={{ borderColor: "orange.500" }}
                       _focus={{ borderColor: "orange.500" }}
                       _dark={{
@@ -147,11 +168,10 @@ export default function CreacionTipoTratamiento() {
                       Costo Estimado
                     </FormLabel>
                     <Input
-                      name="costo_estimado"
+                      name="costEstimation"
                       type="number"
                       bg="transparent"
                       borderColor="gray.400"
-                      defaultValue={selectedtreatmentType?.costEstimation}
                       _hover={{ borderColor: "orange.500" }}
                       _focus={{ borderColor: "orange.500" }}
                       _dark={{
@@ -170,6 +190,7 @@ export default function CreacionTipoTratamiento() {
                     _hover={{ bg: "orange.500" }}
                     p={4}
                     borderRadius="lg"
+                    isLoading={isLoading}
                   >
                     Crear nuevo tipo de Tratamiento
                   </Button>
