@@ -3,7 +3,12 @@ import {
   noDataFoundComponent,
   paginationOptions,
 } from "@/utils/pagination_options";
-import { EditIcon, DeleteIcon, CheckIcon } from "@chakra-ui/icons";
+import {
+  EditIcon,
+  DeleteIcon,
+  CheckIcon,
+  ChevronDownIcon,
+} from "@chakra-ui/icons";
 import {
   Badge,
   Box,
@@ -11,8 +16,13 @@ import {
   FormControl,
   FormLabel,
   Heading,
+  Icon,
   IconButton,
   Input,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -155,19 +165,19 @@ export default function TablaTratamientos({
       name: "Acciones",
       cell: (row) => (
         <div className="flex gap-4">
-          <IconButton
-            aria-label="Añadir radiografías"
-            icon={<MdLibraryBooks color="purple" />}
-            onClick={async () => {
-              setselectedTreatment(row);
-              setFields(await listarRadiografias(row.id));
-              onOpenThirdModal();
-            }}
-          />
-
           <>
             {row.status === carePlanStatus.ENCURSO ? (
               <>
+                <IconButton
+                  aria-label="Añadir radiografías"
+                  icon={<MdLibraryBooks color="purple" />}
+                  onClick={async () => {
+                    setselectedTreatment(row);
+                    setFields(await listarRadiografias(row.id));
+                    onOpenThirdModal();
+                  }}
+                />
+
                 <IconButton
                   aria-label="Editar"
                   icon={<EditIcon color={"blue"} />}
@@ -312,28 +322,45 @@ export default function TablaTratamientos({
   };
   const handleSubmitRadiografias = async (e: React.FormEvent) => {
     e.preventDefault();
-    const imagingStudies: ImagingStudy[] = fields.map(
-      (field) =>
-        ({
-          active: true,
-          personId: selectedTreatment?.subjectId,
-          carePlanId: selectedTreatment?.id,
-        }) as ImagingStudy,
-    );
-
-    const filesToUpload = {} as any;
-    fields.forEach((field: any) => {
-      filesToUpload[field.id] = field.files;
+    const formData = new FormData();
+    fields.forEach((field) => {
+      const fileInput = document.querySelector(
+        `input[name="file_${field.id}"]`,
+      ) as HTMLInputElement;
+      if (fileInput && fileInput.files) {
+        Array.from(fileInput.files).forEach((file) => {
+          formData.append("files", file);
+        });
+      }
+    });
+    fields.forEach((field) => {
+      const imagingStudy = {
+        active: true,
+        personId: selectedTreatment?.subjectId,
+        carePlanId: selectedTreatment?.id,
+      };
+      formData.append("imagingStudies", JSON.stringify(imagingStudy));
     });
     try {
-      const response = await agregarRadiografias(imagingStudies, filesToUpload);
-      onCloseThirdModal();
-      mostrarAlertaExito(response.message);
-    } catch (error: any) {
-      console.log(error);
+      console.log(formData);
+      const response = await fetch("/api/tratamientos/upload", {
+        method: "POST",
+        body: formData,
+      });
+      const result = await response.json();
+      if (response.ok) {
+        onCloseThirdModal();
+        mostrarAlertaExito(result.message);
+      } else {
+        console.error(result.error);
+      }
+    } catch (error) {
+      console.error("Error al enviar radiografías:", error);
     }
   };
+
   const [fields, setFields] = useState<ImagingStudy[]>([]);
+  const [registeredFields, setregisteredFields] = useState<ImagingStudy[]>([]);
   const [files, setFiles] = useState<{ [key: string]: File[] }>({});
   useEffect(() => {
     try {
@@ -793,18 +820,59 @@ export default function TablaTratamientos({
           <ModalCloseButton />
           <ModalBody>
             <Box w="full">
-              <form onSubmit={handleSubmitRadiografias}>
+              <form
+                onSubmit={handleSubmitRadiografias}
+                encType="multipart/form-data"
+              >
                 {fields.length === 0 ? (
                   <>No se encontraron estudios radiográficos</>
                 ) : (
-                  fields.map((field, index) => (
+                  fields.map((field, idx) => (
                     <FormControl mb={4} key={field.id}>
-                      <FormLabel color="black">{`Estudio Radiográfico ${index + 1}`}</FormLabel>
+                      {field.media.length > 0 && (
+                        <Box mb={2}>
+                          <Menu>
+                            <MenuButton
+                              as={Button}
+                              rightIcon={<ChevronDownIcon />}
+                              variant="outline"
+                              colorScheme="teal"
+                              size="sm"
+                              width="auto"
+                            >
+                              Ver Archivos
+                            </MenuButton>
+                            <MenuList>
+                              {field.media.map((value, fileIndex) => (
+                                <MenuItem key={fileIndex}>
+                                  <Button
+                                    variant="link"
+                                    colorScheme="teal"
+                                    as="a"
+                                    href={value.toString()}
+                                    fontSize="sm"
+                                    display="inline-flex"
+                                    alignItems="center"
+                                    gap={2}
+                                    _hover={{
+                                      textDecoration: "underline",
+                                      color: "orange.500",
+                                    }}
+                                  >
+                                    Archivo {fileIndex + 1}
+                                  </Button>
+                                </MenuItem>
+                              ))}
+                            </MenuList>
+                          </Menu>
+                        </Box>
+                      )}
+                      <FormLabel color="black">{`Estudio Radiográfico ${idx + 1}`}</FormLabel>
                       <Input
                         type="file"
+                        name={`file_${field.id}`}
                         accept="image/*,application/pdf"
                         multiple
-                        onChange={(e) => handleFileChange(e, field)}
                         bg="transparent"
                         borderColor="gray.400"
                         _hover={{ borderColor: "orange.500" }}

@@ -4,7 +4,6 @@ import { prisma } from "@/prisma";
 import { ImagingStudy } from "@prisma/client";
 import { storage } from "../../../../firebase.config";
 
-// Función para subir un archivo a Firebase y obtener la URL
 const subirArchivoAFirebase = async (file: File): Promise<string> => {
   try {
     if (!file) {
@@ -20,29 +19,26 @@ const subirArchivoAFirebase = async (file: File): Promise<string> => {
   }
 };
 
-// Server action para agregar radiografías
 export async function agregarRadiografias(
   imagingStudies: ImagingStudy[],
   files: { [key: string]: File[] },
 ) {
   try {
-    // Aquí se obtiene las URLs de los archivos
+    console.log("Archivos");
+    console.log(files);
     const updatedImagingStudies = await Promise.all(
       imagingStudies.map(async (study) => {
-        // Subir los archivos relacionados a este estudio
         const fileUrls = await Promise.all(
           files[study.id]?.map((file) => subirArchivoAFirebase(file)) || [],
         );
-
-        // Crear un nuevo estudio de imagen con las URLs de los archivos
         await prisma.imagingStudy.create({
           data: {
             ...study,
-            media: fileUrls, // Guardar las URLs en el campo 'media'
+            media: fileUrls,
           },
         });
 
-        return { ...study, media: fileUrls }; // Devolver el estudio actualizado con las URLs
+        return { ...study, media: fileUrls };
       }),
     );
 

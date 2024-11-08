@@ -217,31 +217,33 @@ export default function Page() {
           <Heading as="h4" size="md" className="mb-6 px-7.5 text-black">
             Tabla de Tipos de tratamiento
           </Heading>
-          <DataTable
-            columns={columns}
-            data={tratamientos}
-            pagination
-            highlightOnHover
-            responsive
-            paginationPerPage={10}
-            paginationRowsPerPageOptions={[10, 15, 20]}
-            paginationComponentOptions={paginationOptions}
-            noDataComponent={noDataFoundComponent}
-            customStyles={{
-              headCells: {
-                style: {
-                  fontSize: "1rem",
-                  fontWeight: "bold",
-                  justifyContent: "center",
+          <>
+            <DataTable
+              columns={columns}
+              data={tratamientos}
+              pagination
+              highlightOnHover
+              responsive
+              paginationPerPage={10}
+              paginationRowsPerPageOptions={[10, 15, 20]}
+              paginationComponentOptions={paginationOptions}
+              noDataComponent={noDataFoundComponent}
+              customStyles={{
+                headCells: {
+                  style: {
+                    fontSize: "1rem",
+                    fontWeight: "bold",
+                    justifyContent: "center",
+                  },
                 },
-              },
-              cells: {
-                style: {
-                  justifyContent: "center",
+                cells: {
+                  style: {
+                    justifyContent: "center",
+                  },
                 },
-              },
-            }}
-          />
+              }}
+            />
+          </>
         </Box>
       )}
       <Modal isOpen={isOpen} onClose={onClose} isCentered>

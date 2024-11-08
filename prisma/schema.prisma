@@ -295,7 +295,7 @@ model ImagingStudy {
   //reason                    String
   //description               String
   active                    Boolean
-  media                     String[]          @db.ObjectId
+  media                     String[]          
   //media                     String[]          @db.ObjectId
   //medias                    Media[]           @relation(fields: [mediaIds], references: [id])
   odontograms               OdontogramRows[]  

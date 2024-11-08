@@ -1,7 +1,10 @@
 "use client";
 import { listarPacientes } from "@/serveractions/dashboard/pacientes/listarPacientes";
 import { crearTratamiento } from "@/serveractions/dashboard/tratamientos/crearTratamiento";
-import { listarTiposTratamiento } from "@/serveractions/dashboard/tratamientos/tipos_de_tratamiento/listarTiposTratamiento";
+import {
+  listarTiposTratamiento,
+  listarTiposTratamientoActivos,
+} from "@/serveractions/dashboard/tratamientos/tipos_de_tratamiento/listarTiposTratamiento";
 import { personFullNameFormater } from "@/utils/format_person_full_name";
 import { mostrarAlertaError } from "@/utils/show_error_alert";
 import { mostrarAlertaExito } from "@/utils/show_success_alert";
@@ -41,7 +44,7 @@ export default function BotonCreacion({
   const { data: session, status } = useSession();
   const fetchData = async () => {
     setpacientes(await listarPacientes());
-    settratamientos(await listarTiposTratamiento());
+    settratamientos(await listarTiposTratamientoActivos());
   };
   useEffect(() => {
     try {

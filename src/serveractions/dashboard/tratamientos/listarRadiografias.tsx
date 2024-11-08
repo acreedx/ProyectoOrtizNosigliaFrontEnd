@@ -8,6 +8,7 @@ export async function listarRadiografias(id_careplan: string) {
         carePlanId: id_careplan,
       },
     });
+    console.log(radiografias);
     return radiografias;
   } catch (error) {
     console.log(error);
