@@ -1,12 +1,12 @@
 "use client";
 import Breadcrumb from "@/app/dashboard/components/Common/Breadcrumb";
 import DefaultLayout from "@/app/dashboard/components/Layouts/DefaultLayout";
-import { localDomain } from "@/types/domain";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import BotonVolver from "@/app/dashboard/components/Common/BotonVolver";
+import { routes } from "@/config/routes";
 interface OdontogramaRow {
   msc: string;
   temp: string;
@@ -40,12 +40,12 @@ const Odontograma = ({ params }: { params: { id: string } }) => {
       showCancelButton: true,
       confirmButtonText: "Sí",
       cancelButtonText: "No, cancelar",
-      confirmButtonColor: "#28a745", // Verde
+      confirmButtonColor: "#28a745",
       cancelButtonColor: "#dc3545",
     }).then((result) => result.isConfirmed);
     if (confirmed) {
       try {
-        const response = await fetch(localDomain + "odontograma/" + params.id, {
+        const response = await fetch("" + "odontograma/" + params.id, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
@@ -66,7 +66,7 @@ const Odontograma = ({ params }: { params: { id: string } }) => {
           confirmButtonText: "Sí",
           confirmButtonColor: "#28a745",
         }).then((result) => {
-          router.push("/dashboard/pacientes");
+          router.push(routes.pacientes);
         });
       } catch (error: any) {
         Swal.fire("Error", error.message, "error");
@@ -76,7 +76,7 @@ const Odontograma = ({ params }: { params: { id: string } }) => {
   useEffect(() => {
     async function fetchOdontogram() {
       setloading(true);
-      const url = localDomain + "odontograma/" + params.id;
+      const url = "" + "odontograma/" + params.id;
       console.log(url);
       const response = await fetch(url);
       if (!response.ok) {

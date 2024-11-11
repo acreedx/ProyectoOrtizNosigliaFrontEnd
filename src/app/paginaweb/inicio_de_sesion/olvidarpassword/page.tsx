@@ -6,9 +6,10 @@ import { forgetPassword } from "@/controller/forgetPassword";
 import { useRouter } from "next/navigation";
 import PacienteIcon from "@/app/dashboard/components/Icons/PacienteIcon";
 import { EmailIcon } from "@chakra-ui/icons";
-import Layout from "../components/Layout";
-import Banner from "../components/Banner";
 import { mostrarAlertaError } from "@/utils/show_error_alert";
+import { routes } from "@/config/routes";
+import Layout from "../../components/Layout";
+import Banner from "../../components/Banner";
 
 export default function OlvidarPassword() {
   const router = useRouter();
@@ -44,7 +45,7 @@ export default function OlvidarPassword() {
             confirmButtonText: "Aceptar",
             confirmButtonColor: "#28a745",
           }).then(() => {
-            router.push("/paginaweb/pages/login");
+            router.push(routes.login);
           });
         }
         setIsLoading(false);
@@ -112,7 +113,7 @@ export default function OlvidarPassword() {
                     <p className="text-black">
                       No tienes una cuenta?{" "}
                       <Link
-                        href="/paginaweb/registro"
+                        href={routes.registro}
                         className="text-orange-400 hover:text-orange-500"
                       >
                         Registrate

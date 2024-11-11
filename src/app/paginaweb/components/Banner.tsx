@@ -1,10 +1,7 @@
 "use client";
-import CandadoIcon from "@/app/dashboard/components/Icons/CandadoIcon";
-import PacienteIcon from "@/app/dashboard/components/Icons/PacienteIcon";
-import { localDomain } from "@/types/domain";
+import { routes } from "@/config/routes";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import Swal from "sweetalert2";
 
@@ -15,7 +12,7 @@ export default function Banner() {
         <div className="rounded-xl bg-orange-400 p-10 shadow-lg">
           <Link
             className="mb-5.5 inline-block transition hover:drop-shadow-xl"
-            href="/paginaweb/home"
+            href={routes.sitio_web}
           >
             <Image
               className="hidden shadow-lg dark:block"

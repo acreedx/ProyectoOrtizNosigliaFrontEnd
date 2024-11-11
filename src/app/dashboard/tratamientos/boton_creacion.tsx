@@ -1,5 +1,5 @@
 "use client";
-import { listarPacientes } from "@/controller/dashboard/pacientes/listarPacientes";
+import { listarPacientes } from "@/controller/dashboard/pacientes/pacientesController";
 import { crearTratamiento } from "@/controller/dashboard/tratamientos/crearTratamiento";
 import { listarTiposTratamientoActivos } from "@/controller/dashboard/tratamientos/tipos_de_tratamiento/listarTiposTratamiento";
 import { personFullNameFormater } from "@/utils/format_person_full_name";

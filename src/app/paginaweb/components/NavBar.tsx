@@ -29,7 +29,7 @@ export default function PersoNavBar() {
     await signOut({
       redirect: false,
     }).then(() => {
-      router.push("/paginaweb/login");
+      router.push(routes.login);
     });
   };
   const onOpen = () => setIsOpen(true);
@@ -78,7 +78,7 @@ export default function PersoNavBar() {
               {session.user && (
                 <li>
                   <Link
-                    href="/dashboard"
+                    href={routes.dashboard}
                     className="rounded-xl  bg-orange-400 p-3 text-lg text-white no-underline transition-all  hover:text-orange-700 hover:drop-shadow-md "
                   >
                     Ingresar al dashboard

@@ -4,11 +4,11 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
-import LoadingMessage from "../Common/LoadingMessage";
-import RestoreIcon from "../Icons/RestoreIcon";
-import OdontogramaIcon from "../Icons/OdontogramaIcon";
-import OptionsIcon from "../Icons/OptionsIcon";
-import DeleteIcon from "../Icons/DeleteIcon";
+import LoadingMessage from "../components/Common/LoadingMessage";
+import OptionsIcon from "../components/Icons/OptionsIcon";
+import RestoreIcon from "../components/Icons/RestoreIcon";
+import DeleteIcon from "../components/Icons/DeleteIcon";
+import OdontogramaIcon from "../components/Icons/OdontogramaIcon";
 interface patient {
   _id: string;
   fotoDePerfil: string;
@@ -70,7 +70,7 @@ const TablePatients = () => {
       showCancelButton: true,
       confirmButtonText: "Sí, hazlo!",
       cancelButtonText: "No, cancelar",
-      confirmButtonColor: "#28a745", // Verde
+      confirmButtonColor: "#28a745",
       cancelButtonColor: "#dc3545",
     }).then(async (result) => {
       if (result.isConfirmed) {

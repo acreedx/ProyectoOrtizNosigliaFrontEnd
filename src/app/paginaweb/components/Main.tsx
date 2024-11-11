@@ -9,6 +9,7 @@ import Cardiology from "./Icons/Cardiology";
 import Support from "./Icons/Support";
 import DropDownCard from "./DropDownCard";
 import ServiceCard from "./ServiceCard";
+import { routes } from "@/config/routes";
 
 export default function Main() {
   return (
@@ -315,7 +316,7 @@ export default function Main() {
                   calidad en cada visita.
                 </p>
                 <a
-                  href="/paginaweb/equipo"
+                  href={routes.equipo}
                   className="inline-block rounded-md border border-transparent bg-transparent  px-3 py-1.5  text-base font-normal leading-6 text-current text-orange-500 no-underline shadow-md transition-colors duration-300 ease-out hover:text-orange-700 focus:shadow-none  focus:outline-none disabled:pointer-events-none disabled:opacity-65"
                   data-wow-delay=".8s"
                 >
@@ -435,7 +436,7 @@ export default function Main() {
         <div className="shape">
           <Image
             src="/images/paginaweb/shapes/shape-8.svg"
-            alt=""
+            alt="figura"
             width={400}
             height={400}
             className="shape-faq max-w-full"
@@ -485,102 +486,6 @@ export default function Main() {
         </div>
       </section>
       <Contact />
-      {/**
-       * SECCIÓN DE SUSCRIBIRSE A NUESTRO DIARIO
-      <section
-        id="emergency-section"
-        className="subscribe-section img-bg bg-white pb-[100px] pt-[100px]"
-      >
-        <div className="mx-auto w-full px-[calc(1.5rem*0.5)] sm:max-w-[540px] md:max-w-[720px] lg:max-w-[960px] xl:max-w-[1140px] 2xl:max-w-[1320px]">
-          <div className="-mx-[calc(1.5rem*0.5)] -mt-[0rem] flex flex-wrap">
-            <div className="xl:w-7/12">
-              <div className="section-title">
-                <h2 className="m-0 mb-2 mt-0 font-raleway text-[calc(1.325rem+0.9vw)] font-medium leading-[1.2] text-[#393e46] md:text-[2rem]">
-                  Suscribete a nuestro diario
-                </h2>
-                <p className="m-0 mb-[35px] text-[18px] font-normal leading-[28px] text-[#8c96a7]">
-                  Lorem ipsum dolor sit amet, consetetur sadiping elitr, sed
-                  dinonumy
-                  <br className="d-none d-lg-block" /> eirmod tempor invidunt ut
-                  labore.
-                </p>
-              </div>
-            </div>
-          </div>
-          <div className="-mx-[calc(1.5rem*0.5)] -mt-[0rem] flex flex-wrap">
-            <div className="xl:w-2/3">
-              <div className="subscribe-wrapper">
-                <form action="#" className="subscribe-from">
-                  <input
-                    className="focus:no-underline focus:shadow-none focus:outline-none"
-                    type="text"
-                    name="subscribe"
-                    id="subscribe"
-                    placeholder="Ingresa tu correo"
-                  />
-                  <button className="disabled:bg-disabled-bg disabled:border-disabled-border-color theme-btn inline-block rounded-md border border-transparent bg-orange-400 px-3 py-1.5 text-base font-normal  leading-6 text-current text-white shadow-md transition-colors hover:border-orange-300 hover:bg-orange-500 hover:text-white focus:no-underline focus:shadow-none focus:outline-none disabled:pointer-events-none disabled:opacity-65">
-                    Suscribirse
-                  </button>
-                </form>
-                <div className="support d-flex">
-                  <div className="support-icon">
-                    <Support />
-                  </div>
-                  <h2 className="m-0 mb-2 mt-0 font-raleway text-[calc(1.325rem+0.9vw)] font-medium leading-[1.2] text-[#393e46] md:text-[2rem]">
-                    {" "}
-                    <span className="block text-orange-400 no-underline">
-                      Atención médica
-                    </span>{" "}
-                    Servicio de 8 am a 4 pm
-                  </h2>
-                </div>
-                <div className="subscribe-links">
-                  <ul className="m-0 list-none p-0">
-                    <li>
-                      <a
-                        href="#"
-                        className="inline-block no-underline transition-all duration-300 ease-out hover:text-[#00adb5] focus:shadow-none focus:outline-none"
-                      >
-                        <i className="lni lni-phone-set inline-block bg-orange-400 no-underline"></i>{" "}
-                        <span className="inline-block no-underline ">
-                          +591 72025082
-                        </span>{" "}
-                      </a>{" "}
-                    </li>
-                    <li>
-                      <a
-                        href="https://www.facebook.com/ortiznosiglia"
-                        target="_blank"
-                        className="inline-block no-underline transition-all duration-300 ease-out hover:text-[#00adb5] focus:shadow-none focus:outline-none"
-                      >
-                        <i className="lni lni-facebook-fill inline-block no-underline"></i>
-                      </a>
-                    </li>
-                    <li>
-                      <a
-                        href="https://www.tiktok.com/@ortiznosiglia"
-                        target="_blank"
-                        className="inline-block no-underline transition-all duration-300 ease-out hover:text-[#00adb5] focus:shadow-none focus:outline-none"
-                      >
-                        <i className="lni lni-tiktok-alt inline-block no-underline"></i>
-                      </a>
-                    </li>
-                    <li>
-                      <a
-                        href="https://www.instagram.com/ortiznosiglia/"
-                        target="_blank"
-                        className="inline-block no-underline transition-all duration-300 ease-out hover:text-[#00adb5] focus:shadow-none focus:outline-none"
-                      >
-                        <i className="lni lni-instagram-original inline-block no-underline"></i>
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section> */}
       <section id="blog" className="blog-section bg-white">
         <div className="shape shape-7">
           <Image

@@ -47,7 +47,7 @@ import {
 } from "@/controller/dashboard/tratamientos/cambiarEstadoTratamiento";
 import { mostrarAlertaError } from "@/utils/show_error_alert";
 import { mostrarAlertaExito } from "@/utils/show_success_alert";
-import { listarPacientes } from "@/controller/dashboard/pacientes/listarPacientes";
+import { listarPacientes } from "@/controller/dashboard/pacientes/pacientesController";
 import { editarTratamiento } from "@/controller/dashboard/tratamientos/editarTratamiento";
 import { listarRadiografias } from "@/controller/dashboard/tratamientos/listarRadiografias";
 import { subirFotoDePerfil } from "@/utils/upload_image";

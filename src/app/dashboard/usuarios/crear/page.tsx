@@ -21,6 +21,7 @@ import Breadcrumb from "@/app/dashboard/components/Common/Breadcrumb";
 import DefaultLayout from "@/app/dashboard/components/Layouts/DefaultLayout";
 import { createEmptyFormularioPersona } from "@/app/paginaweb/inicio_de_sesion/registro/formularioRegistro";
 import BotonVolver from "@/app/dashboard/components/Common/BotonVolver";
+import { routes } from "@/config/routes";
 
 interface FileWithPreview extends File {
   preview?: string;
@@ -107,7 +108,7 @@ export default function Page() {
           confirmButtonText: "Aceptar",
           confirmButtonColor: "#28a745",
         }).then(() => {
-          router.push("/paginaweb/pages/login");
+          router.push(routes.login);
         });
       }
       setIsLoading(false);

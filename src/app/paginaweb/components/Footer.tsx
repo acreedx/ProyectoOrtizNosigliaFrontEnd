@@ -1,6 +1,6 @@
 import Image from "next/image";
 import "@/app/paginaweb/assets/css/footer.css";
-import Tiktok from "./Icons/Tiktok";
+import { routes } from "@/config/routes";
 export default function Footer() {
   return (
     <footer className="footer img-bg h-full pb-[100px] pt-[100px]">
@@ -10,7 +10,7 @@ export default function Footer() {
             <div className="mt-[40px] w-full max-w-full flex-shrink-0 px-16 md:w-1/2 lg:w-5/12 xl:w-1/3">
               <div className="footer-widget flex flex-col items-center ">
                 <a
-                  href="index.html"
+                  href={routes.sitio_web}
                   className="logo inline-block no-underline transition-all duration-300 ease-out hover:text-[#00adb5] focus:shadow-none focus:outline-none"
                 >
                   <Image
@@ -60,7 +60,7 @@ export default function Footer() {
             </div>
             <div className="md:w-1/2 lg:w-1/4 xl:w-1/6">
               <div className="footer-widget">
-                <h4 className="font-raleway m-0 text-[25px] font-semibold text-[#393e46]">
+                <h4 className="m-0 font-raleway text-[25px] font-semibold text-[#393e46]">
                   Links
                 </h4>
                 <ul className="footer-links m-0 mb-4 mt-0 list-none p-0 ">
@@ -93,7 +93,7 @@ export default function Footer() {
             </div>
             <div className="md:w-5/12 lg:w-1/4 xl:w-1/6">
               <div className="footer-widget mb-30">
-                <h4 className="font-raleway m-0 text-[25px] font-semibold text-[#393e46]">
+                <h4 className="m-0 font-raleway text-[25px] font-semibold text-[#393e46]">
                   Reservas
                 </h4>
                 <ul className="footer-links m-0 mb-4 mt-0 list-none p-0">
@@ -126,7 +126,7 @@ export default function Footer() {
             </div>
             <div className="md:w-7/12 lg:w-full xl:w-1/3">
               <div className="footer-widget">
-                <h4 className="font-raleway m-0 text-center text-[25px] font-semibold text-[#393e46]">
+                <h4 className="m-0 text-center font-raleway text-[25px] font-semibold text-[#393e46]">
                   {" "}
                   Ubicación del centro
                 </h4>

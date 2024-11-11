@@ -1,17 +1,17 @@
 "use client";
 import React, { useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import CandadoIcon from "@/app/dashboard/components/Icons/CandadoIcon";
 import PacienteIcon from "@/app/dashboard/components/Icons/PacienteIcon";
 import { useRouter } from "next/navigation";
 import Swal from "sweetalert2";
-import { Button, Spinner, Text } from "@chakra-ui/react";
+import { Text } from "@chakra-ui/react";
 import Layout from "../components/Layout";
 import Banner from "../components/Banner";
 import { changePassword } from "@/controller/changePassword";
 import { MdOutlineVisibilityOff, MdRemoveRedEye } from "react-icons/md";
 import { mostrarAlertaError } from "@/utils/show_error_alert";
+import { routes } from "@/config/routes";
 
 export default function Editar() {
   const router = useRouter();
@@ -40,7 +40,7 @@ export default function Editar() {
         confirmButtonText: "Aceptar",
         confirmButtonColor: "#28a745",
       }).then(() => {
-        router.push("/paginaweb/pages/login");
+        router.push(routes.login);
       });
     }
     setIsLoading(false);
@@ -197,7 +197,7 @@ export default function Editar() {
                   </div>
 
                   <Link
-                    href={"/paginaweb/olvidarpassword"}
+                    href={routes.olvidarpassword}
                     className="flex w-full items-center justify-center gap-3.5 rounded-lg border border-stroke bg-gray-2 p-4 text-black hover:bg-opacity-50 dark:border-strokedark dark:bg-meta-4 dark:hover:bg-opacity-50"
                   >
                     Olvidaste tu contraseña?

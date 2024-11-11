@@ -1,4 +1,5 @@
 "use client";
+import { routes } from "@/config/routes";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm, SubmitHandler, FieldValues, Form } from "react-hook-form";
@@ -18,8 +19,7 @@ export default function LoginForm() {
     try {
       resetField("username");
       resetField("password");
-      console.log(data);
-      router.push("pages/home");
+      router.push(routes.sitio_web);
     } catch (error) {
       alert(error);
     } finally {

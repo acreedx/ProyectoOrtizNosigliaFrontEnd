@@ -1,3 +1,4 @@
+import { routes } from "@/config/routes";
 import Image from "next/image";
 import React from "react";
 
@@ -51,7 +52,7 @@ export default function Contact() {
               </p>
               <br />
               <a
-                href="/paginaweb/citas"
+                href={routes.paginawebcitas}
                 rel="nofollow"
                 className="inline-block rounded-md border border-transparent bg-transparent  px-3 py-1.5  text-base font-normal leading-6 text-current text-orange-500 no-underline shadow-md transition-colors duration-300 ease-out hover:text-orange-700 focus:shadow-none  focus:outline-none disabled:pointer-events-none disabled:opacity-65"
               >

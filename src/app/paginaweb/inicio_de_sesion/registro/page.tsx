@@ -21,6 +21,7 @@ import { createEmptyFormularioPersona } from "./formularioRegistro";
 import { useRouter } from "next/navigation";
 import { createPerson } from "@/controller/person";
 import { mostrarAlertaError } from "@/utils/show_error_alert";
+import { routes } from "@/config/routes";
 
 interface FileWithPreview extends File {
   preview?: string;
@@ -96,7 +97,7 @@ export default function PersonForm() {
           confirmButtonText: "Aceptar",
           confirmButtonColor: "#28a745",
         }).then(() => {
-          router.push("/paginaweb/pages/login");
+          router.push(routes.login);
         });
       }
       setIsLoading(false);

@@ -3,7 +3,6 @@ import DefaultLayout from "@/app/dashboard/components/Layouts/DefaultLayout";
 import React, { useEffect, useState } from "react";
 import Breadcrumb from "@/app/dashboard/components/Common/Breadcrumb";
 import { useRouter } from "next/navigation";
-import { localDomain } from "@/types/domain";
 import Swal from "sweetalert2";
 import {
   Box,
@@ -14,11 +13,11 @@ import {
   Select,
   Textarea,
   VStack,
-  Heading,
   Spinner,
   HStack,
 } from "@chakra-ui/react";
 import BotonVolver from "../../components/Common/BotonVolver";
+import { routes } from "@/config/routes";
 interface patient {
   _id: String;
   apellidoPaterno: String;
@@ -57,7 +56,7 @@ export default function Pacientes({ params }: { params: { id: string } }) {
     alergiaMedicamento: "",
   });
   useEffect(() => {
-    const url = localDomain + "person/" + params.id;
+    const url = "" + "person/" + params.id;
     console.log(url);
     async function fectchPatient() {
       setloading(true);
@@ -84,7 +83,7 @@ export default function Pacientes({ params }: { params: { id: string } }) {
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-    const url = localDomain + "person/" + params.id;
+    const url = "" + "person/" + params.id;
     console.log("Datos del formulario:", formData);
     const response = await fetch(url, {
       method: "PUT",
@@ -103,12 +102,12 @@ export default function Pacientes({ params }: { params: { id: string } }) {
       confirmButtonText: "Volver al listado",
       confirmButtonColor: "#28a745",
     }).then((result) => {
-      router.push("/dashboard/pacientes");
+      router.push(routes.pacientes);
     });
   };
   return (
     <DefaultLayout>
-      <BotonVolver direccion="/dashboard/pacientes" />
+      <BotonVolver direccion={routes.pacientes} />
       <Breadcrumb pageName="Editar paciente" />
       {loading ? (
         <Spinner size="xl" />

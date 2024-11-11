@@ -1,4 +1,5 @@
 "use client";
+import { routes } from "@/config/routes";
 import { Box, Button, Flex, Text } from "@chakra-ui/react";
 import React from "react";
 
@@ -12,7 +13,7 @@ export default function IniciarSesion() {
         </Text>
         <Flex gap={4}>
           <Button
-            href="/paginaweb/login"
+            href={routes.login}
             as="a"
             colorScheme="orange"
             size="lg"
@@ -22,7 +23,7 @@ export default function IniciarSesion() {
             Iniciar Sesión
           </Button>
           <Button
-            href="/paginaweb/registro"
+            href={routes.registro}
             as="a"
             size="lg"
             className="border border-orange-400 text-orange-400 no-underline transition duration-300 hover:bg-orange-500 "

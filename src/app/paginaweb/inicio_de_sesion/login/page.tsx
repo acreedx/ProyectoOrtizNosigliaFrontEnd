@@ -10,6 +10,7 @@ import Banner from "../../components/Banner";
 import { signIn } from "next-auth/react";
 import { mostrarAlertaError } from "@/utils/show_error_alert";
 import { MdOutlineVisibilityOff, MdRemoveRedEye } from "react-icons/md";
+import { routes } from "@/config/routes";
 
 export default function Login() {
   const router = useRouter();
@@ -31,7 +32,7 @@ export default function Login() {
           icon: "success",
           confirmButtonColor: "#28a745",
         }).then((result) => {
-          router.push("/dashboard");
+          router.push(routes.dashboard);
         });
       } else {
         mostrarAlertaError(res!.error!);
@@ -116,7 +117,7 @@ export default function Login() {
                   </div>
 
                   <Link
-                    href={"/paginaweb/cambiodepassword"}
+                    href={routes.cambiopassword}
                     className="flex w-full items-center justify-center gap-3.5 rounded-lg border border-stroke bg-gray-2 p-4 text-black hover:bg-opacity-50 dark:border-strokedark dark:bg-meta-4 dark:hover:bg-opacity-50"
                   >
                     Problemas para iniciar sesión?
@@ -126,7 +127,7 @@ export default function Login() {
                     <p className="text-black">
                       No tienes una cuenta?{" "}
                       <Link
-                        href="/paginaweb/registro"
+                        href={routes.registro}
                         className="text-orange-400 hover:text-orange-500"
                       >
                         Registrate

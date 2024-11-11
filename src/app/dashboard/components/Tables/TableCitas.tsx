@@ -1,15 +1,5 @@
 "use client";
-import { localDomain } from "@/types/domain";
-import Image from "next/image";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import Swal from "sweetalert2";
-import LoadingMessage from "../Common/LoadingMessage";
-import RestoreIcon from "../Icons/RestoreIcon";
-import OdontogramaIcon from "../Icons/OdontogramaIcon";
-import OptionsIcon from "../Icons/OptionsIcon";
-import DeleteIcon from "../Icons/DeleteIcon";
+import { useState } from "react";
 const TableCitas = () => {
   const [eventos, setEventos] = useState<any[]>([
     {

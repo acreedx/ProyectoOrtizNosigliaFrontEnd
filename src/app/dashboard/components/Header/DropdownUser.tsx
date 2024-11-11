@@ -1,14 +1,14 @@
 import { useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import ClickOutside from "@/app/dashboard/components/Common/ClickOutside";
 import { Avatar, Spinner } from "@chakra-ui/react";
-import { localDomain } from "@/types/domain";
 import { useRouter } from "next/navigation";
 import ArrowDownIcon from "../Icons/ArrowDownIcon";
 import CloseSessionIcon from "../Icons/CloseSessionIcon";
 import { signOut, useSession } from "next-auth/react";
 import { personFullNameFormater } from "@/utils/format_person_full_name";
+import { routes } from "@/config/routes";
+import { mostrarAlertaError } from "@/utils/show_error_alert";
 
 const DropdownUser = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -19,9 +19,9 @@ const DropdownUser = () => {
       await signOut({
         redirect: false,
       });
-      router.push("/paginaweb/login");
-    } catch (e) {
-      console.log(e);
+      router.push(routes.login);
+    } catch (e: any) {
+      mostrarAlertaError(e);
     }
   };
   return (
@@ -50,7 +50,6 @@ const DropdownUser = () => {
                 </span>
 
                 <span className="h-12 w-12 rounded-full">
-                  {/*Foto de perfil*/}
                   <Avatar
                     size={"md"}
                     name={session.user.username}
@@ -60,13 +59,10 @@ const DropdownUser = () => {
 
                 <ArrowDownIcon />
               </Link>
-
-              {/* <!-- Dropdown Start --> */}
               {dropdownOpen && (
                 <div
                   className={`absolute right-0 mt-4 flex w-62.5 flex-col rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark`}
                 >
-                  {/*Opciones del usuario */}
                   <ul className="flex flex-col gap-5 border-b border-stroke px-6 py-7.5 dark:border-strokedark">
                     <li>
                       <Link
@@ -132,7 +128,6 @@ const DropdownUser = () => {
                   </button>
                 </div>
               )}
-              {/* <!-- Dropdown End --> */}
             </ClickOutside>
           ) : (
             <div>Usuario no encontrado</div>

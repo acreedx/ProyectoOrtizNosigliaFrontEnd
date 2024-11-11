@@ -16,6 +16,7 @@ import Swal from "sweetalert2";
 import { updateUserDashboard } from "@/controller/updateUserDashboard";
 import { Person, Rol } from "@prisma/client";
 import { birthDateFormater } from "@/utils/birth_date_formater";
+import { routes } from "@/config/routes";
 
 export default function EditUserForm({
   user,
@@ -45,7 +46,7 @@ export default function EditUserForm({
         confirmButtonText: "Aceptar",
         confirmButtonColor: "#28a745",
       }).then((result) => {
-        router.push("/dashboard/pages/usuarios");
+        router.push(routes.usuarios);
       });
     }
     setIsLoading(false);

@@ -1,3 +1,4 @@
+import { routes } from "@/config/routes";
 import Link from "next/link";
 interface BreadcrumbProps {
   pageName: string;
@@ -8,11 +9,10 @@ const Breadcrumb = ({ pageName }: BreadcrumbProps) => {
       <h2 className="text-title-md2 font-semibold text-black dark:text-white">
         {pageName}
       </h2>
-
       <nav>
         <ol className="flex items-center gap-2">
           <li>
-            <Link className="font-medium" href="/dashboard">
+            <Link className="font-medium" href={routes.dashboard}>
               Dashboard /
             </Link>
           </li>
