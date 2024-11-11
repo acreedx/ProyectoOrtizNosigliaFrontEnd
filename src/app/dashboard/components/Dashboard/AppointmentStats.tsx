@@ -1,5 +1,5 @@
 "use client";
-import { listarCitasTotales } from "@/serveractions/dashboard/dashboardpage/listarCitas";
+import { listarCitasTotales } from "@/controller/dashboard/dashboardpage/listarCitas";
 import {
   CalendarIcon,
   CheckCircleIcon,
@@ -8,7 +8,7 @@ import {
 } from "@chakra-ui/icons";
 import { Spinner } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
-import CardDataStats from "../CardDataStats";
+import CardDataStats from "../Common/CardDataStats";
 
 export default function AppointmentStats() {
   const [datosCitas, setdatosCitas] = useState<number[]>([]);

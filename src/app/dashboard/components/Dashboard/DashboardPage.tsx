@@ -4,8 +4,6 @@ import DashboardTable from "./DashboardTable";
 import ChartOne from "../Charts/ChartOne";
 import ChartTwo from "../Charts/ChartTwo";
 import ChartThree from "../Charts/ChartThree";
-import MapOne from "../Maps/MapOne";
-import ChatCard from "../Chat/ChatCard";
 import AppointmentStats from "./AppointmentStats";
 
 export default function DashboardPage() {
@@ -26,7 +24,6 @@ export default function DashboardPage() {
             <DashboardTable />
           </div>
         </div>
-        <ChatCard />
       </div>
     </>
   );

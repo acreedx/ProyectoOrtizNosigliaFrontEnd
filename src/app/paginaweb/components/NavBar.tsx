@@ -19,6 +19,7 @@ import Link from "next/link";
 import { signOut, useSession } from "next-auth/react";
 import { personFullNameFormater } from "@/utils/format_person_full_name";
 import { useRouter } from "next/navigation";
+import { routes } from "@/config/routes";
 
 export default function PersoNavBar() {
   const router = useRouter();
@@ -38,7 +39,7 @@ export default function PersoNavBar() {
       <ul className="m-0  mb-0 flex w-full list-none flex-wrap justify-around p-0 px-0 py-2 align-middle">
         <div className="flex items-center">
           <Link
-            href="/paginaweb"
+            href={routes.sitio_web}
             className="text-gray-900 no-underline hover:text-orange-400"
           >
             <Image
@@ -53,13 +54,10 @@ export default function PersoNavBar() {
 
         <Flex as="nav" padding="1.5rem" bg="transparent" gap={10}>
           <NavBarLinkChakra linkName="Inicio" linkUrl="/" />
-          <NavBarLinkChakra
-            linkName="Nuestro equipo"
-            linkUrl="/paginaweb/equipo"
-          />
+          <NavBarLinkChakra linkName="Nuestro equipo" linkUrl={routes.equipo} />
           <NavBarLinkChakra
             linkName="Reserva una cita"
-            linkUrl="/paginaweb/citas"
+            linkUrl={routes.paginawebcitas}
           />
           {/*
           <NavBarLinkDropDownChakra
@@ -116,7 +114,7 @@ export default function PersoNavBar() {
             <>
               <li>
                 <Link
-                  href="/paginaweb/login"
+                  href={routes.login}
                   className="rounded-xl bg-orange-400 p-2 text-lg text-white no-underline transition-all duration-300  hover:text-orange-700 hover:drop-shadow-md "
                 >
                   Iniciar Sesión
@@ -124,7 +122,7 @@ export default function PersoNavBar() {
               </li>
               <li>
                 <Link
-                  href="/paginaweb/registro"
+                  href={routes.registro}
                   className="rounded-xl border-2 border-orange-400 p-2 text-lg text-orange-400 no-underline transition-all hover:bg-orange-400 hover:text-white hover:drop-shadow-md"
                 >
                   Crear Cuenta
@@ -134,7 +132,7 @@ export default function PersoNavBar() {
           )}
         </div>
       </ul>
-      {/* Drawer para ver el perfil del usuario */}
+
       <Drawer isOpen={isOpen} placement="right" onClose={onClose}>
         <DrawerOverlay />
         {status === "loading" ? (
@@ -157,7 +155,7 @@ export default function PersoNavBar() {
               </div>
               <div className="flex flex-col items-center justify-center gap-4">
                 <Link
-                  href="/paginaweb/editarperfil"
+                  href={routes.editarperfil}
                   className="rounded-xl bg-orange-400 p-2 text-lg text-white no-underline transition-all duration-300  hover:text-orange-700 hover:drop-shadow-md "
                 >
                   Cambiar contraseña

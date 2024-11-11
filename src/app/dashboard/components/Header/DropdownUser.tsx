@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import ClickOutside from "@/app/dashboard/components/ClickOutside";
+import ClickOutside from "@/app/dashboard/components/Common/ClickOutside";
 import { Avatar, Spinner } from "@chakra-ui/react";
 import { localDomain } from "@/types/domain";
 import { useRouter } from "next/navigation";

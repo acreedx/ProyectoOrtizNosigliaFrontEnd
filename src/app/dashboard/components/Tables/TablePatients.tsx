@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
-import LoadingMessage from "../LoadingMessage";
+import LoadingMessage from "../Common/LoadingMessage";
 import RestoreIcon from "../Icons/RestoreIcon";
 import OdontogramaIcon from "../Icons/OdontogramaIcon";
 import OptionsIcon from "../Icons/OptionsIcon";

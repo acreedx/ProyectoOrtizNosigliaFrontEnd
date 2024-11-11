@@ -26,9 +26,9 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { Appointment, Person } from "@prisma/client";
-import { getDentistas } from "@/serveractions/paginaweb/dentistas/listarDentistas";
+import { getDentistas } from "@/controller/paginaweb/dentistas/listarDentistas";
 import Swal from "sweetalert2";
-import { crearCita } from "@/serveractions/paginaweb/citas/crearCita";
+import { crearCita } from "@/controller/paginaweb/citas/crearCita";
 
 export default function Calendario() {
   const { isOpen, onOpen, onClose } = useDisclosure();

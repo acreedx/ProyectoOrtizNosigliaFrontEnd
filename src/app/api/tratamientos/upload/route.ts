@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { storage } from "../../../../../firebase.config";
-import { prisma } from "@/prisma";
+import { prisma } from "@/config/prisma";
 
 const subirArchivoAFirebase = async (file: File): Promise<string> => {
   try {

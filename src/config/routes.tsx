@@ -1,0 +1,17 @@
+export const routes = {
+  sitio_web: "/",
+  equipo: "/paginaweb/equipo",
+  paginawebcitas: "/paginaweb/citas",
+  login: "/paginaweb/login",
+  registro: "/paginaweb/registro",
+  editarperfil: "/paginaweb/editareditarperfil",
+  dashboard: "/dashboard",
+  pacientes: "/dashboard/pacientes",
+  organizaciones: "/dashboard/pacientes/organizaciones",
+  citas: "/dashboard/citas/calendario",
+  usuarios: "/dashboard/usuarios",
+  roles: "/dashboard/roles",
+  eventos_del_sistema: "/dashboard/eventos_del_sistema",
+  tratamientos: "/dashboard/tratamientos",
+  tipos_de_tratamiento: "/dashboard/tratamientos/tipos_de_tratamiento",
+};

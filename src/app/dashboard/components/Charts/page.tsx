@@ -1,5 +1,5 @@
 "use client";
-import Breadcrumb from "@/app/dashboard/components/Breadcrumbs/Breadcrumb";
+import Breadcrumb from "@/app/dashboard/components/Common/Breadcrumb";
 import ChartOne from "@/app/dashboard/components/Charts/ChartOne";
 import ChartTwo from "@/app/dashboard/components/Charts/ChartTwo";
 import dynamic from "next/dynamic";

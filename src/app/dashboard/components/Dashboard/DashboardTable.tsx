@@ -1,5 +1,5 @@
 "use client";
-import { listarUsuarios } from "@/serveractions/dashboard/dashboardpage/listarUsuarios";
+import { listarUsuarios } from "@/controller/dashboard/dashboardpage/listarUsuarios";
 import { personFullNameFormater } from "@/utils/format_person_full_name";
 import {
   noDataFoundComponent,

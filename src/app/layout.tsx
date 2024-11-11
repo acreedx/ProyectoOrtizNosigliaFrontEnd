@@ -8,15 +8,11 @@ import "flatpickr/dist/flatpickr.min.css";
 import "@/app/dashboard/assets/css/satoshi.css";
 import "@/app/dashboard/assets/css/style.css";
 import { Inter } from "next/font/google";
-import { Metadata } from "next";
 import { Providers } from "./Providers";
+import { metadata } from "../config/metadata";
 
 const inter = Inter({ subsets: ["latin"] });
-
-export const metadata: Metadata = {
-  title: "Centro Ortiz Nosiglia",
-  description: "Este es el sitio web del Centro Odontológico Ortiz Nosiglia",
-};
+export { metadata };
 
 export default function RootLayout({
   children,

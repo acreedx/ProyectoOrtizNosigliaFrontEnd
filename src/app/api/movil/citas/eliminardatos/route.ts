@@ -1,4 +1,4 @@
-import { prisma } from "@/prisma"; // Asegúrate de ajustar la ruta
+import { prisma } from "@/config/prisma"; // Asegúrate de ajustar la ruta
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {

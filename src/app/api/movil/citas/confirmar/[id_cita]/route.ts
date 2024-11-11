@@ -1,4 +1,4 @@
-import { prisma } from "@/prisma";
+import { prisma } from "@/config/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
 const STATUS_TEXT = "confirmed";

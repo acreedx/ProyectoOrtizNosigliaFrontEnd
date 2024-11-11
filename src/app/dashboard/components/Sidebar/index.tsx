@@ -5,15 +5,16 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import SidebarItem from "@/app/dashboard/components/Sidebar/SidebarItem";
-import ClickOutside from "@/app/dashboard/components/ClickOutside";
+import ClickOutside from "@/app/dashboard/components/Common/ClickOutside";
 import useLocalStorage from "@/app/dashboard/assets/hooks/useLocalStorage";
-import { menuOptions } from "../../configuration";
+import { menuOptions } from "../../../../config/sidebar_options";
 import ArrowLeftIcon from "../Icons/ArrowLeftIcon";
 
 interface SidebarProps {
   sidebarOpen: boolean;
   setSidebarOpen: (arg: boolean) => void;
 }
+
 const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   const pathname = usePathname();
   const [pageName, setPageName] = useLocalStorage("selectedMenu", "dashboard");
@@ -24,7 +25,6 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        {/* <!-- SIDEBAR HEADER --> */}
         <div className="flex items-center justify-center gap-2 px-6 py-5.5 lg:py-6.5">
           <Link href="/">
             <Image
@@ -44,10 +44,8 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
             <ArrowLeftIcon />
           </button>
         </div>
-        {/* <!-- SIDEBAR HEADER --> */}
 
         <div className="no-scrollbar flex flex-col overflow-y-auto duration-300 ease-linear ">
-          {/* <!-- Sidebar Menu --> */}
           <nav className="mt-5 px-4 py-4 shadow-lg shadow-gray lg:mt-9 lg:px-2 ">
             {menuOptions.map((group, groupIndex) => (
               <div key={groupIndex}>
@@ -68,7 +66,6 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               </div>
             ))}
           </nav>
-          {/* <!-- Sidebar Menu --> */}
         </div>
       </aside>
     </ClickOutside>

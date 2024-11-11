@@ -4,7 +4,7 @@ import TeamCard from "../components/TeamCard";
 import Layout from "../components/Layout";
 import { Spinner } from "@chakra-ui/react";
 import { Person, Qualification } from "@prisma/client";
-import { getDentistas } from "@/serveractions/paginaweb/dentistas/listarDentistas";
+import { getDentistas } from "@/controller/paginaweb/dentistas/listarDentistas";
 import { personFullNameFormater } from "@/utils/format_person_full_name";
 export default function Page() {
   const [loading, setloading] = useState(true);
