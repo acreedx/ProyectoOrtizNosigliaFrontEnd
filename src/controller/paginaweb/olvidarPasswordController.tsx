@@ -1,8 +1,9 @@
 "use server";
 import { PrismaClient } from "@prisma/client";
-import { hashPassword } from "../utils/password_hasher";
-import { sendEmail } from "../utils/mailer";
-import { generatePassword } from "../utils/password_generator";
+import { hashPassword } from "../../utils/password_hasher";
+import { sendEmail } from "../../utils/mailer";
+import { generatePassword } from "../../utils/password_generator";
+import { userStatus } from "@/enums/userStatus";
 
 export async function forgetPassword(formData: FormData) {
   const prisma = new PrismaClient();
@@ -33,14 +34,14 @@ export async function forgetPassword(formData: FormData) {
       username: data.username,
     },
     data: {
-      active: false,
+      status: userStatus.ACTIVO,
       password: await hashPassword(newPassword),
     },
   });
-  await sendEmail(
-    person.email,
-    "Se Reestablecio su contraseña exitosamente",
-    `
+  await sendEmail({
+    email: person.email,
+    subject: "Se Reestablecio su contraseña exitosamente",
+    message: `
       ¡Hola ${person.familyName}!
   
       Tus credenciales se han reestablecido exitosamente. Aquí tienes tus credenciales:
@@ -54,6 +55,6 @@ export async function forgetPassword(formData: FormData) {
 
       ¡Gracias por unirte a Ortiz Nosiglia!
     `,
-  );
+  });
   return { success: true };
 }

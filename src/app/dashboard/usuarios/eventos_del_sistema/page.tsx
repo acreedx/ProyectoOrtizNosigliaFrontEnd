@@ -14,7 +14,7 @@ import {
 } from "@chakra-ui/react";
 import Swal from "sweetalert2";
 import { AuditEvent } from "@prisma/client";
-import { listarLogs } from "@/controller/dashboard/logs/listarLogs";
+import { listarLogs } from "@/controller/dashboard/logs/eventos_del_sistemaController";
 import DataTable, { TableColumn } from "react-data-table-component";
 import {
   noDataFoundComponent,

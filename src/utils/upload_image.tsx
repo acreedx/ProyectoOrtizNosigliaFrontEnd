@@ -7,7 +7,7 @@ export const subirFotoDePerfil = async (
     if (!image) {
       return "https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg";
     }
-    const storageRef = ref(storage, `images/${image.name}`);
+    const storageRef = ref(storage, `fotosDePerfil/${image.name}`);
     const snapshot = await uploadBytes(storageRef, image);
     const downloadURL = await getDownloadURL(snapshot.ref);
     return downloadURL;

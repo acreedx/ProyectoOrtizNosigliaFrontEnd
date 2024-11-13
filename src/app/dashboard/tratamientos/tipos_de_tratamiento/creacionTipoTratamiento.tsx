@@ -1,4 +1,4 @@
-import { crearTipoTratamiento } from "@/controller/dashboard/tratamientos/tipos_de_tratamiento/crearTiposTratamiento";
+import { crearTipoTratamiento } from "@/controller/dashboard/tipos_de_tratamiento/crearTiposTratamiento";
 import { mostrarAlertaError } from "@/utils/show_error_alert";
 import { mostrarAlertaExito } from "@/utils/show_success_alert";
 import {

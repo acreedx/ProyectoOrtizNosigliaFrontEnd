@@ -50,8 +50,6 @@ import { mostrarAlertaExito } from "@/utils/show_success_alert";
 import { listarPacientes } from "@/controller/dashboard/pacientes/pacientesController";
 import { editarTratamiento } from "@/controller/dashboard/tratamientos/editarTratamiento";
 import { listarRadiografias } from "@/controller/dashboard/tratamientos/listarRadiografias";
-import { subirFotoDePerfil } from "@/utils/upload_image";
-import { agregarRadiografias } from "@/controller/dashboard/tratamientos/agregarRadiografias";
 import RestoreIcon from "../components/Icons/RestoreIcon";
 
 export default function TablaTratamientos({
@@ -286,30 +284,6 @@ export default function TablaTratamientos({
       ignoreRowClick: true,
     },
   ];
-  const handleFileChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    field: ImagingStudy,
-  ) => {
-    const filesList = e.target.files;
-    if (filesList) {
-      const newFiles = Array.from(filesList);
-
-      setFiles((prevFiles) => {
-        const updatedFiles = { ...prevFiles };
-        updatedFiles[field.id] = newFiles;
-        return updatedFiles;
-      });
-
-      setFields((prevFields: any) => {
-        return prevFields.map((item: any) => {
-          if (item.id === field.id) {
-            return { ...item, media: newFiles };
-          }
-          return item;
-        });
-      });
-    }
-  };
 
   const handleAddField = () => {
     const newField: ImagingStudy = {

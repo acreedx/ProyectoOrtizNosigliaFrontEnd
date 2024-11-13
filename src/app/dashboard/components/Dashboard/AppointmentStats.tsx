@@ -1,5 +1,5 @@
 "use client";
-import { listarCitasTotales } from "@/controller/dashboard/dashboardpage/listarCitas";
+import { listarCitasTotales } from "@/controller/dashboard/dashboard/listarCitas";
 import {
   CalendarIcon,
   CheckCircleIcon,
@@ -13,6 +13,7 @@ import CardDataStats from "../Common/CardDataStats";
 export default function AppointmentStats() {
   const [datosCitas, setdatosCitas] = useState<number[]>([]);
   const [loading, setloading] = useState(true);
+
   useEffect(() => {
     const fetchData = async () => {
       setdatosCitas(await listarCitasTotales());
@@ -20,6 +21,7 @@ export default function AppointmentStats() {
     };
     fetchData();
   }, []);
+
   return (
     <div className="grid grid-cols-1 justify-items-center gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
       {loading ? (

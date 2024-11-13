@@ -52,7 +52,7 @@ export async function POST(req: NextRequest) {
         { status: 500 },
       );
     }
-    if (!person.active) {
+    if (!person.status) {
       return NextResponse.json(
         { error: "Usuario bloquedo reestablezca su contraseña por favor" },
         { status: 500 },

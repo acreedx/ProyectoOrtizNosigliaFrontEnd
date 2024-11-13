@@ -2,7 +2,6 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import Swal from "sweetalert2";
-import { forgetPassword } from "@/controller/forgetPassword";
 import { useRouter } from "next/navigation";
 import PacienteIcon from "@/app/dashboard/components/Icons/PacienteIcon";
 import { EmailIcon } from "@chakra-ui/icons";
@@ -10,6 +9,7 @@ import { mostrarAlertaError } from "@/utils/show_error_alert";
 import { routes } from "@/config/routes";
 import Layout from "../../components/Layout";
 import Banner from "../../components/Banner";
+import { forgetPassword } from "@/controller/paginaweb/olvidarPasswordController";
 
 export default function OlvidarPassword() {
   const router = useRouter();

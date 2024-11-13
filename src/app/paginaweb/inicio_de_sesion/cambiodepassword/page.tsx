@@ -6,12 +6,12 @@ import PacienteIcon from "@/app/dashboard/components/Icons/PacienteIcon";
 import { useRouter } from "next/navigation";
 import Swal from "sweetalert2";
 import { Text } from "@chakra-ui/react";
-import Layout from "../components/Layout";
-import Banner from "../components/Banner";
-import { changePassword } from "@/controller/changePassword";
+import Layout from "../../components/Layout";
+import Banner from "../../components/Banner";
 import { MdOutlineVisibilityOff, MdRemoveRedEye } from "react-icons/md";
 import { mostrarAlertaError } from "@/utils/show_error_alert";
 import { routes } from "@/config/routes";
+import { changePassword } from "@/controller/paginaweb/cambioDePasswordController";
 
 export default function Editar() {
   const router = useRouter();

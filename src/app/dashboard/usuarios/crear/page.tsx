@@ -16,7 +16,7 @@ import {
 import { ChangeEvent, useState } from "react";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
-import { createPerson } from "@/controller/person";
+import { createPerson } from "@/controller/paginaweb/registroController";
 import Breadcrumb from "@/app/dashboard/components/Common/Breadcrumb";
 import DefaultLayout from "@/app/dashboard/components/Layouts/DefaultLayout";
 import { createEmptyFormularioPersona } from "@/app/paginaweb/inicio_de_sesion/registro/formularioRegistro";

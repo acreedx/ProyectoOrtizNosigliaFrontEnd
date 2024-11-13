@@ -1,10 +1,11 @@
 "use client";
-import { listarUsuarios } from "@/controller/dashboard/dashboardpage/listarUsuarios";
+import { listarUsuarios } from "@/controller/dashboard/dashboard/listarUsuarios";
 import { personFullNameFormater } from "@/utils/format_person_full_name";
 import {
   noDataFoundComponent,
   paginationOptions,
 } from "@/utils/pagination_options";
+import { mostrarAlertaError } from "@/utils/show_error_alert";
 import { SearchIcon } from "@chakra-ui/icons";
 import {
   Avatar,
@@ -16,7 +17,6 @@ import {
 import { Person } from "@prisma/client";
 import React, { useEffect, useState } from "react";
 import DataTable, { TableColumn } from "react-data-table-component";
-import Swal from "sweetalert2";
 
 export default function DashboardTable() {
   const [persons, setpersons] = useState<Person[]>([]);
@@ -27,8 +27,8 @@ export default function DashboardTable() {
       try {
         setpersons(await listarUsuarios());
         setloading(false);
-      } catch (e) {
-        Swal.fire("Error");
+      } catch (e: any) {
+        mostrarAlertaError(e);
       }
     };
     fetchData();

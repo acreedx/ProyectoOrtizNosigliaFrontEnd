@@ -7,16 +7,6 @@ generator client {
   provider = "prisma-client-js"
 }
 
-model Post {
-  id       String    @id @default(auto()) @map("_id") @db.ObjectId
-  slug     String    @unique
-  title    String
-  body     String
-  author   String
-  authorId String
-  comments String[]
-}
-
 model Person {
   id                        String            @id @default(auto()) @map("_id") @db.ObjectId
   resourceType              String            @default("Person")
@@ -50,11 +40,12 @@ model Person {
   organization              Organization?     @relation(fields: [organizationId], references: [id])
   rolId                     String            @db.ObjectId
   rol                       Rol               @relation(fields: [rolId], references: [id])
+  accountId                 String            @db.ObjectId
+  account                   Account           @relation(fields: [accountId], references: [id])
   subject_appointments      Appointment[]     @relation("subject_appointment")
   practitioner_appointments Appointment[]     @relation("practitioner_appointment")
   subject_encounters        Encounter[]       @relation("subject_encounter")
   practitioner_encounters   Encounter[]       @relation("practitioner_encounter")
-  subjects                  Account[]         @relation("person_account")     
   createdAt                 DateTime          @default(now())
   updatedAt                 DateTime          @updatedAt
   @@map("Persons")
@@ -233,16 +224,14 @@ model Encounter {
 model Account {
   id                        String      @id @default(auto()) @map("_id") @db.ObjectId
   resourceType              String      @default("Account")
-  billingStatus             String
   balance                   Float
-  status                    String
-  calculatedAt              DateTime
+  billingStatus             String
+  calculatedAt              DateTime?
   encounterIds              String[]    @db.ObjectId
   encounters                Encounter[] @relation(fields: [encounterIds], references: [id])
   carePlanIds               String[]    @db.ObjectId
   carePlans                 CarePlan[]  @relation(fields: [carePlanIds], references: [id])
-  subjectId                 String      @db.ObjectId
-  subject                   Person      @relation("person_account",fields: [subjectId], references: [id])
+  persons                   Person[]    @relation
   createdAt                 DateTime    @default(now())
   updatedAt                 DateTime    @updatedAt
   @@map("Accounts")

@@ -5,7 +5,6 @@ import Breadcrumb from "@/app/dashboard/components/Common/Breadcrumb";
 import DataTable, { TableColumn } from "react-data-table-component";
 import { Organization } from "@prisma/client";
 import { mostrarAlertaError } from "@/utils/show_error_alert";
-import { listarOrganizaciones } from "@/controller/dashboard/pacientes/organizaciones/listarOrganizaciones";
 import {
   Badge,
   Box,
@@ -31,10 +30,13 @@ import {
 import { EditIcon } from "@chakra-ui/icons";
 import DeleteIcon from "@/app/dashboard/components/Icons/DeleteIcon";
 import RestoreIcon from "@/app/dashboard/components/Icons/RestoreIcon";
-import { eliminarOrganizacion } from "@/controller/dashboard/pacientes/organizaciones/eliminarOrganizacion";
-import { rehabilitarOrganizacion } from "@/controller/dashboard/pacientes/organizaciones/restaurarOrganizacion";
 import { mostrarAlertaExito } from "@/utils/show_success_alert";
-import { crearCita } from "@/controller/paginaweb/citas/crearCita";
+import { crearCita } from "@/controller/paginaweb/citasController";
+import {
+  eliminarOrganizacion,
+  listarOrganizaciones,
+  rehabilitarOrganizacion,
+} from "@/controller/dashboard/organizaciones/organizacionesController";
 export default function Page() {
   const [loading, setloading] = useState(true);
   const [organizations, setorganizations] = useState<Organization[]>([]);

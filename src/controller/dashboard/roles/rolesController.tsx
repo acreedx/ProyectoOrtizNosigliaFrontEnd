@@ -31,7 +31,7 @@ export async function updateRol(formData: FormData) {
   const id = formData.get("id") as string;
   const roleName = formData.get("roleName") as string;
   const description = formData.get("description") as string;
-  const permissions = formData.getAll("permissions") as string[]; // Recoge todos los permisos seleccionados
+  const permissions = formData.getAll("permissions") as string[];
 
   if (!id || !roleName || !description || permissions.length === 0) {
     throw new Error("Todos los campos son requeridos.");
@@ -39,8 +39,8 @@ export async function updateRol(formData: FormData) {
 
   const selectedPermissions = permissions.map((permission, index) => {
     return {
-      id: index, // Asigna un ID basado en el índice
-      name: permission, // El valor del checkbox (en este caso, "on")
+      id: index,
+      name: permission,
     };
   });
   console.log(selectedPermissions);

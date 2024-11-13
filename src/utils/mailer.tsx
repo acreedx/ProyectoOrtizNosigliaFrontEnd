@@ -1,10 +1,22 @@
 import nodemailer from "nodemailer";
+import { z } from "zod";
 
-export const sendEmail = async (
-  email: string,
-  subject: string,
-  message: string,
-) => {
+const emailSchema = z.object({
+  email: z.string().email(),
+  subject: z.string().min(1),
+  message: z.string().min(1),
+});
+
+export async function sendEmail(data: {
+  email: string;
+  subject: string;
+  message: string;
+}) {
+  const parsedData = emailSchema.safeParse(data);
+  if (!parsedData.success) {
+    throw new Error("Datos de correo inválidos");
+  }
+  const { email, subject, message } = parsedData.data;
   const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
@@ -19,9 +31,9 @@ export const sendEmail = async (
       subject: subject,
       text: message,
     });
-    return { success: true, message: "Correo enviado exitosamente" };
+    return { message: "Correo enviado exitosamente" };
   } catch (error) {
     console.error("Error al enviar el correo:", error);
-    return { success: false, error: "Error enviando el correo" };
+    throw new Error("Error enviando el correo");
   }
-};
+}

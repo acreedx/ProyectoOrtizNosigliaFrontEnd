@@ -1,11 +1,12 @@
 "use server";
 import { PrismaClient } from "@prisma/client";
-import { hashPassword } from "../utils/password_hasher";
+import { hashPassword } from "../../utils/password_hasher";
 import bcrypt from "bcryptjs";
-import changePasswordValidation from "../models/changePasswordValidation";
+import changePasswordValidation from "../../models/changePasswordValidation";
+import { userStatus } from "@/enums/userStatus";
+import { prisma } from "@/config/prisma";
 
 export async function changePassword(formData: FormData) {
-  const prisma = new PrismaClient();
   const data = {
     username: formData.get("username")?.toString() || "",
     password: formData.get("password")?.toString() || "",
@@ -43,7 +44,7 @@ export async function changePassword(formData: FormData) {
       username: data.username,
     },
     data: {
-      active: true,
+      status: userStatus.ACTIVO,
       password: await hashPassword(data.newpassword),
     },
   });

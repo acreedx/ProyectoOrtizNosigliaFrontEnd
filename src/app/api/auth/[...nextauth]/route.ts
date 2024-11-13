@@ -10,6 +10,7 @@ import {
   auditEventTypes,
   modulos,
 } from "@/enums/auditEventTypes";
+import { routes } from "@/config/routes";
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -89,8 +90,8 @@ export const authOptions: NextAuthOptions = {
     },
   },
   pages: {
-    signIn: "/paginaweb/login",
-    signOut: "/paginaweb/login",
+    signIn: routes.login,
+    signOut: routes.login,
   },
 };
 

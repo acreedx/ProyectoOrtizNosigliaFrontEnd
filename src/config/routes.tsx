@@ -3,7 +3,7 @@ export const routes = {
   equipo: "/paginaweb/equipo",
   paginawebcitas: "/paginaweb/citas",
   editarperfil: "/paginaweb/editareditarperfil",
-  cambiopassword: "/paginaweb/cambiodepassword",
+  cambiopassword: "/paginaweb/inicio_de_sesion/cambiodepassword",
   login: "/paginaweb/inicio_de_sesion/login",
   registro: "/paginaweb/inicio_de_sesion/registro",
   olvidarpassword: "/paginaweb/inicio_de_sesion/olvidarpassword",

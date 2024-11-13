@@ -4,4 +4,6 @@ export const paginationOptions = {
   selectAllRowsItem: true,
   selectAllRowsItemText: "Todos",
 };
-export const noDataFoundComponent = <span>No se encontraron datos</span>;
+export const noDataFoundComponent = (
+  <span className="pl-4">No se encontraron datos</span>
+);

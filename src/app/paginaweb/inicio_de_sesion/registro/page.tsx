@@ -19,7 +19,7 @@ import { ChangeEvent, useState } from "react";
 import Swal from "sweetalert2";
 import { createEmptyFormularioPersona } from "./formularioRegistro";
 import { useRouter } from "next/navigation";
-import { createPerson } from "@/controller/person";
+import { createPerson } from "@/controller/paginaweb/registroController";
 import { mostrarAlertaError } from "@/utils/show_error_alert";
 import { routes } from "@/config/routes";
 

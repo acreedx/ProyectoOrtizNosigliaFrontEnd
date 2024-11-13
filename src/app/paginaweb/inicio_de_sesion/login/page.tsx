@@ -11,15 +11,18 @@ import { signIn } from "next-auth/react";
 import { mostrarAlertaError } from "@/utils/show_error_alert";
 import { MdOutlineVisibilityOff, MdRemoveRedEye } from "react-icons/md";
 import { routes } from "@/config/routes";
+import { Button } from "@chakra-ui/react";
 
 export default function Login() {
   const router = useRouter();
   const [username, setnombreUsuario] = useState("");
+  const [isLoading, setisLoading] = useState(false);
   const [password, setpassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const handleLogin = async (e: any) => {
     e.preventDefault();
     try {
+      setisLoading(true);
       const res = await signIn("credentials", {
         redirect: false,
         username: username,
@@ -39,6 +42,8 @@ export default function Login() {
       }
     } catch (error: any) {
       mostrarAlertaError(error);
+    } finally {
+      setisLoading(false);
     }
   };
   return (
@@ -109,11 +114,22 @@ export default function Login() {
                   </div>
 
                   <div className="mb-5">
-                    <input
+                    <Button
                       type="submit"
-                      value="Iniciar sesión"
-                      className="w-full cursor-pointer rounded-lg border border-orange-500 bg-orange-400 p-4 text-white transition hover:bg-opacity-90"
-                    />
+                      width="full"
+                      cursor="pointer"
+                      rounded="lg"
+                      height={14}
+                      isLoading={isLoading}
+                      border="1px"
+                      borderColor="orange.500"
+                      bg="orange.400"
+                      p={4}
+                      color="white"
+                      _hover={{ bg: "orange.400", opacity: 0.9 }}
+                    >
+                      Iniciar sesión
+                    </Button>
                   </div>
 
                   <Link

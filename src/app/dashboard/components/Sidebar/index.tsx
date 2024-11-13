@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -10,6 +10,8 @@ import useLocalStorage from "@/app/dashboard/assets/hooks/useLocalStorage";
 import { menuOptions } from "../../../../config/sidebar_options";
 import ArrowLeftIcon from "../Icons/ArrowLeftIcon";
 import { routes } from "@/config/routes";
+import { useSession } from "next-auth/react";
+import { permissionsList } from "@/enums/permissionsList";
 
 interface SidebarProps {
   sidebarOpen: boolean;
@@ -18,7 +20,32 @@ interface SidebarProps {
 
 const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   const pathname = usePathname();
+  const { data: session } = useSession();
+  const [accessibleMenu, setAccessibleMenu] = useState(menuOptions);
   const [pageName, setPageName] = useLocalStorage("selectedMenu", "dashboard");
+  useEffect(() => {
+    if (session && session.user && session.user.rol.permissions) {
+      const userPermissions = session.user.rol.permissions.map((e) => {
+        return e.code;
+      });
+
+      const filteredMenu = menuOptions.map((section) => ({
+        ...section,
+        menuItems: section.menuItems
+          .map((item) => ({
+            ...item,
+            children: item.children.filter(
+              (child) =>
+                userPermissions.includes(child.permission) ||
+                child.permission === permissionsList.SIN_PERMISO,
+            ),
+          }))
+          .filter((item) => item.children.length > 0),
+      }));
+
+      setAccessibleMenu(filteredMenu);
+    }
+  }, [session]);
   return (
     <ClickOutside onClick={() => setSidebarOpen(false)}>
       <aside
@@ -48,7 +75,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
 
         <div className="no-scrollbar flex flex-col overflow-y-auto duration-300 ease-linear ">
           <nav className="mt-5 px-4 py-4 shadow-lg shadow-gray lg:mt-9 lg:px-2 ">
-            {menuOptions.map((group, groupIndex) => (
+            {accessibleMenu.map((group, groupIndex) => (
               <div key={groupIndex}>
                 <h3 className="mb-4 ml-4 text-sm font-semibold text-bodydark2">
                   {group.name}

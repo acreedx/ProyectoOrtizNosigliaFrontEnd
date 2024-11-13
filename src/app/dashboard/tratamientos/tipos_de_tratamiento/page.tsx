@@ -31,14 +31,14 @@ import React, { useEffect, useState } from "react";
 import DataTable, { TableColumn } from "react-data-table-component";
 import Swal from "sweetalert2";
 import CreacionTipoTratamiento from "./creacionTipoTratamiento";
-import { listarTiposTratamiento } from "@/controller/dashboard/tratamientos/tipos_de_tratamiento/listarTiposTratamiento";
+import { listarTiposTratamiento } from "@/controller/dashboard/tipos_de_tratamiento/listarTiposTratamiento";
 import { mostrarAlertaExito } from "@/utils/show_success_alert";
 import { mostrarAlertaError } from "@/utils/show_error_alert";
-import { editarTipoTratamiento } from "@/controller/dashboard/tratamientos/tipos_de_tratamiento/editarTiposTratamiento";
+import { editarTipoTratamiento } from "@/controller/dashboard/tipos_de_tratamiento/editarTiposTratamiento";
 import {
   deshabilitarTipoTratamiento,
   habilitarTipoTratamiento,
-} from "@/controller/dashboard/tratamientos/tipos_de_tratamiento/cambiarEstadoTratamiento";
+} from "@/controller/dashboard/tipos_de_tratamiento/cambiarEstadoTratamiento";
 
 export default function Page() {
   const { isOpen, onOpen, onClose } = useDisclosure();

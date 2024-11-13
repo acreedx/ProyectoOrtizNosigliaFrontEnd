@@ -11,7 +11,7 @@ import {
   Textarea,
 } from "@chakra-ui/react";
 import { PrismaClient } from "@prisma/client";
-import { updateRol } from "@/controller/roleActions";
+import { updateRol } from "@/controller/dashboard/roles/rolesController";
 import DefaultLayout from "@/app/dashboard/components/Layouts/DefaultLayout";
 import BotonVolver from "@/app/dashboard/components/Common/BotonVolver";
 import Breadcrumb from "@/app/dashboard/components/Common/Breadcrumb";

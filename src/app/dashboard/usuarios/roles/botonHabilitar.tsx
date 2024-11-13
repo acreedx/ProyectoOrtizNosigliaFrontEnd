@@ -1,5 +1,8 @@
 "use client";
-import { deshabilitarRol, habilitarRol } from "@/controller/roleActions";
+import {
+  deshabilitarRol,
+  habilitarRol,
+} from "@/controller/dashboard/roles/rolesController";
 import { Button } from "@chakra-ui/react";
 import Swal from "sweetalert2";
 

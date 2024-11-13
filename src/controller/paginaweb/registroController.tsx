@@ -1,11 +1,13 @@
 "use server";
-import { PrismaClient } from "@prisma/client";
-import { subirFotoDePerfil } from "../utils/upload_image";
-import personValidation from "../models/personValidation";
-import { sendEmail } from "./mailer";
-import { hashPassword } from "../utils/password_hasher";
-import { getPasswordExpiration } from "../utils/get_password_expiration";
-import { generatePassword } from "../utils/password_generator";
+import { Allergy, PrismaClient } from "@prisma/client";
+import { subirFotoDePerfil } from "../../utils/upload_image";
+import personValidation from "../../models/personValidation";
+import { hashPassword } from "../../utils/password_hasher";
+import { getPasswordExpiration } from "../../utils/get_password_expiration";
+import { generatePassword } from "../../utils/password_generator";
+import { sendEmail } from "@/utils/mailer";
+import { odontogramaPorDefecto } from "@/utils/default_odontograma";
+import { accountPorDefecto } from "@/utils/default_account";
 
 export async function createPerson(formData: FormData) {
   const prisma = new PrismaClient();
@@ -110,7 +112,7 @@ export async function createPerson(formData: FormData) {
       mobile: data.mobile,
       addressLine: data.addressLine,
       addressCity: data.addressCity,
-      maritalStatus: data.maritalStatus === "Married" ? "Married" : "Single",
+      maritalStatus: data.maritalStatus,
       identification: data.identification,
       username: data.identification,
       password: await hashPassword(generatedPassword),
@@ -125,6 +127,12 @@ export async function createPerson(formData: FormData) {
               notes: allergy.notes,
             }) as Allergy,
         ),
+      },
+      odontograma: {
+        create: odontogramaPorDefecto,
+      },
+      account: {
+        create: accountPorDefecto,
       },
       rol: {
         connect: { id: rolPaciente.id },

@@ -1,91 +1,81 @@
+import { prisma } from "@/config/prisma";
 import { PrismaClient } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
-
-const prisma = new PrismaClient();
 
 export async function POST(req: NextRequest) {
   const permissionsData = [
     {
-      permissionName: "Crear usuarios",
-      code: "cre_usr",
+      permissionName: "Pagina Web",
+      code: "pg_adm",
       active: true,
     },
     {
-      permissionName: "Editar usuarios",
-      code: "edt_usr",
+      permissionName: "Aplicación Móvil",
+      code: "mov_adm",
       active: true,
     },
     {
-      permissionName: "Deshabilitar usuarios",
-      code: "dsh_usr",
+      permissionName: "Dashboard",
+      code: "dsh_adm",
       active: true,
     },
     {
-      permissionName: "Crear roles",
-      code: "cre_rl",
+      permissionName: "Pacientes",
+      code: "dsh_pct_adm",
       active: true,
     },
     {
-      permissionName: "Editar roles",
-      code: "edt_rl",
+      permissionName: "Organizaciones",
+      code: "dsh_org_adm",
       active: true,
     },
     {
-      permissionName: "Asignar roles",
-      code: "asgn_rl",
+      permissionName: "Citas",
+      code: "dsh_cts_adm",
       active: true,
     },
     {
-      permissionName: "Deshabilitar roles",
-      code: "dsh_rl",
+      permissionName: "Usuarios",
+      code: "dsh_usu_adm",
       active: true,
     },
     {
-      permissionName: "Crear permisos",
-      code: "cre_prm",
+      permissionName: "Roles",
+      code: "dsh_rol_adm",
       active: true,
     },
     {
-      permissionName: "Editar permisos",
-      code: "edt_prm",
+      permissionName: "Logs",
+      code: "dsh_log_adm",
       active: true,
     },
     {
-      permissionName: "Deshabilitar permisos",
-      code: "dsh_prm",
+      permissionName: "Tratamientos",
+      code: "dsh_trs_adm",
       active: true,
     },
     {
-      permissionName: "Editar odontogramas de pacientes",
-      code: "edt_odn",
-      active: true,
-    },
-    {
-      permissionName: "Crear citas",
-      code: "cre_cit",
-      active: true,
-    },
-    {
-      permissionName: "Editar citas",
-      code: "edt_cit",
-      active: true,
-    },
-    {
-      permissionName: "Deshabilitar citas",
-      code: "dsh_cit",
+      permissionName: "Tipos de tratamiento",
+      code: "dsh_ttrs_adm",
       active: true,
     },
   ];
 
   try {
-    const result = await prisma.permission.createMany({
-      data: permissionsData,
-    });
-
-    return NextResponse.json({
-      message: "Permisos insertados correctamente",
-      result,
-    });
+    const permissions = await prisma.permission.findMany();
+    if (permissions.length === 0) {
+      const result = await prisma.permission.createMany({
+        data: permissionsData,
+      });
+      return NextResponse.json({
+        message: "Permisos insertados correctamente",
+        result,
+      });
+    } else {
+      return NextResponse.json({
+        message: "Permisos insertados correctamente",
+      });
+    }
   } catch (error) {
     return NextResponse.json(
       { error: "Error al insertar permisos", details: error },
