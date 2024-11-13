@@ -4,17 +4,8 @@ import DefaultLayout from "@/app/dashboard/components/Layouts/DefaultLayout";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import BotonVolver from "@/app/dashboard/components/Common/BotonVolver";
 import { routes } from "@/config/routes";
-interface OdontogramaRow {
-  msc: string;
-  temp: string;
-  piezas: string;
-  fecha: string;
-  diagnostico: string;
-  tratamiento: string;
-}
 
 const Odontograma = ({ params }: { params: { id: string } }) => {
   const [data, setData] = useState<OdontogramaRow[]>([]);

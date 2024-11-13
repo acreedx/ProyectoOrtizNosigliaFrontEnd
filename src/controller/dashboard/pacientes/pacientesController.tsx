@@ -122,7 +122,7 @@ export async function habilitarPaciente(id: string) {
   }
 }
 
-export async function inhabilitarPaciente(id: string) {
+export async function deshabilitarPaciente(id: string) {
   try {
     await prisma.person.update({
       where: {
