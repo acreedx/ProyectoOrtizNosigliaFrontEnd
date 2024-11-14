@@ -14,7 +14,7 @@ export default async function handler(
     res.status(500).json({ error: "Error ejecutando la tarea" });
   }
 }
-
+//test comment
 async function scheduleCarePlanReminders() {
   const today = new Date();
   const carePlans = await prisma.carePlan.findMany({
