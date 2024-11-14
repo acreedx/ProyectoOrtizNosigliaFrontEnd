@@ -282,7 +282,6 @@ export default function BotonCreacion({
                         borderColor: "gray.600",
                         _hover: { borderColor: "orange.500" },
                       }}
-                      readOnly
                     />
                   </FormControl>
                   <FormControl mb={6} isRequired>
