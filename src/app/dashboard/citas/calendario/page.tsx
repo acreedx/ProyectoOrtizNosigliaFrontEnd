@@ -19,28 +19,35 @@ import Swal from "sweetalert2";
 import DefaultLayout from "../../components/Layouts/DefaultLayout";
 import Breadcrumb from "../../components/Common/Breadcrumb";
 import { Appointment } from "@prisma/client";
+import {
+  crearCita,
+  editarCita,
+  listarCitas,
+} from "@/controller/dashboard/citas/citasController";
+import { useSession } from "next-auth/react";
+import { mostrarAlertaExito } from "@/utils/show_success_alert";
 
 export default function ListadoCitas() {
+  const { data: session } = useSession();
   const [eventos, setEventos] = useState<EventInput[]>([]);
-  const personas = [{ id: 1, nombre: "Adrian Herrera" }];
-  useEffect(() => {
-    const getData = async () => {
-      const eventos: Appointment[] =
-        await AppointmentService.getActiveAppointments();
-      let inputs: EventInput[] = [];
-      eventos.forEach((e) => {
-        inputs.push({
-          id: e.id,
-          title: e.description!,
-          start: e.start,
-          end: e.end,
-          paciente: e.subjectId,
-          doctor: e.practitionerId,
-        });
+  const personas: any[] = [];
+  const fetchData = async () => {
+    const eventos: Appointment[] = await listarCitas();
+    let inputs: EventInput[] = [];
+    eventos.forEach((e) => {
+      inputs.push({
+        id: e.id,
+        title: e.description!,
+        start: e.start,
+        end: e.end,
+        paciente: e.subjectId,
+        doctor: e.practitionerId,
       });
-      setEventos(inputs);
-    };
-    getData();
+    });
+    setEventos(inputs);
+  };
+  useEffect(() => {
+    fetchData();
   }, []);
   function handleDateSelect(selectInfo: DateSelectArg) {
     const now = new Date();
@@ -99,42 +106,27 @@ export default function ListadoCitas() {
 
         try {
           const cita: Appointment = {
-            _id: "",
             resourceType: "Appointment",
             status: "pending",
             description: motivo,
-            start: startDate.toISOString(),
-            end: endDate.toISOString(),
-            participant: [
-              {
-                actor: {
-                  reference: persona,
-                  display: persona,
-                },
-                status: "accepted",
-              },
-              {
-                actor: {
-                  reference: "Ortiz",
-                  display: "Ortiz",
-                },
-                status: "accepted",
-              },
-            ],
-          };
-          const nuevaCita: Appointment =
-            await AppointmentService.createAppointment(cita);
-
-          const newEvent = {
-            id: nuevaCita._id,
-            title: `${motivo}`,
-            start: startDate.toISOString(),
-            end: endDate.toISOString(),
-            paciente: persona,
-            doctor: "Ortiz",
-          };
-          calendarApi.addEvent(newEvent);
-          setEventos([...eventos, newEvent]);
+            start: startDate,
+            end: endDate,
+            subjectId: "",
+            practitionerId: session?.user.id!,
+            specialty: "",
+            reason: "",
+          } as Appointment;
+          const res = await crearCita(cita);
+          //const newEvent = {
+          //  id: nuevaCita._id,
+          //  title: `${motivo}`,
+          //  start: startDate.toISOString(),
+          //  end: endDate.toISOString(),
+          //  paciente: persona,
+          //  doctor: "Ortiz",
+          //};
+          //calendarApi.addEvent(newEvent);
+          //setEventos([...eventos, newEvent]);
         } catch (error) {
           console.error("Error en el fetch:", error);
           Swal.fire({
@@ -209,30 +201,17 @@ export default function ListadoCitas() {
         setEventos(eventosActualizados);
         if (!info.event.allDay) {
           const cita: Appointment = {
-            _id: info.event.id,
+            id: info.event.id,
             resourceType: "Appointment",
             status: "pending",
             description: info.event.title,
-            start: info.event.startStr,
-            end: info.event.endStr,
-            participant: [
-              {
-                actor: {
-                  reference: info.event.extendedProps.paciente,
-                  display: info.event.extendedProps.paciente,
-                },
-                status: "accepted",
-              },
-              {
-                actor: {
-                  reference: info.event.extendedProps.doctor,
-                  display: info.event.extendedProps.doctor,
-                },
-                status: "accepted",
-              },
-            ],
-          };
-          AppointmentService.updateAppointment(cita);
+            start: info.event.start!,
+            end: info.event.end!,
+          } as Appointment;
+          const res = await editarCita(info.event.id, cita);
+          if (res.message) {
+            mostrarAlertaExito(res.message);
+          }
         }
       } else {
         info.revert();
@@ -296,30 +275,13 @@ export default function ListadoCitas() {
     });
     setEventos(eventosActualizados);
     const appointment: Appointment = {
-      _id: info.event.id,
       resourceType: "Appointment",
       status: "pending",
       description: info.event.title,
-      start: info.event.startStr,
-      end: info.event.endStr,
-      participant: [
-        {
-          actor: {
-            reference: info.event.extendedProps.paciente,
-            display: info.event.extendedProps.paciente,
-          },
-          status: "accepted",
-        },
-        {
-          actor: {
-            reference: info.event.extendedProps.doctor,
-            display: info.event.extendedProps.doctor,
-          },
-          status: "accepted",
-        },
-      ],
-    };
-    const cita = await AppointmentService.updateAppointment(appointment);
+      start: info.event.start!,
+      end: info.event.end!,
+    } as Appointment;
+    const res = await editarCita(info.event.id, appointment);
   };
   const handleEventClick = (info: EventClickArg) => {
     const event = info.event;

@@ -15,10 +15,12 @@ import {
   TableCaption,
 } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
-import { PersonService } from "@/repositories/PersonService";
 import DefaultLayout from "../components/Layouts/DefaultLayout";
 import Breadcrumb from "../components/Common/Breadcrumb";
 import { Person } from "@prisma/client";
+import { listarUsuarios } from "@/controller/dashboard/usuarios/usuariosController";
+import { personFullNameFormater } from "@/utils/format_person_full_name";
+import { birthDateFormater } from "@/utils/birth_date_formater";
 export default function Usuarios() {
   const router = useRouter();
   const toast = useToast();
@@ -55,8 +57,7 @@ export default function Usuarios() {
   };
   const [persons, setpersons] = useState<Person[]>([]);
   const getdata = async () => {
-    setpersons(await PersonService.getPerson());
-    console.log(await PersonService.getPerson());
+    setpersons(await listarUsuarios());
   };
   useEffect(() => {
     getdata();
@@ -78,34 +79,19 @@ export default function Usuarios() {
           </Thead>
           <Tbody>
             {persons.map((person, index) => (
-              <Tr key={person._id}>
-                <Td>{`${person.name.given.join(" ")} ${person.name.family}`}</Td>
+              <Tr key={person.id}>
+                <Td>{personFullNameFormater(person)}</Td>
                 <Td>{person.gender}</Td>
-                <Td>{person.birthDate}</Td>
-                <Td>{person.maritalStatus.coding[0].display}</Td>
-                <Td>{person.systemUser.username}</Td>
+                <Td>{birthDateFormater(person.birthDate)}</Td>
+                <Td>{person.maritalStatus}</Td>
                 <Td>
                   <HStack spacing={3}>
                     <Button
                       size="sm"
-                      colorScheme={person.active ? "red" : "green"}
-                      onClick={async () => {
-                        if (person.active) {
-                          await PersonService.disablePerson(person!._id!).then(
-                            async () => {
-                              getdata();
-                            },
-                          );
-                        } else {
-                          await PersonService.enablePerson(person!._id!).then(
-                            async () => {
-                              getdata();
-                            },
-                          );
-                        }
-                      }}
+                      colorScheme={person.status ? "red" : "green"}
+                      onClick={async () => {}}
                     >
-                      {person.active ? "Deshabilitar" : "Habilitar"}
+                      {person.status ? "Deshabilitar" : "Habilitar"}
                     </Button>
                     <Button
                       size="sm"

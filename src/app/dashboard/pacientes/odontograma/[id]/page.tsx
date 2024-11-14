@@ -6,21 +6,22 @@ import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
 import BotonVolver from "@/app/dashboard/components/Common/BotonVolver";
 import { routes } from "@/config/routes";
+import { OdontogramRows } from "@prisma/client";
 
 const Odontograma = ({ params }: { params: { id: string } }) => {
-  const [data, setData] = useState<OdontogramaRow[]>([]);
+  const [data, setData] = useState<OdontogramRows[]>([]);
   const [loading, setloading] = useState<Boolean>(false);
   const router = useRouter();
 
-  const handleInputChange = (
-    index: number,
-    field: keyof OdontogramaRow,
-    value: string | number,
-  ) => {
-    const newData = [...data];
-    newData[index][field] = value.toString();
-    setData(newData);
-  };
+  //const handleInputChange = (
+  //  index: number,
+  //  field: keyof OdontogramRows,
+  //  value: string | number,
+  //) => {
+  //  const newData = [...data];
+  //  newData[index][field] = value;
+  //  setData(newData);
+  //};
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -130,35 +131,38 @@ const Odontograma = ({ params }: { params: { id: string } }) => {
                     <td className="md:border-gray-300 block p-2 text-left text-black md:table-cell md:border">
                       <input
                         type="date"
-                        value={row.fecha}
-                        onChange={(e) =>
-                          handleInputChange(index, "fecha", e.target.value)
+                        value={row.fecha?.toDateString()}
+                        onChange={
+                          (e) => {}
+                          //handleInputChange(index, "fecha", e.target.value)
                         }
                       />
                     </td>
                     <td className="md:border-gray-300 block p-2 text-left text-black md:table-cell md:border">
                       <input
                         type="text"
-                        value={row.diagnostico}
-                        onChange={(e) =>
-                          handleInputChange(
-                            index,
-                            "diagnostico",
-                            e.target.value,
-                          )
+                        value={row.diagnostico || ""}
+                        onChange={
+                          (e) => {}
+                          //handleInputChange(
+                          //  index,
+                          //  "diagnostico",
+                          //  e.target.value,
+                          //)
                         }
                       />
                     </td>
                     <td className="md:border-gray-300 block p-2 text-left text-black md:table-cell md:border">
                       <input
                         type="text"
-                        value={row.tratamiento}
-                        onChange={(e) =>
-                          handleInputChange(
-                            index,
-                            "tratamiento",
-                            e.target.value,
-                          )
+                        value={row.tratamiento || ""}
+                        onChange={
+                          (e) => {}
+                          //handleInputChange(
+                          //  index,
+                          //  "tratamiento",
+                          //  e.target.value,
+                          //)
                         }
                       />
                     </td>

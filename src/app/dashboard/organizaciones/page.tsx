@@ -31,12 +31,15 @@ import { EditIcon } from "@chakra-ui/icons";
 import DeleteIcon from "@/app/dashboard/components/Icons/DeleteIcon";
 import RestoreIcon from "@/app/dashboard/components/Icons/RestoreIcon";
 import { mostrarAlertaExito } from "@/utils/show_success_alert";
-import { crearCita } from "@/controller/paginaweb/citasController";
 import {
+  editarOrganizacion,
   eliminarOrganizacion,
   listarOrganizaciones,
   rehabilitarOrganizacion,
 } from "@/controller/dashboard/organizaciones/organizacionesController";
+import Swal from "sweetalert2";
+import { mostrarAlertaConfirmacion } from "@/utils/show_question_alert";
+import CrearOrganizacion from "./crearOrganizacion";
 export default function Page() {
   const [loading, setloading] = useState(true);
   const [organizations, setorganizations] = useState<Organization[]>([]);
@@ -95,7 +98,7 @@ export default function Page() {
             />
           ) : (
             <IconButton
-              aria-label="Eliminar"
+              aria-label="Habilitar"
               icon={<RestoreIcon />}
               onClick={() => handleRestore(row)}
             />
@@ -116,18 +119,34 @@ export default function Page() {
   const handleSubmitEdit: FormEventHandler<HTMLFormElement> = async (event) => {
     event.preventDefault();
     try {
-      setorganization(organization);
-      onOpen();
+      const formData = new FormData(event.target as HTMLFormElement);
+      const values = Object.fromEntries(formData.entries());
+      const organization: Organization = {
+        name: values.name as string,
+        address: values.direccion as string,
+      } as Organization;
+      onClose();
+      const res = await editarOrganizacion(values.id as string, organization);
+      if (res.message) {
+        fetchData();
+        mostrarAlertaExito(res.message);
+      }
     } catch (e: any) {
       mostrarAlertaError(e);
     }
   };
   const handleDelete = async (organization: Organization) => {
     try {
-      const res = await eliminarOrganizacion(organization.id);
-      if (res.message) {
-        mostrarAlertaExito(res.message);
-        await fetchData();
+      const resultado = await mostrarAlertaConfirmacion(
+        "Advertencia",
+        "Estas seguro de inhabilitar esta organización?",
+      );
+      if (resultado) {
+        const res = await eliminarOrganizacion(organization.id);
+        if (res.message) {
+          mostrarAlertaExito(res.message);
+          await fetchData();
+        }
       }
     } catch (e: any) {
       mostrarAlertaError(e);
@@ -135,16 +154,21 @@ export default function Page() {
   };
   const handleRestore = async (organization: Organization) => {
     try {
-      const res = await rehabilitarOrganizacion(organization.id);
-      if (res.message) {
-        mostrarAlertaExito(res.message);
-        await fetchData();
+      const resultado = await mostrarAlertaConfirmacion(
+        "Advertencia",
+        "Estas seguro de rehabilitar esta organización?",
+      );
+      if (resultado) {
+        const res = await rehabilitarOrganizacion(organization.id);
+        if (res.message) {
+          mostrarAlertaExito(res.message);
+          await fetchData();
+        }
       }
     } catch (e: any) {
       mostrarAlertaError(e);
     }
   };
-  const handleCreate = async () => {};
   return (
     <DefaultLayout>
       <Breadcrumb pageName="Gestión de Organizacionces" />
@@ -155,15 +179,7 @@ export default function Page() {
           <Heading as="h4" size="md" className="mb-6 px-7.5 text-black">
             Listado de Organizaciones
           </Heading>
-          <Button
-            colorScheme="teal"
-            onClick={handleCreate}
-            float="right"
-            mr={4}
-            mb={4}
-          >
-            Crear Organización
-          </Button>
+          <CrearOrganizacion refreshData={fetchData} />
           <DataTable
             columns={columns}
             data={organizations}
@@ -203,6 +219,11 @@ export default function Page() {
             <Box w="full">
               <Box>
                 <form onSubmit={handleSubmitEdit}>
+                  <input
+                    type="hidden"
+                    defaultValue={organization?.id}
+                    name="id"
+                  />
                   <FormControl mb={4} isRequired>
                     <FormLabel color="black" _dark={{ color: "white" }}>
                       Nombre
@@ -228,7 +249,7 @@ export default function Page() {
                       Dirección
                     </FormLabel>
                     <Input
-                      name="hora"
+                      name="direccion"
                       type="text"
                       bg="transparent"
                       borderColor="gray.400"

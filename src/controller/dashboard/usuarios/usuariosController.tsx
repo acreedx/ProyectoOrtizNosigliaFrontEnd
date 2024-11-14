@@ -8,7 +8,9 @@ export async function listarUsuarios() {
     const usuarios = await prisma.person.findMany({
       where: {
         rol: {
-          roleName: "Paciente",
+          roleName: {
+            not: "Paciente",
+          },
         },
       },
     });
@@ -43,7 +45,7 @@ export async function editarUsuario(id: string, user: Person) {
   }
 }
 
-export async function habilitarUsuarios(id: string) {
+export async function habilitarUsuario(id: string) {
   try {
     await prisma.person.update({
       where: {
@@ -59,7 +61,7 @@ export async function habilitarUsuarios(id: string) {
   }
 }
 
-export async function inhabilitarUsuarios(id: string) {
+export async function deshabilitarUsuario(id: string) {
   try {
     await prisma.person.update({
       where: {

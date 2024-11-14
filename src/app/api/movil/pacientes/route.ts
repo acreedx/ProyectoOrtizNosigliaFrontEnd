@@ -12,7 +12,7 @@ export async function GET() {
       select: {
         id: true,
         resourceType: true,
-        active: true,
+        status: true,
         firstName: true,
         secondName: true,
         familyName: true,

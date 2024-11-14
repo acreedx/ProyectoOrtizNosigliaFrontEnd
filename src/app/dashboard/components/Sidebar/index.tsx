@@ -42,7 +42,6 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
           }))
           .filter((item) => item.children.length > 0),
       }));
-
       setAccessibleMenu(filteredMenu);
     }
   }, [session]);

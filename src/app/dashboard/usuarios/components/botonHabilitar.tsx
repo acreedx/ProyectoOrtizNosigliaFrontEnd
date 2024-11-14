@@ -1,5 +1,8 @@
 "use client";
-import { dehabilitateUser, habilitateUser } from "@/controller/userActions";
+import {
+  deshabilitarUsuario,
+  habilitarUsuario,
+} from "@/controller/dashboard/usuarios/usuariosController";
 import { Button } from "@chakra-ui/react";
 import Swal from "sweetalert2";
 
@@ -25,7 +28,7 @@ export default function BotonHabilitar({
         confirmButtonColor: "#28a745",
       }).then(async (result) => {
         if (result.isConfirmed) {
-          await dehabilitateUser(userId);
+          await habilitarUsuario(userId);
         }
       });
     } else {
@@ -40,7 +43,7 @@ export default function BotonHabilitar({
         confirmButtonColor: "#28a745",
       }).then(async (result) => {
         if (result.isConfirmed) {
-          await habilitateUser(userId);
+          await deshabilitarUsuario(userId);
         }
       });
     }

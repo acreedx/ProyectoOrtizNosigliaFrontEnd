@@ -12,11 +12,9 @@ import {
   Flex,
   Image,
 } from "@chakra-ui/react";
-import Swal from "sweetalert2";
-import { updateUserDashboard } from "@/controller/updateUserDashboard";
 import { Person, Rol } from "@prisma/client";
 import { birthDateFormater } from "@/utils/birth_date_formater";
-import { routes } from "@/config/routes";
+import { mostrarAlertaError } from "@/utils/show_error_alert";
 
 export default function EditUserForm({
   user,
@@ -30,26 +28,22 @@ export default function EditUserForm({
   const [errors, setErrors] = useState<any>({});
 
   const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setIsLoading(true);
-    setErrors({});
-    const formData = new FormData(event.currentTarget);
-    const response = await updateUserDashboard(formData);
-    console.log(response);
-    if (!response.success) {
-      setErrors(response.errors);
-    } else {
-      Swal.fire({
-        title: "Éxito",
-        text: "Se ha actualizado la información del Usuario.",
-        icon: "success",
-        confirmButtonText: "Aceptar",
-        confirmButtonColor: "#28a745",
-      }).then((result) => {
-        router.push(routes.usuarios);
-      });
+    try {
+      event.preventDefault();
+      setIsLoading(true);
+      setErrors({});
+      const formData = new FormData(event.currentTarget);
+      const values = Object.fromEntries(formData.entries());
+      //const person: Person = {
+      //  name: values.name as string,
+      //  photoUrl: values.direccion as string,
+      //} as Person;
+      //const response = await editarUsuario(values.id as string, person);
+    } catch (e: any) {
+      mostrarAlertaError(e);
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
   return (
     <form onSubmit={handleFormSubmit}>
