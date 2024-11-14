@@ -1,0 +1,13 @@
+{
+  "functions": {
+    "api/cronjobs/notificacionesDeTratamiento.ts": {
+      "runtime": "nodejs16.x"
+    }
+  },
+  "crons": [
+    {
+      "path": "/api/cronjobs/notificacionesDeTratamiento",
+      "schedule": "* * * * *"
+    }
+  ]
+}
