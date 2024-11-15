@@ -16,6 +16,7 @@ export async function getDentistas() {
     console.log(dentistas);
     return dentistas;
   } catch (error) {
+    console.log(error);
     throw new Error("Error al listar los dentistas");
   }
 }

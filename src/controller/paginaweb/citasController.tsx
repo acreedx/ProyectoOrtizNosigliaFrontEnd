@@ -1,5 +1,5 @@
 "use server";
-import { authOptions } from "@/utils/authOptions";
+import { authOptions } from "@/config/authOptions";
 import { getServerSession } from "next-auth";
 import { revalidatePath } from "next/cache";
 
