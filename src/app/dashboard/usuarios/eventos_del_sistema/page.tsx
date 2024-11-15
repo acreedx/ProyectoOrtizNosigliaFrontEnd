@@ -59,8 +59,8 @@ export default function Logs() {
       sortable: true,
     },
     {
-      name: "Evento",
-      selector: (row) => row.severity,
+      name: "Módulo",
+      selector: (row) => row.module,
       sortable: true,
     },
     {
@@ -69,8 +69,8 @@ export default function Logs() {
       sortable: true,
     },
     {
-      name: "Detalle",
-      selector: (row) => row.detail,
+      name: "Accion",
+      selector: (row) => row.action,
       sortable: true,
     },
   ];

@@ -51,6 +51,7 @@ import { listarPacientes } from "@/controller/dashboard/pacientes/pacientesContr
 import { editarTratamiento } from "@/controller/dashboard/tratamientos/editarTratamiento";
 import { listarRadiografias } from "@/controller/dashboard/tratamientos/listarRadiografias";
 import RestoreIcon from "../components/Icons/RestoreIcon";
+import { birthDateFormater } from "@/utils/birth_date_formater";
 
 export default function TablaTratamientos({
   carePlans,
@@ -130,7 +131,7 @@ export default function TablaTratamientos({
     },
     {
       name: "Fecha Inicio",
-      selector: (row) => formatDate(row.startDate),
+      selector: (row) => birthDateFormater(row.startDate),
       sortable: true,
     },
     {
