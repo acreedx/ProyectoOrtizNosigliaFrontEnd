@@ -24,6 +24,8 @@ export enum auditEventAction {
   ACCION_ELIMINAR = "eliminar",
   ACCION_INICIAR_SESION = "inicio_sesion",
   ACCION_CERRAR_SESION = "cerrar_sesion",
+  ACCION_CAMBIAR_CONTRASENA = "cambio_password",
+  ACCION_RECUPERAR_CONTRASENA = "recuperar_password",
 }
 
 export enum modulos {

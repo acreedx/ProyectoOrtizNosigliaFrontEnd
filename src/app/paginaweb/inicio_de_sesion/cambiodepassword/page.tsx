@@ -5,13 +5,13 @@ import CandadoIcon from "@/app/dashboard/components/Icons/CandadoIcon";
 import PacienteIcon from "@/app/dashboard/components/Icons/PacienteIcon";
 import { useRouter } from "next/navigation";
 import Swal from "sweetalert2";
-import { Text } from "@chakra-ui/react";
+import { Button, Text } from "@chakra-ui/react";
 import Layout from "../../components/Layout";
 import Banner from "../../components/Banner";
 import { MdOutlineVisibilityOff, MdRemoveRedEye } from "react-icons/md";
 import { mostrarAlertaError } from "@/utils/show_error_alert";
 import { routes } from "@/config/routes";
-import { changePassword } from "@/controller/paginaweb/cambioDePasswordController";
+import { changePassword } from "@/controller/paginaweb/inicio_de_sesion/cambioDePasswordController";
 
 export default function Editar() {
   const router = useRouter();
@@ -188,12 +188,24 @@ export default function Editar() {
                   </div>
 
                   <div className="mb-5">
-                    <input
+                    <Button
+                      isLoading={isLoading}
                       type="submit"
-                      value="Iniciar sesión"
-                      disabled={isLoading}
-                      className="w-full cursor-pointer rounded-lg border border-orange-500 bg-orange-400 p-4 text-white transition hover:bg-opacity-90"
-                    />
+                      width="full"
+                      cursor="pointer"
+                      rounded="lg"
+                      height={14}
+                      border="1px"
+                      borderColor="orange.500"
+                      bg="orange.400"
+                      p={4}
+                      color="white"
+                      _hover={{
+                        opacity: 0.9,
+                      }}
+                    >
+                      Confirmar
+                    </Button>
                   </div>
 
                   <Link

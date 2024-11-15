@@ -29,6 +29,7 @@ export default function PersoNavBar() {
     await signOut({
       redirect: false,
     }).then(() => {
+      onClose();
       router.push(routes.login);
     });
   };
@@ -75,7 +76,7 @@ export default function PersoNavBar() {
             <Spinner />
           ) : session?.user ? (
             <>
-              {session.user && (
+              {session.user.rol.roleName !== "Paciente" && (
                 <li>
                   <Link
                     href={routes.dashboard}
@@ -156,6 +157,12 @@ export default function PersoNavBar() {
               <div className="flex flex-col items-center justify-center gap-4">
                 <Link
                   href={routes.editarperfil}
+                  className="rounded-xl bg-orange-400 p-2 text-lg text-white no-underline transition-all duration-300  hover:text-orange-700 hover:drop-shadow-md "
+                >
+                  Ver Perfil
+                </Link>
+                <Link
+                  href={routes.cambiopassword}
                   className="rounded-xl bg-orange-400 p-2 text-lg text-white no-underline transition-all duration-300  hover:text-orange-700 hover:drop-shadow-md "
                 >
                   Cambiar contraseña

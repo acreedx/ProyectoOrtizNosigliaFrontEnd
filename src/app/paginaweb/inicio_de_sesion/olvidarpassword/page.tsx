@@ -4,12 +4,12 @@ import Link from "next/link";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
 import PacienteIcon from "@/app/dashboard/components/Icons/PacienteIcon";
-import { EmailIcon } from "@chakra-ui/icons";
+import { Button, EmailIcon } from "@chakra-ui/icons";
 import { mostrarAlertaError } from "@/utils/show_error_alert";
 import { routes } from "@/config/routes";
 import Layout from "../../components/Layout";
 import Banner from "../../components/Banner";
-import { forgetPassword } from "@/controller/paginaweb/olvidarPasswordController";
+import { forgetPassword } from "@/controller/paginaweb/inicio_de_sesion/olvidarPasswordController";
 
 export default function OlvidarPassword() {
   const router = useRouter();
@@ -30,25 +30,30 @@ export default function OlvidarPassword() {
       confirmButtonColor: "#28a745",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        setIsLoading(true);
-        setErrors({});
-        const response = await forgetPassword(formData);
-        if (!response.success) {
-          if (response.message) {
-            mostrarAlertaError(response.message);
+        try {
+          setIsLoading(true);
+          setErrors({});
+          const response = await forgetPassword(formData);
+          if (!response.success) {
+            if (response.message) {
+              mostrarAlertaError(response.message);
+            }
+          } else {
+            Swal.fire({
+              title: "Éxito",
+              text: "La contraseña se cambio exitosamente.",
+              icon: "success",
+              confirmButtonText: "Aceptar",
+              confirmButtonColor: "#28a745",
+            }).then(() => {
+              router.push(routes.login);
+            });
           }
-        } else {
-          Swal.fire({
-            title: "Éxito",
-            text: "La contraseña se cambio exitosamente.",
-            icon: "success",
-            confirmButtonText: "Aceptar",
-            confirmButtonColor: "#28a745",
-          }).then(() => {
-            router.push(routes.login);
-          });
+        } catch (e: any) {
+          mostrarAlertaError(e);
+        } finally {
+          setIsLoading(false);
         }
-        setIsLoading(false);
       }
     });
   };
@@ -101,12 +106,24 @@ export default function OlvidarPassword() {
                   </div>
 
                   <div className="mb-5">
-                    <input
+                    <Button
+                      isLoading={isLoading}
                       type="submit"
-                      value="Reestablecer Contraseña"
-                      disabled={isLoading}
-                      className="w-full cursor-pointer rounded-lg border border-orange-500 bg-orange-400 p-4 text-white transition hover:bg-opacity-90"
-                    />
+                      width="full"
+                      cursor="pointer"
+                      rounded="lg"
+                      height={14}
+                      border="1px"
+                      borderColor="orange.500"
+                      bg="orange.400"
+                      p={4}
+                      color="white"
+                      _hover={{
+                        opacity: 0.9,
+                      }}
+                    >
+                      Reestablecer Contraseña
+                    </Button>
                   </div>
 
                   <div className="mt-6 text-center">

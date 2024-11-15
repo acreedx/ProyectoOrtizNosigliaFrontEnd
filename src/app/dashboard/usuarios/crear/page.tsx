@@ -16,12 +16,12 @@ import {
 import { ChangeEvent, useState } from "react";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
-import { createPerson } from "@/controller/paginaweb/registroController";
 import Breadcrumb from "@/app/dashboard/components/Common/Breadcrumb";
 import DefaultLayout from "@/app/dashboard/components/Layouts/DefaultLayout";
 import { createEmptyFormularioPersona } from "@/app/paginaweb/inicio_de_sesion/registro/formularioRegistro";
 import BotonVolver from "@/app/dashboard/components/Common/BotonVolver";
 import { routes } from "@/config/routes";
+import { createPerson } from "@/controller/paginaweb/inicio_de_sesion/registroController";
 
 interface FileWithPreview extends File {
   preview?: string;
@@ -70,7 +70,7 @@ export default function Page() {
   const addAllergy = () => {
     setAllergies((prevData) => [
       ...prevData,
-      { substance: "", reaction: "", severity: "mild", notes: "" },
+      { substance: "", reaction: "", severity: "baja", notes: "" },
     ]);
   };
 
@@ -306,8 +306,8 @@ export default function Page() {
                 value={formData.maritalStatus}
                 onChange={handleSelectChange}
               >
-                <option value="Single">Soltero</option>
-                <option value="Married">Casado</option>
+                <option value="soltero">Soltero</option>
+                <option value="casado">Casado</option>
               </Select>
             </FormControl>
             <FormControl id="identification" isRequired>
@@ -350,9 +350,9 @@ export default function Page() {
                       handleAllergyChange(index, "reaction", e.target.value); // Asegúrate de manejar el cambio aquí
                     }}
                   >
-                    <option value="mild">Baja</option>
-                    <option value="moderate">Moderada</option>
-                    <option value="severe">Severa</option>
+                    <option value="baja">Baja</option>
+                    <option value="moderada">Moderada</option>
+                    <option value="severa">Severa</option>
                   </Select>
                 </FormControl>
                 <FormControl>

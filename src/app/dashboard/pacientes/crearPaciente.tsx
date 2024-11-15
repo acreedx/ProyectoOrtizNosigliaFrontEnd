@@ -34,7 +34,7 @@ export default function CrearPaciente() {
         mr={4}
         mb={4}
       >
-        Crear Organización
+        Crear Paciente
       </Button>
       <Modal isOpen={isOpen} onClose={onClose} isCentered>
         <ModalOverlay />

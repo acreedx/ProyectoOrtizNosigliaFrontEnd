@@ -179,7 +179,9 @@ export default function Page() {
           <Heading as="h4" size="md" className="mb-6 px-7.5 text-black">
             Listado de Organizaciones
           </Heading>
-          <CrearOrganizacion refreshData={fetchData} />
+          <div className="flex">
+            <CrearOrganizacion refreshData={fetchData} />
+          </div>
           <DataTable
             columns={columns}
             data={organizations}

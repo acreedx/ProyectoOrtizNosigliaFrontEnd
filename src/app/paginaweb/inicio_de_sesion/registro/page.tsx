@@ -17,11 +17,10 @@ import {
 } from "@chakra-ui/react";
 import { ChangeEvent, useState } from "react";
 import Swal from "sweetalert2";
-import { createEmptyFormularioPersona } from "./formularioRegistro";
 import { useRouter } from "next/navigation";
-import { createPerson } from "@/controller/paginaweb/registroController";
 import { mostrarAlertaError } from "@/utils/show_error_alert";
 import { routes } from "@/config/routes";
+import { createPerson } from "@/controller/paginaweb/inicio_de_sesion/registroController";
 
 interface FileWithPreview extends File {
   preview?: string;
@@ -29,19 +28,10 @@ interface FileWithPreview extends File {
 
 export default function PersonForm() {
   const router = useRouter();
-  const [formData, setFormData] = useState(createEmptyFormularioPersona());
   const [image, setImage] = useState<FileWithPreview | null>(null);
   const [errors, setErrors] = useState<any>({});
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target as any;
-    setFormData((prevData) => ({ ...prevData, [name]: value }));
-  };
-  const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({ ...prevData, [name]: value }));
-  };
   const handleImageChange = async (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const selectedImage = e.target.files[0] as FileWithPreview;
@@ -49,33 +39,15 @@ export default function PersonForm() {
       setImage(selectedImage);
     }
   };
-  const [allergies, setAllergies] = useState<
-    {
-      substance: string;
-      reaction: string;
-      severity: string;
-      notes: string;
-    }[]
-  >([]);
-
-  const handleAllergyChange = (index: number, field: string, value: string) => {
-    const updatedAllergies = allergies.map((allergy, i) =>
-      i === index ? { ...allergy, [field]: value } : allergy,
-    );
-    setAllergies(updatedAllergies);
-  };
+  const [allergies, setAllergies] = useState<number[]>([]);
 
   const addAllergy = () => {
-    setAllergies((prevData) => [
-      ...prevData,
-      { substance: "", reaction: "", severity: "mild", notes: "" },
-    ]);
+    setAllergies((prevData) => [...prevData, prevData.length]);
   };
 
   const handleRemoveAllergy = (index: number) => {
     setAllergies((prevData) => prevData.filter((_, i) => i !== index));
   };
-
   const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsLoading(true);
@@ -174,11 +146,7 @@ export default function PersonForm() {
             <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
               <FormControl id="firstName" isRequired>
                 <FormLabel>Primer Nombre</FormLabel>
-                <Input
-                  name="firstName"
-                  value={formData.firstName}
-                  onChange={handleInputChange}
-                />
+                <Input name="firstName" />
                 {errors.firstName && (
                   <Text color="red.500">
                     {errors.firstName._errors.join(", ")}
@@ -188,11 +156,7 @@ export default function PersonForm() {
 
               <FormControl id="secondName" isRequired>
                 <FormLabel>Segundo Nombre</FormLabel>
-                <Input
-                  name="secondName"
-                  value={formData.secondName}
-                  onChange={handleInputChange}
-                />
+                <Input name="secondName" />
                 {errors.secondName && (
                   <Text color="red.500">
                     {errors.secondName._errors.join(", ")}
@@ -202,11 +166,7 @@ export default function PersonForm() {
 
               <FormControl id="familyName" isRequired>
                 <FormLabel>Apellido</FormLabel>
-                <Input
-                  name="familyName"
-                  value={formData.familyName}
-                  onChange={handleInputChange}
-                />
+                <Input name="familyName" />
                 {errors.familyName && (
                   <Text color="red.500">
                     {errors.familyName._errors.join(", ")}
@@ -216,26 +176,16 @@ export default function PersonForm() {
 
               <FormControl id="gender" isRequired>
                 <FormLabel>Género</FormLabel>
-                <Select
-                  name="gender"
-                  value={formData.gender}
-                  onChange={handleSelectChange}
-                  placeholder="Seleccione una opción"
-                >
-                  <option value="Masculino">Masculino</option>
-                  <option value="Femenino">Femenino</option>
-                  <option value="Otro">Otro</option>
+                <Select name="gender" placeholder="Seleccione una opción">
+                  <option value="masculino">Masculino</option>
+                  <option value="femenino">Femenino</option>
+                  <option value="otro">Otro</option>
                 </Select>
               </FormControl>
 
               <FormControl id="phone" isRequired>
                 <FormLabel>Teléfono</FormLabel>
-                <Input
-                  type="number"
-                  name="phone"
-                  value={formData.phone}
-                  onChange={handleInputChange}
-                />
+                <Input type="number" name="phone" />
                 {errors.phone && (
                   <Text color="red.500">{errors.phone._errors.join(", ")}</Text>
                 )}
@@ -243,12 +193,7 @@ export default function PersonForm() {
 
               <FormControl id="mobile" isRequired>
                 <FormLabel>Celular</FormLabel>
-                <Input
-                  type="number"
-                  name="mobile"
-                  value={formData.mobile}
-                  onChange={handleInputChange}
-                />
+                <Input type="number" name="mobile" />
                 {errors.mobile && (
                   <Text color="red.500">
                     {errors.mobile._errors.join(", ")}
@@ -258,12 +203,7 @@ export default function PersonForm() {
 
               <FormControl id="email" isRequired>
                 <FormLabel>Correo</FormLabel>
-                <Input
-                  type="text"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                />
+                <Input type="text" name="email" />
                 {errors.email && (
                   <Text color="red.500">{errors.email._errors.join(", ")}</Text>
                 )}
@@ -271,12 +211,7 @@ export default function PersonForm() {
 
               <FormControl id="birthDate" isRequired>
                 <FormLabel>Fecha de Nacimiento</FormLabel>
-                <Input
-                  type="date"
-                  name="birthDate"
-                  value={formData.birthDate}
-                  onChange={handleInputChange}
-                />
+                <Input type="date" name="birthDate" />
                 {errors.birthDate && (
                   <Text color="red.500">
                     {errors.birthDate._errors.join(", ")}
@@ -286,11 +221,7 @@ export default function PersonForm() {
 
               <FormControl id="direccion" isRequired>
                 <FormLabel>Dirección</FormLabel>
-                <Input
-                  name="addressLine"
-                  value={formData.addressLine}
-                  onChange={handleInputChange}
-                />
+                <Input name="addressLine" />
                 {errors.addressLine && (
                   <Text color="red.500">
                     {errors.addressLine._errors.join(", ")}
@@ -300,11 +231,7 @@ export default function PersonForm() {
 
               <FormControl id="ciudad" isRequired>
                 <FormLabel>Ciudad</FormLabel>
-                <Input
-                  name="addressCity"
-                  value={formData.addressCity}
-                  onChange={handleInputChange}
-                />
+                <Input name="addressCity" />
                 {errors.addressCity && (
                   <Text color="red.500">
                     {errors.addressCity._errors.join(", ")}
@@ -316,23 +243,16 @@ export default function PersonForm() {
                 <FormLabel>Estado Civil</FormLabel>
                 <Select
                   name="maritalStatus"
-                  value={formData.maritalStatus}
-                  onChange={handleSelectChange}
                   placeholder="Seleccione una opción"
                 >
-                  <option value="Single">Soltero</option>
-                  <option value="Married">Casado</option>
+                  <option value="soltero">Soltero</option>
+                  <option value="casado">Casado</option>
                 </Select>
               </FormControl>
 
               <FormControl id="identification" isRequired>
                 <FormLabel>Carnet De Identidad</FormLabel>
-                <Input
-                  type="number"
-                  name="identification"
-                  value={formData.identification}
-                  onChange={handleInputChange}
-                />
+                <Input type="number" name="identification" />
                 {errors.identification && (
                   <Text color="red.500">
                     {errors.identification._errors.join(", ")}
@@ -357,7 +277,7 @@ export default function PersonForm() {
                   ¿Quieres registrar una alergia?
                 </Box>
               )}
-              {allergies.map((allergy, index) => (
+              {allergies.map((index) => (
                 <div key={index}>
                   <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
                     <FormControl isRequired>
@@ -365,26 +285,12 @@ export default function PersonForm() {
                       <Input
                         type="text"
                         name={`allergies[${index}][substance]`}
-                        value={allergy.substance}
-                        onChange={(e) =>
-                          handleAllergyChange(
-                            index,
-                            "substance",
-                            e.target.value,
-                          )
-                        }
                       />
                     </FormControl>
 
                     <FormControl isRequired>
                       <FormLabel>Tipo de reacción</FormLabel>
-                      <Select
-                        name={`allergies[${index}][reaction]`}
-                        value={allergy.reaction}
-                        onChange={(e) =>
-                          handleAllergyChange(index, "reaction", e.target.value)
-                        }
-                      >
+                      <Select name={`allergies[${index}][reaction]`}>
                         <option value="mild">Baja</option>
                         <option value="moderate">Moderada</option>
                         <option value="severe">Severa</option>
@@ -393,14 +299,7 @@ export default function PersonForm() {
 
                     <FormControl>
                       <FormLabel>Comentario sobre la alergia</FormLabel>
-                      <Input
-                        type="text"
-                        name={`allergies[${index}][notes]`}
-                        value={allergy.notes}
-                        onChange={(e) =>
-                          handleAllergyChange(index, "notes", e.target.value)
-                        }
-                      />
+                      <Input type="text" name={`allergies[${index}][notes]`} />
                     </FormControl>
                   </SimpleGrid>
 
@@ -433,8 +332,9 @@ export default function PersonForm() {
                 isDisabled={isLoading}
                 width="auto"
                 maxWidth="150px"
+                isLoading={isLoading}
               >
-                {isLoading ? <Spinner size="sm" /> : "Registrar"}
+                Registrar
               </Button>
             </Flex>
           </Stack>

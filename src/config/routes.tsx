@@ -2,7 +2,7 @@ export const routes = {
   sitio_web: "/",
   equipo: "/paginaweb/equipo",
   paginawebcitas: "/paginaweb/citas",
-  editarperfil: "/paginaweb/editareditarperfil",
+  editarperfil: "/paginaweb/inicio_de_sesion/editarperfil",
   cambiopassword: "/paginaweb/inicio_de_sesion/cambiodepassword",
   login: "/paginaweb/inicio_de_sesion/login",
   registro: "/paginaweb/inicio_de_sesion/registro",

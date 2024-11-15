@@ -10,6 +10,7 @@ import "@/app/dashboard/assets/css/style.css";
 import { Inter } from "next/font/google";
 import { Providers } from "./Providers";
 import { metadata } from "../config/metadata";
+import Script from "next/script";
 
 const inter = Inter({ subsets: ["latin"] });
 export { metadata };
@@ -22,6 +23,10 @@ export default function RootLayout({
   return (
     <html lang="es">
       <body className={inter.className}>
+        <Script
+          strategy="beforeInteractive"
+          src={`https://www.google.com/recaptcha/api.js?render=${process.env.NEXT_PUBLIC_CAPTCHA_SITE_KEY}`}
+        />
         <Providers>{children}</Providers>
       </body>
     </html>

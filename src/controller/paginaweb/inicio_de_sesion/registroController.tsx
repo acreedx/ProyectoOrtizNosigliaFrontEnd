@@ -1,42 +1,28 @@
 "use server";
 import { Allergy, PrismaClient } from "@prisma/client";
-import { subirFotoDePerfil } from "../../utils/upload_image";
-import personValidation from "../../models/personValidation";
-import { hashPassword } from "../../utils/password_hasher";
-import { getPasswordExpiration } from "../../utils/get_password_expiration";
-import { generatePassword } from "../../utils/password_generator";
 import { sendEmail } from "@/utils/mailer";
 import { odontogramaPorDefecto } from "@/utils/default_odontograma";
 import { accountPorDefecto } from "@/utils/default_account";
+import personValidation from "@/models/personValidation";
+import { getPasswordExpiration } from "@/utils/get_password_expiration";
+import { generatePassword } from "@/utils/password_generator";
+import { hashPassword } from "@/utils/password_hasher";
+import { subirFotoDePerfil } from "@/utils/upload_image";
+import { prisma } from "@/config/prisma";
 
 export async function createPerson(formData: FormData) {
-  const prisma = new PrismaClient();
   const profilePicture = formData.get("photoUrl") as File | undefined;
-  const allergies: {
-    substance: string;
-    reaction: string;
-    severity: string;
-    notes: string;
-  }[] = [];
-  let i = 0;
-  while (formData.get(`allergies[${i}][substance]`)) {
-    const reaction =
-      formData.get(`allergies[${i}][reaction]`)?.toString() || "";
-    const severity =
-      reaction === "mild"
-        ? "Baja"
-        : reaction === "moderate"
-          ? "Media"
-          : reaction === "severe"
-            ? "Severa"
-            : "Baja";
+  const allergies: Allergy[] = [];
+  for (let i = 0; formData.has(`allergies[${i}][substance]`); i++) {
+    const substance = formData.get(`allergies[${i}][substance]`) as string;
+    const reaction = formData.get(`allergies[${i}][reaction]`) as string;
+    const notes = formData.get(`allergies[${i}][notes]`) as string;
     allergies.push({
-      substance: formData.get(`allergies[${i}][substance]`)?.toString() || "",
-      reaction: severity,
-      severity: formData.get(`allergies[${i}][reaction]`)?.toString() || "",
-      notes: formData.get(`allergies[${i}][notes]`)?.toString() || "",
-    });
-    i++;
+      substance,
+      reaction,
+      severity: reaction,
+      notes,
+    } as Allergy);
   }
   const data = {
     firstName: formData.get("firstName")?.toString() || "",

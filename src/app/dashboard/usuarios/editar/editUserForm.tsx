@@ -119,8 +119,8 @@ export default function EditUserForm({
         <FormControl id="maritalStatus" isRequired>
           <FormLabel>Estado Civil</FormLabel>
           <Select name="maritalStatus" defaultValue={user.maritalStatus}>
-            <option value="Single">Soltero</option>
-            <option value="Married">Casado</option>
+            <option value="soltero">Soltero</option>
+            <option value="casado">Casado</option>
           </Select>
         </FormControl>
         <FormControl id="identification" isRequired>

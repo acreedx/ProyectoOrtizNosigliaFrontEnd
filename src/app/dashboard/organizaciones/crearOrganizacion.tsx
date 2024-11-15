@@ -54,7 +54,7 @@ export default function CrearOrganizacion({
           onOpen();
         }}
         float="right"
-        mr={4}
+        ml={4}
         mb={4}
       >
         Crear Organización

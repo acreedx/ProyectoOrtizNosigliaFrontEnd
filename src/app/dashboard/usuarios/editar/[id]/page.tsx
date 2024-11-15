@@ -120,8 +120,8 @@ export default async function page({ params }: { params: { id: string } }) {
               <FormControl id="estadoCivil" isRequired>
                 <FormLabel>Estado Civil</FormLabel>
                 <Select name="maritalStatus" defaultValue={user.maritalStatus}>
-                  <option defaultValue="Single">Soltero</option>
-                  <option defaultValue="Married">Casado</option>
+                  <option defaultValue="soltero">Soltero</option>
+                  <option defaultValue="casado">Casado</option>
                 </Select>
               </FormControl>
               <FormControl id="identification" isRequired>

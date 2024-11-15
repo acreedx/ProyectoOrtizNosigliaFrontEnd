@@ -1,10 +1,13 @@
 import NextAuth, { NextAuthOptions } from "next-auth";
 import { Permission, Person, Rol } from "@prisma/client";
-import { authOptions } from "@/utils/authOptions";
+import { authOptions } from "@/config/authOptions";
+import { DefaultSession, DefaultUser } from "next-auth";
 
 declare module "next-auth" {
   interface Session {
-    user: Person & { rol: Rol & { permissions: Permission[] } };
+    user: Person & {
+      rol: Rol & { permissions: Permission[] };
+    };
   }
 }
 declare module "next-auth/jwt" {
