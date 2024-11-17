@@ -8,7 +8,7 @@ import { AppointmentStatus } from "@/enums/appointmentsStatus";
 import { userStatus } from "@/enums/userStatus";
 const DAYS_BEFORE_NOTIFICATION = 2;
 
-cron.schedule("* * * * *", async () => {
+cron.schedule("*/5 * * * *", async () => {
   const citas = await prisma.appointment.findMany({
     where: {
       status: AppointmentStatus.STATUS_CONFIRMADA,

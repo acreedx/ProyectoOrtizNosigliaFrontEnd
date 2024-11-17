@@ -6,7 +6,7 @@ import { carePlanStatus } from "@/enums/carePlanStatus";
 import cron from "node-cron";
 const DAYS_BEFORE_NOTIFICATION = 2;
 
-cron.schedule("* * * * *", async () => {
+cron.schedule("*/5 * * * *", async () => {
   console.log("######################################");
   console.log("#                                    #");
   console.log("# Running scheduler every minute #");

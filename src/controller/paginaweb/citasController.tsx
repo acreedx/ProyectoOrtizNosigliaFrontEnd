@@ -59,7 +59,6 @@ export async function crearCita(formData: FormData) {
         reason: result.data.descripcion,
         subjectId: session.user.id,
         practitionerId: doctor,
-        description: result.data.descripcion,
         status: AppointmentStatus.STATUS_PENDIENTE,
       },
     });
