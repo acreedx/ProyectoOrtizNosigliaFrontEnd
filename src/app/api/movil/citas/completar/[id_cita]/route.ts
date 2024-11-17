@@ -25,7 +25,7 @@ export async function PUT(
       },
       data: {
         status: STATUS_TEXT,
-        description: diagnostico,
+        note: diagnostico,
       },
     });
     return NextResponse.json({ message: "Cita completada con éxito" });
