@@ -6,7 +6,7 @@ export default function Footer() {
     <footer className="footer img-bg h-full pb-[100px] pt-[100px]">
       <div className="mx-auto w-full px-[calc(1.5rem*0.5)] sm:max-w-[540px] md:max-w-[720px] lg:max-w-[960px] xl:max-w-[1140px] 2xl:max-w-[1320px]">
         <div className="footer-widget-wrapper pb-0">
-          <div className="-mx-[calc(1.5rem*0.5)] -mt-[0rem]  flex flex-wrap">
+          <div className="-mx-[calc(1.5rem*0.5)] -mt-[0rem]  flex flex-wrap justify-center">
             <div className="mt-[40px] w-full max-w-full flex-shrink-0 px-16 md:w-1/2 lg:w-5/12 xl:w-1/3">
               <div className="footer-widget flex flex-col items-center ">
                 <a
@@ -58,7 +58,7 @@ export default function Footer() {
                 </div>
               </div>
             </div>
-            <div className="md:w-1/2 lg:w-1/4 xl:w-1/6">
+            <div className="max-2xsm:mr-2 xsm:mr-2 md:mr-0 md:w-1/2 lg:w-1/4 xl:w-1/6">
               <div className="footer-widget">
                 <h4 className="m-0 font-raleway text-[25px] font-semibold text-[#393e46]">
                   Links
@@ -126,7 +126,7 @@ export default function Footer() {
             </div>
             <div className="md:w-7/12 lg:w-full xl:w-1/3">
               <div className="footer-widget">
-                <h4 className="m-0 text-center font-raleway text-[25px] font-semibold text-[#393e46]">
+                <h4 className="m-0 text-center font-raleway text-[25px] font-semibold text-[#393e46] xsm:w-full xsm:p-1 sm:w-full sm:p-1">
                   {" "}
                   Ubicación del centro
                 </h4>

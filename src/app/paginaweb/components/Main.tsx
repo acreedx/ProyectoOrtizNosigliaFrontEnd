@@ -1,16 +1,10 @@
 import Image from "next/image";
 import Contact from "./Contact";
-import Ginecology from "./Icons/Ginecology";
-import Dental from "./Icons/Dental";
-import Bone from "./Icons/Bone";
-import Stomach from "./Icons/Stomach";
-import Neurology from "./Icons/Neurology";
-import Cardiology from "./Icons/Cardiology";
-import Support from "./Icons/Support";
 import DropDownCard from "./DropDownCard";
 import ServiceCard from "./ServiceCard";
 import { routes } from "@/config/routes";
-
+import { FaTooth, FaSmileBeam, FaChild, FaBed } from "react-icons/fa";
+import { GiTooth, GiInvisible } from "react-icons/gi";
 export default function Main() {
   return (
     <main>
@@ -346,7 +340,7 @@ export default function Main() {
             height={400}
           />
         </div>
-        <div className="mx-auto w-full px-[calc(1.5rem*0.5)] sm:max-w-[540px] md:max-w-[720px] lg:max-w-[960px] xl:max-w-[1140px] 2xl:max-w-[1320px]">
+        <div className="mx-auto w-full justify-center px-[calc(1.5rem*0.5)] sm:max-w-[540px] md:max-w-[720px] lg:max-w-[960px] xl:max-w-[1140px] 2xl:mx-auto 2xl:max-w-full">
           <div className="-mx-[calc(1.5rem*0.5)] -mt-[0rem] flex flex-wrap">
             <div className="mx-auto xl:w-2/3">
               <div className="section-title mb-[55px] text-center">
@@ -376,41 +370,41 @@ export default function Main() {
               </div>
             </div>
           </div>
-          <div className="-mx-[calc(1.5rem*0.5)] -mt-[0rem] flex flex-wrap">
+          <div className="-mx-[calc(1.0rem*0.5)] -mt-[0rem] flex flex-wrap justify-center gap-4">
             <ServiceCard
               title="Implantes Dentales"
               description="Los implantes dentales son tornillos de titanio que se colocan en el hueso maxilar con el fin de sustituir a las raíces de las piezas perdidas."
-              iconComponent={<Neurology />}
+              iconComponent={<FaTooth color="orange" size={48} />}
               url="#"
             />
             <ServiceCard
               title="Carillas - Coronas"
               description="Mejora la apariencia de tu boca. Ofrecemos carillas y coronas impresas con sistema CAD CAM, las que son confeccionadas en una impresora digital, llevando al máximo la calidad y la fiabilidad."
-              iconComponent={<Cardiology />}
+              iconComponent={<FaSmileBeam color="orange" size={48} />}
               url="#"
             />
             <ServiceCard
               title="Ortodoncia Tradicional"
               description="Utilizamos una técnica que disminuye las visitas a la consulta en un lapso corto. Ofrecemos brackets estéticos y efectivos que benefician la sonrisa y salud oral."
-              iconComponent={<Stomach />}
+              iconComponent={<GiTooth color="orange" size={48} />}
               url="#"
             />
             <ServiceCard
               title="Ortodoncia Invisible"
               description="La ortodoncia invisible (Invisalign) consiste en férulas transparentes removibles situadas en la parte externa de los dientes y que son prácticamente imperceptibles a la vista."
-              iconComponent={<Bone />}
+              iconComponent={<GiInvisible color="orange" size={48} />}
               url="#"
             />
             <ServiceCard
               title="Odontopediatría"
               description="El tratamiento a menores es importante por su enfoque de “tratamiento preventivo”, crucial porque marcará el futuro de la salud dental para toda la vida del infante."
-              iconComponent={<Ginecology />}
+              iconComponent={<FaChild color="orange" size={48} />}
               url="#"
             />
             <ServiceCard
               title="Tratamiento Anti Ronquidos"
               description="Con nuestro tratamiento anti-ronquido ayudamos a corregir la posición de la mandíbula durante el sueño, mejorando considerablemente el paso del aire y la oxigenación en la sangre del paciente."
-              iconComponent={<Dental />}
+              iconComponent={<FaBed color="orange" size={48} />}
               url="#"
             />
           </div>

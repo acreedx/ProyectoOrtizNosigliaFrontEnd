@@ -20,8 +20,10 @@ import { signOut, useSession } from "next-auth/react";
 import { personFullNameFormater } from "@/utils/format_person_full_name";
 import { useRouter } from "next/navigation";
 import { routes } from "@/config/routes";
+import { FaBars, FaTimes } from "react-icons/fa";
 
 export default function PersoNavBar() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const { data: session, status } = useSession();
@@ -36,9 +38,19 @@ export default function PersoNavBar() {
   const onOpen = () => setIsOpen(true);
   const onClose = () => setIsOpen(false);
   return (
-    <nav className="border-b-1 sticky flex w-full flex-row justify-center">
-      <ul className="m-0  mb-0 flex w-full list-none flex-wrap justify-around p-0 px-0 py-2 align-middle">
-        <div className="flex items-center">
+    <nav className="border-b-1 sticky flex w-full flex-col justify-center md:flex-row">
+      <button
+        className="absolute right-4 top-4 z-10 md:hidden"
+        onClick={() => setIsMenuOpen(!isMenuOpen)}
+      >
+        {isMenuOpen ? (
+          <FaTimes size={24} color="orange" />
+        ) : (
+          <FaBars size={24} color="orange" />
+        )}
+      </button>
+      <ul className="m-0 mb-0 flex w-full list-none flex-col items-center p-0 py-2 align-middle md:flex-row  md:items-stretch md:justify-around">
+        <div className="flex flex-col items-center md:flex-row ">
           <Link
             href={routes.sitio_web}
             className="text-gray-900 no-underline hover:text-orange-400"
@@ -53,7 +65,15 @@ export default function PersoNavBar() {
           </Link>
         </div>
 
-        <Flex as="nav" padding="1.5rem" bg="transparent" gap={10}>
+        <Flex
+          as="nav"
+          padding="1.5rem"
+          bg="transparent"
+          gap={10}
+          display={{ base: isMenuOpen ? "flex" : "none", md: "flex" }}
+          direction={{ base: "column", md: "row" }}
+          align={{ base: "center", md: "stretch" }}
+        >
           <NavBarLinkChakra linkName="Inicio" linkUrl="/" />
           <NavBarLinkChakra linkName="Nuestro equipo" linkUrl={routes.equipo} />
           <NavBarLinkChakra
@@ -71,7 +91,9 @@ export default function PersoNavBar() {
           />
           */}
         </Flex>
-        <div className="flex items-center gap-4">
+        <div
+          className={`mb-4 flex flex-col items-center gap-6 md:mb-0 md:flex-row md:gap-4 ${!isMenuOpen && "hidden"} md:flex`}
+        >
           {status === "loading" ? (
             <Spinner />
           ) : session?.user ? (

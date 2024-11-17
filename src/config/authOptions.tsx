@@ -6,12 +6,10 @@ import {
   modulos,
   auditEventOutcome,
 } from "@/enums/auditEventTypes";
-import { NextAuthOptions, User } from "next-auth";
+import { NextAuthOptions } from "next-auth";
 import bcrypt from "bcryptjs";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { logEvent } from "@/utils/logger";
-import { Person } from "@prisma/client";
-import { SignInResponse } from "next-auth/react";
 import { userStatus } from "@/enums/userStatus";
 import { verifyCaptchaToken } from "@/utils/captcha";
 
@@ -97,7 +95,6 @@ export const authOptions: NextAuthOptions = {
             "El usuario esta bloqueado, cambie su contraseña para continuar",
           );
         }
-
         if (user.passwordExpiration < new Date()) {
           throw new Error(
             "Su contraseña a expirado, debe cambiarla para iniciar sesión",

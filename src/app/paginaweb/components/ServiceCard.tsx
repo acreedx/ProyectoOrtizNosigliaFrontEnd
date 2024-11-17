@@ -13,7 +13,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
   url,
 }) => {
   return (
-    <div className="md:w-1/2 lg:w-1/3">
+    <div className="md:w-1/2 lg:w-1/4">
       <div className="service-item mb-[30px]">
         <div className="service-icon mb-[50px]">{iconComponent}</div>
         <div className="service-content">

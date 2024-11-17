@@ -158,20 +158,6 @@ model Permission {
   @@map("Permissions")
 }
 
-model Consultorio {
-  id                      String        @id @default(auto()) @map("_id") @db.ObjectId
-  resourceType            String        @default("Consultorio")
-  name                    String
-  description             String
-  number                  Int
-  active                  Boolean       @default(true)
-  appointments            Appointment[] @relation
-  encounters              Encounter[]   @relation
-  createdAt               DateTime      @default(now())
-  updatedAt               DateTime      @updatedAt
-  @@map("Consultorios")
-}
-
 model Appointment {
   id                        String      @id @default(auto()) @map("_id") @db.ObjectId
   resourceType              String      @default("Appointment")
@@ -179,14 +165,11 @@ model Appointment {
   end                       DateTime
   specialty                 String
   reason                    String
-  description               String?
   note                      String?
   patientInstruction        String?
   cancellationDate          DateTime?
   cancellationReason        String?
   status                    String      @default("Pendiente")
-  consultorioId             String      @db.ObjectId
-  consultorio               Consultorio @relation(fields: [consultorioId], references: [id])
   subjectId                 String      @db.ObjectId
   subject                   Person      @relation("subject_appointment",fields: [subjectId], references: [id])
   practitionerId            String      @db.ObjectId
@@ -211,9 +194,7 @@ model Encounter {
   practitionerId            String      @db.ObjectId
   practitioner              Person      @relation("practitioner_encounter",fields: [practitionerId], references: [id])
   appointmentId             String      @db.ObjectId
-  appointment               Appointment @relation(fields: [appointmentId], references: [id])     
-  consultorioId             String      @db.ObjectId
-  consultorio               Consultorio @relation(fields: [consultorioId], references: [id])
+  appointment               Appointment @relation(fields: [appointmentId], references: [id])    
   accountIds                String[]    @db.ObjectId
   accounts                  Account[]   @relation(fields: [accountIds], references: [id])
   createdAt                 DateTime    @default(now())
