@@ -37,7 +37,7 @@ export default function ListadoCitas() {
     eventos.forEach((e) => {
       inputs.push({
         id: e.id,
-        title: e.description!,
+        title: e.reason!,
         start: e.start,
         end: e.end,
         paciente: e.subjectId,
@@ -108,13 +108,12 @@ export default function ListadoCitas() {
           const cita: Appointment = {
             resourceType: "Appointment",
             status: "pending",
-            description: motivo,
+            reason: motivo,
             start: startDate,
             end: endDate,
             subjectId: "",
             practitionerId: session?.user.id!,
             specialty: "",
-            reason: "",
           } as Appointment;
           const res = await crearCita(cita);
           //const newEvent = {
@@ -204,7 +203,7 @@ export default function ListadoCitas() {
             id: info.event.id,
             resourceType: "Appointment",
             status: "pending",
-            description: info.event.title,
+            reason: info.event.title,
             start: info.event.start!,
             end: info.event.end!,
           } as Appointment;
@@ -277,7 +276,7 @@ export default function ListadoCitas() {
     const appointment: Appointment = {
       resourceType: "Appointment",
       status: "pending",
-      description: info.event.title,
+      reason: info.event.title,
       start: info.event.start!,
       end: info.event.end!,
     } as Appointment;
