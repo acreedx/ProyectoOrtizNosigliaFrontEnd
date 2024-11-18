@@ -11,10 +11,15 @@ import {
   Stack,
   Flex,
   Image,
+  Text,
 } from "@chakra-ui/react";
 import { Person, Rol } from "@prisma/client";
 import { birthDateFormater } from "@/utils/birth_date_formater";
 import { mostrarAlertaError } from "@/utils/show_error_alert";
+import { editarUsuario } from "@/controller/dashboard/usuarios/usuariosController";
+import { mostrarAlertaExito } from "@/utils/show_success_alert";
+import { routes } from "@/config/routes";
+import Swal from "sweetalert2";
 
 export default function EditUserForm({
   user,
@@ -26,19 +31,30 @@ export default function EditUserForm({
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<any>({});
-
   const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     try {
       event.preventDefault();
       setIsLoading(true);
       setErrors({});
       const formData = new FormData(event.currentTarget);
-      const values = Object.fromEntries(formData.entries());
-      //const person: Person = {
-      //  name: values.name as string,
-      //  photoUrl: values.direccion as string,
-      //} as Person;
-      //const response = await editarUsuario(values.id as string, person);
+      const response = await editarUsuario(user.id, formData);
+      if (!response.success) {
+        if (response.errors) {
+          setErrors(response.errors);
+        } else {
+          mostrarAlertaError("Error al editar el usuario");
+        }
+      } else {
+        Swal.fire({
+          title: "Éxito",
+          text: response.message,
+          icon: "success",
+          confirmButtonText: "Aceptar",
+          confirmButtonColor: "#28a745",
+        }).then(() => {
+          router.push(routes.usuarios);
+        });
+      }
     } catch (e: any) {
       mostrarAlertaError(e);
     } finally {
@@ -71,34 +87,55 @@ export default function EditUserForm({
         <FormControl id="firstName" isRequired>
           <FormLabel>Primer Nombre</FormLabel>
           <Input name="firstName" defaultValue={user.firstName} />
+          {errors.firstName && (
+            <Text color="red.500">{errors.firstName._errors.join(", ")}</Text>
+          )}
         </FormControl>
-        <FormControl id="secondName">
+        <FormControl id="secondName" isRequired>
           <FormLabel>Segundo Nombre</FormLabel>
           <Input name="secondName" defaultValue={user.secondName || ""} />
+          {errors.secondName && (
+            <Text color="red.500">{errors.secondName._errors.join(", ")}</Text>
+          )}
         </FormControl>
         <FormControl id="familyName" isRequired>
           <FormLabel>Apellido</FormLabel>
           <Input name="familyName" defaultValue={user.familyName} />
+          {errors.familyName && (
+            <Text color="red.500">{errors.familyName._errors.join(", ")}</Text>
+          )}
         </FormControl>
         <FormControl id="gender" isRequired>
           <FormLabel>Género</FormLabel>
           <Select name="gender" defaultValue={user.gender}>
-            <option value="Masculino">Masculino</option>
-            <option value="Femenino">Femenino</option>
-            <option value="Otro">Otro</option>
+            <option value="masculino">Masculino</option>
+            <option value="femenino">Femenino</option>
+            <option value="otro">Otro</option>
           </Select>
+          {errors.gender && (
+            <Text color="red.500">{errors.gender._errors.join(", ")}</Text>
+          )}
         </FormControl>
         <FormControl id="phone">
           <FormLabel>Teléfono</FormLabel>
           <Input type="number" name="phone" defaultValue={user.phone || ""} />
+          {errors.phone && (
+            <Text color="red.500">{errors.phone._errors.join(", ")}</Text>
+          )}
         </FormControl>
         <FormControl id="mobile">
           <FormLabel>Celular</FormLabel>
           <Input type="number" name="mobile" defaultValue={user.mobile || ""} />
+          {errors.mobile && (
+            <Text color="red.500">{errors.mobile._errors.join(", ")}</Text>
+          )}
         </FormControl>
         <FormControl id="email" isRequired>
           <FormLabel>Correo</FormLabel>
           <Input type="email" name="email" defaultValue={user.email} />
+          {errors.email && (
+            <Text color="red.500">{errors.email._errors.join(", ")}</Text>
+          )}
         </FormControl>
         <FormControl id="birthDate" isRequired>
           <FormLabel>Fecha de Nacimiento</FormLabel>
@@ -107,14 +144,23 @@ export default function EditUserForm({
             name="birthDate"
             defaultValue={birthDateFormater(user.birthDate)}
           />
+          {errors.birthDate && (
+            <Text color="red.500">{errors.birthDate._errors.join(", ")}</Text>
+          )}
         </FormControl>
         <FormControl id="addressLine" isRequired>
           <FormLabel>Dirección</FormLabel>
           <Input name="addressLine" defaultValue={user.addressLine} />
+          {errors.addressLine && (
+            <Text color="red.500">{errors.addressLine._errors.join(", ")}</Text>
+          )}
         </FormControl>
         <FormControl id="addressCity" isRequired>
           <FormLabel>Ciudad</FormLabel>
           <Input name="addressCity" defaultValue={user.addressCity} />
+          {errors.addressCity && (
+            <Text color="red.500">{errors.addressCity._errors.join(", ")}</Text>
+          )}
         </FormControl>
         <FormControl id="maritalStatus" isRequired>
           <FormLabel>Estado Civil</FormLabel>
@@ -122,6 +168,11 @@ export default function EditUserForm({
             <option value="soltero">Soltero</option>
             <option value="casado">Casado</option>
           </Select>
+          {errors.maritalStatus && (
+            <Text color="red.500">
+              {errors.maritalStatus._errors.join(", ")}
+            </Text>
+          )}
         </FormControl>
         <FormControl id="identification" isRequired>
           <FormLabel>Carnet de Identidad</FormLabel>
@@ -130,6 +181,11 @@ export default function EditUserForm({
             name="identification"
             defaultValue={user.identification}
           />
+          {errors.identification && (
+            <Text color="red.500">
+              {errors.identification._errors.join(", ")}
+            </Text>
+          )}
         </FormControl>
         <FormControl id="rol" isRequired>
           <FormLabel>Rol</FormLabel>
@@ -142,7 +198,7 @@ export default function EditUserForm({
           </Select>
         </FormControl>
         <Button colorScheme="orange" type="submit" isLoading={isLoading}>
-          {isLoading ? "Editando..." : "Editar"}
+          Editar
         </Button>
       </Stack>
     </form>

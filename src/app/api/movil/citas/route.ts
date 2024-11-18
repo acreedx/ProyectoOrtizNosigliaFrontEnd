@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
     await prisma.appointment.create({
       data: appointment,
     });
-    return NextResponse.json({ message: "Cita creada con éxito" });
+    return NextResponse.json({ message: "Cita creada con exito" });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }

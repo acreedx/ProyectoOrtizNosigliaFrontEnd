@@ -95,7 +95,7 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    return NextResponse.json({ message: "Cita creada con éxito." });
+    return NextResponse.json({ message: "Cita creada con exito." });
   } catch (error: any) {
     console.log(error);
     return NextResponse.json(
