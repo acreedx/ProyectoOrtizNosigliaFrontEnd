@@ -1,6 +1,7 @@
 import { prisma } from "@/config/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
+export const dynamic = "force-dynamic";
 const STATUS_TEXT = "confirmed";
 export async function PUT(
   req: NextRequest,

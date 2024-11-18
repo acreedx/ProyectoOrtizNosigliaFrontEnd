@@ -2,6 +2,7 @@ import { prisma } from "@/config/prisma";
 import { Appointment } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
+export const dynamic = "force-dynamic";
 export async function POST(req: NextRequest) {
   try {
     const { appointment }: { appointment: Appointment } = await req.json();
