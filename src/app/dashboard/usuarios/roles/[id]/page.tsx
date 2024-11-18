@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Box,
   Button,
@@ -9,26 +11,86 @@ import {
   Stack,
   Heading,
   Textarea,
+  Spinner,
 } from "@chakra-ui/react";
-import { PrismaClient } from "@prisma/client";
-import { updateRol } from "@/controller/dashboard/roles/rolesController";
+import { useEffect, useState } from "react";
 import DefaultLayout from "@/app/dashboard/components/Layouts/DefaultLayout";
 import BotonVolver from "@/app/dashboard/components/Common/BotonVolver";
 import Breadcrumb from "@/app/dashboard/components/Common/Breadcrumb";
-import { prisma } from "@/config/prisma";
-export default async function Page({ params }: { params: { id: string } }) {
-  const rol = await prisma.rol.findFirst({
-    where: {
-      id: params.id,
-    },
-    include: {
-      permissions: true,
-    },
-  });
-  const permisos = await prisma.permission.findMany({});
+import {
+  editarRol,
+  listarPermisos,
+  listarRol,
+} from "@/controller/dashboard/roles/rolesController";
+import { Rol } from "@prisma/client";
+import { mostrarAlertaExito } from "@/utils/show_success_alert";
+import { mostrarAlertaError } from "@/utils/show_error_alert";
+import { routes } from "@/config/routes";
+import { mostrarAlertaConfirmacion } from "@/utils/show_question_alert";
+
+export default function EditarRolPage({ params }: { params: { id: string } }) {
+  const [loading, setLoading] = useState(true);
+  const [permissions, setPermissions] = useState<any[]>([]);
+  const [rol, setrol] = useState<Rol>();
+  const [isLoading, setisLoading] = useState(false);
+
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      const permisos = await listarPermisos();
+      setrol(await listarRol(params.id));
+      setPermissions(permisos);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching role data:", error);
+      setLoading(false);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      const formData = new FormData(e.currentTarget);
+      setisLoading(true);
+      const isConfirmed = await mostrarAlertaConfirmacion(
+        "Confirmación",
+        "Confirma los datos modificados del rol?",
+      );
+      if (isConfirmed) {
+      }
+      const response = await editarRol(rol!.id, formData);
+      mostrarAlertaExito(response.message);
+    } catch (error: any) {
+      console.error(error);
+      mostrarAlertaError(error);
+    } finally {
+      setisLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  if (loading) {
+    return (
+      <DefaultLayout>
+        <Breadcrumb pageName="Editar Rol" />
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          h="100%"
+        >
+          <Spinner size="xl" />
+        </Box>
+      </DefaultLayout>
+    );
+  }
+
   return (
     <DefaultLayout>
-      <BotonVolver direccion="/dashboard/pages/roles" />
+      <BotonVolver direccion={routes.roles} />
       <Breadcrumb pageName="Editar Rol" />
       <Box
         maxW="600px"
@@ -41,7 +103,7 @@ export default async function Page({ params }: { params: { id: string } }) {
         <Heading size="lg" mb={6}>
           Editar Rol
         </Heading>
-        <form action={updateRol}>
+        <form onSubmit={handleSubmit}>
           <Input type="hidden" name="id" defaultValue={rol?.id} />
           <FormControl id="roleName" mb={4}>
             <FormLabel>Nombre del rol</FormLabel>
@@ -62,15 +124,14 @@ export default async function Page({ params }: { params: { id: string } }) {
           </FormControl>
           <FormControl id="permissions" mb={4}>
             <FormLabel>Permisos</FormLabel>
-            <CheckboxGroup>
+            <CheckboxGroup defaultValue={rol?.permissionIDs}>
               <Stack spacing={2}>
-                {permisos.map((permission, index) => (
+                {permissions.map((permission) => (
                   <Checkbox
-                    key={index}
+                    key={permission.id}
+                    value={permission.id}
                     name="permissions"
-                    defaultChecked={rol?.permissions?.some(
-                      (e) => e.permissionName === permission.permissionName,
-                    )}
+                    defaultChecked={rol?.permissionIDs?.includes(permission.id)}
                   >
                     {permission.code + " - " + permission.permissionName}
                   </Checkbox>
@@ -78,7 +139,7 @@ export default async function Page({ params }: { params: { id: string } }) {
               </Stack>
             </CheckboxGroup>
           </FormControl>
-          <Button colorScheme="blue" type="submit">
+          <Button colorScheme="blue" type="submit" isLoading={isLoading}>
             Guardar Cambios
           </Button>
         </form>

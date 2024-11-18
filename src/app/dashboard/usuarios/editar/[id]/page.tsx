@@ -1,12 +1,11 @@
 import Breadcrumb from "@/app/dashboard/components/Common/Breadcrumb";
 import DefaultLayout from "@/app/dashboard/components/Layouts/DefaultLayout";
-import { PrismaClient } from "@prisma/client";
 import React from "react";
 import { Box, Heading } from "@chakra-ui/react";
 import BotonVolver from "@/app/dashboard/components/Common/BotonVolver";
 import EditUserForm from "../editUserForm";
+import { prisma } from "@/config/prisma";
 export default async function page({ params }: { params: { id: string } }) {
-  const prisma = new PrismaClient();
   const user = await prisma.person.findFirst({
     where: {
       id: params.id,

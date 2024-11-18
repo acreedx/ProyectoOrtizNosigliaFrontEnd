@@ -3,46 +3,46 @@ import {
   deshabilitarRol,
   habilitarRol,
 } from "@/controller/dashboard/roles/rolesController";
+import { mostrarAlertaError } from "@/utils/show_error_alert";
+import { mostrarAlertaConfirmacion } from "@/utils/show_question_alert";
+import { mostrarAlertaExito } from "@/utils/show_success_alert";
 import { Button } from "@chakra-ui/react";
 import Swal from "sweetalert2";
 
-interface BotonHabilitarProps {
+export default function BotonHabilitar({
+  rolId,
+  active,
+  reloadData,
+}: {
   rolId: string;
   active: boolean;
-}
-
-export default function BotonHabilitar({ rolId, active }: BotonHabilitarProps) {
+  reloadData: Function;
+}) {
   const handleClick = async () => {
-    if (active) {
-      Swal.fire({
-        title: "Confirmación",
-        text: "Esta seguro que quiere deshabilitar este rol?",
-        icon: "error",
-        showCancelButton: true,
-        cancelButtonText: "Cancelar",
-        cancelButtonColor: "#a72828",
-        confirmButtonText: "Aceptar",
-        confirmButtonColor: "#28a745",
-      }).then(async (result) => {
-        if (result.isConfirmed) {
-          await deshabilitarRol(rolId);
+    try {
+      if (active) {
+        const isConfirmed = await mostrarAlertaConfirmacion(
+          "Confirmación",
+          "Esta seguro que quiere deshabilitar este rol?",
+        );
+        if (isConfirmed) {
+          const response = await deshabilitarRol(rolId);
+          reloadData();
+          mostrarAlertaExito(response.message);
         }
-      });
-    } else {
-      Swal.fire({
-        title: "Confirmación",
-        text: "Esta seguro que quiere rehabilitar este rol?",
-        icon: "error",
-        showCancelButton: true,
-        cancelButtonText: "Cancelar",
-        cancelButtonColor: "#a72828",
-        confirmButtonText: "Aceptar",
-        confirmButtonColor: "#28a745",
-      }).then(async (result) => {
-        if (result.isConfirmed) {
-          await habilitarRol(rolId);
+      } else {
+        const isConfirmed = await mostrarAlertaConfirmacion(
+          "Confirmación",
+          "Esta seguro que quiere rehabilitar este rol?",
+        );
+        if (isConfirmed) {
+          const response = await habilitarRol(rolId);
+          reloadData();
+          mostrarAlertaExito(response.message);
         }
-      });
+      }
+    } catch (e: any) {
+      mostrarAlertaError(e);
     }
   };
   return (

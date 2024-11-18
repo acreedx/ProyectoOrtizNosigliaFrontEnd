@@ -18,8 +18,8 @@ import { birthDateFormater } from "@/utils/birth_date_formater";
 import { userStatus } from "@/enums/userStatus";
 import DefaultLayout from "../components/Layouts/DefaultLayout";
 import Breadcrumb from "../components/Common/Breadcrumb";
+import { prisma } from "@/config/prisma";
 export default async function Usuarios() {
-  const prisma = new PrismaClient();
   const persons = await prisma.person.findMany({ include: { rol: true } });
   return (
     <DefaultLayout>

@@ -37,7 +37,6 @@ export default function ModalDeCreacion({
   reloadData: Function;
 }) {
   const [errors, setErrors] = useState<any>({});
-  const [loading, setloading] = useState(true);
   const [isloading, setisloading] = useState(false);
   const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
