@@ -34,7 +34,7 @@ export async function GET() {
         allergies: true,
       },
     });
-    return NextResponse.json({ pacientes });
+    return NextResponse.json({ pacientes: pacientes });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
