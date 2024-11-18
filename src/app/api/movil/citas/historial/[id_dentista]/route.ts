@@ -18,6 +18,13 @@ export async function GET(
           { start: { lt: new Date() } },
         ],
       },
+      include: {
+        subject: {
+          include: {
+            allergies: true,
+          },
+        },
+      },
     });
     return NextResponse.json({ citas: citasHistorial });
   } catch (error: any) {

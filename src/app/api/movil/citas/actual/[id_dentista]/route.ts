@@ -29,6 +29,13 @@ export async function GET(
           gte: bolivianTime,
         },
       },
+      include: {
+        subject: {
+          include: {
+            allergies: true,
+          },
+        },
+      },
     });
 
     if (citasActivas.length > 0) {
