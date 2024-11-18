@@ -55,7 +55,6 @@ export default function CrearCitas() {
       (await listarCitasPorPaciente()) as (Appointment & {
         practitioner: Person;
       })[];
-    console.log(citas);
     setcitaspaciente(citas);
     setcitaspacientependientes(
       citas.filter(

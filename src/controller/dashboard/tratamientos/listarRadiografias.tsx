@@ -6,11 +6,11 @@ export async function listarRadiografias(id_careplan: string) {
     const radiografias = await prisma.imagingStudy.findMany({
       where: {
         carePlanId: id_careplan,
+        active: true,
       },
     });
-    console.log(radiografias);
     return radiografias;
-  } catch (error) {
+  } catch (error: any) {
     console.log(error);
     throw new Error("Error al registrar los datos");
   }

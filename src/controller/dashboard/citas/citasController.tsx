@@ -7,7 +7,6 @@ import { Appointment } from "@prisma/client";
 export async function listarCitas() {
   try {
     const appointments = await prisma.appointment.findMany();
-    console.log(appointments);
     return appointments;
   } catch (error) {
     throw new Error("Error al listar las citas");

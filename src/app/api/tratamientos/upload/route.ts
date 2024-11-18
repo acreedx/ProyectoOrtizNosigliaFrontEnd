@@ -30,6 +30,7 @@ export async function POST(req: NextRequest) {
         const newStudy = await prisma.imagingStudy.create({
           data: {
             active: study.active,
+            description: "",
             personId: study.personId,
             carePlanId: study.carePlanId,
             media: urls,

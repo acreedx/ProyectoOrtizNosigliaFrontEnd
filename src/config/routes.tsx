@@ -9,7 +9,6 @@ export const routes = {
   olvidarpassword: "/paginaweb/inicio_de_sesion/olvidarpassword",
   dashboard: "/dashboard",
   pacientes: "/dashboard/pacientes",
-  reportepacientes: "/dashboard/pacientes/reportes",
   odontograma: "/dashboard/pacientes/odontograma",
   organizaciones: "/dashboard/organizaciones",
   citas: "/dashboard/citas/calendario",
@@ -18,4 +17,8 @@ export const routes = {
   eventos_del_sistema: "/dashboard/usuarios/eventos_del_sistema",
   tratamientos: "/dashboard/tratamientos",
   tipos_de_tratamiento: "/dashboard/tratamientos/tipos_de_tratamiento",
+  reportepacientes: "/dashboard/pacientes/reportes",
+  reportecitas: "/dashboard/citas/reportes",
+  reporteusuarios: "/dashboard/usuarios/reportes",
+  reportestratamiento: "/dashboard/tratamientos/reportes",
 };

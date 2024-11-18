@@ -1,10 +1,5 @@
 "use server";
-import { authOptions } from "@/config/authOptions";
 import { prisma } from "@/config/prisma";
-import { personFullNameFormater } from "@/utils/format_person_full_name";
-import jsPDF from "jspdf";
-import autoTable from "jspdf-autotable";
-import { getServerSession } from "next-auth";
 
 export async function ReportePacientes({
   startDate,
@@ -86,5 +81,189 @@ export async function ReporteOrganizaciones({
   } catch (error) {
     console.error("Error al obtener organizaciones:", error);
     throw new Error("Error al listar las organizaciones");
+  }
+}
+
+export async function ReporteCitas({
+  startDate,
+  endDate,
+}: {
+  startDate?: string;
+  endDate?: string;
+}) {
+  try {
+    const whereClause: any = {};
+
+    if (startDate || endDate) {
+      whereClause.createdAt = {};
+      if (startDate) {
+        whereClause.createdAt.gte = new Date(startDate);
+      }
+      if (endDate) {
+        whereClause.createdAt.lte = new Date(endDate);
+      }
+    }
+
+    const citas = await prisma.appointment.findMany({
+      where: whereClause,
+      select: {
+        id: true,
+        start: true,
+        end: true,
+        specialty: true,
+        reason: true,
+        status: true,
+        subject: {
+          select: { firstName: true, secondName: true, familyName: true },
+        },
+        practitioner: {
+          select: { firstName: true, secondName: true, familyName: true },
+        },
+      },
+    });
+    console.log(citas);
+    return citas;
+  } catch (error) {
+    console.error("Error al obtener citas:", error);
+    throw new Error("Error al listar las citas");
+  }
+}
+
+export async function ReporteUsuarios({
+  startDate,
+  endDate,
+}: {
+  startDate?: string;
+  endDate?: string;
+}) {
+  try {
+    const whereClause: any = {
+      rol: {
+        roleName: {
+          not: "Paciente",
+        },
+      },
+    };
+
+    if (startDate || endDate) {
+      whereClause.createdAt = {};
+      if (startDate) {
+        whereClause.createdAt.gte = new Date(startDate);
+      }
+      if (endDate) {
+        whereClause.createdAt.lte = new Date(endDate);
+      }
+    }
+
+    const usuarios = await prisma.person.findMany({
+      where: whereClause,
+      select: {
+        id: true,
+        firstName: true,
+        secondName: true,
+        familyName: true,
+        gender: true,
+        identification: true,
+        status: true,
+        phone: true,
+        email: true,
+        createdAt: true,
+        rol: true,
+      },
+    });
+    return usuarios;
+  } catch (error) {
+    console.error("Error al obtener organizaciones:", error);
+    throw new Error("Error al listar las organizaciones");
+  }
+}
+
+export async function ReporteTratamientos({
+  startDate,
+  endDate,
+}: {
+  startDate?: string;
+  endDate?: string;
+}) {
+  try {
+    const whereClause: any = {};
+    if (startDate || endDate) {
+      whereClause.startDate = {};
+      if (startDate) {
+        whereClause.startDate.gte = new Date(startDate);
+      }
+      if (endDate) {
+        whereClause.startDate.lte = new Date(endDate);
+      }
+    }
+
+    const carePlans = await prisma.carePlan.findMany({
+      where: whereClause,
+      select: {
+        id: true,
+        title: true,
+        description: true,
+        treatmentType: true,
+        startDate: true,
+        endDate: true,
+        estimatedAppointments: true,
+        daysBetweenAppointments: true,
+        totalAppointments: true,
+        costEstimation: true,
+        status: true,
+        createdAt: true,
+        subject: {
+          select: {
+            firstName: true,
+            secondName: true,
+            familyName: true,
+          },
+        },
+      },
+    });
+
+    return carePlans;
+  } catch (error) {
+    console.error("Error al obtener tratamientos:", error);
+    throw new Error("Error al listar los tratamientos");
+  }
+}
+
+export async function ReporteTiposTratamiento({
+  startDate,
+  endDate,
+}: {
+  startDate?: string;
+  endDate?: string;
+}) {
+  try {
+    const whereClause: any = {};
+    if (startDate || endDate) {
+      whereClause.createdAt = {};
+      if (startDate) {
+        whereClause.createdAt.gte = new Date(startDate);
+      }
+      if (endDate) {
+        whereClause.createdAt.lte = new Date(endDate);
+      }
+    }
+    const tratamientos = await prisma.treatments.findMany({
+      where: whereClause,
+      select: {
+        id: true,
+        title: true,
+        treatmentType: true,
+        description: true,
+        estimatedAppointments: true,
+        daysBetweenAppointments: true,
+        costEstimation: true,
+        active: true,
+        createdAt: true,
+      },
+    });
+    return tratamientos;
+  } catch (error) {
+    console.error("Error al obtener tipos de tratamiento:", error);
+    throw new Error("Error al listar los tratamientos");
   }
 }

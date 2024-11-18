@@ -69,7 +69,6 @@ const Odontograma = ({ params }: { params: { id: string } }) => {
     async function fetchOdontogram() {
       setloading(true);
       const url = "" + "odontograma/" + params.id;
-      console.log(url);
       const response = await fetch(url);
       if (!response.ok) {
         const error = await response.json();

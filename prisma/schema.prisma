@@ -261,13 +261,9 @@ model Treatments {
 model ImagingStudy {
   id                        String            @id @default(auto()) @map("_id") @db.ObjectId
   resourceType              String            @default("ImagingStudy")
-  //modality                  String
-  //reason                    String
-  //description               String
+  description               String
   active                    Boolean
-  media                     String[]          
-  //media                     String[]          @db.ObjectId
-  //medias                    Media[]           @relation(fields: [mediaIds], references: [id])
+  media                     String[]     
   odontograms               OdontogramRows[]  
   personId                  String            @db.ObjectId
   person                    Person            @relation(fields: [personId], references: [id])
@@ -276,18 +272,6 @@ model ImagingStudy {
   createdAt                 DateTime          @default(now())
   updatedAt                 DateTime          @updatedAt
   @@map("ImagingStudies")
-}
-
-model Media {
-  id                        String      @id @default(auto()) @map("_id") @db.ObjectId
-  resourceType              String      @default("Media")
-  url                       String
-  active                    Boolean
-  //imagingStudyIds           String[]  @db.ObjectId
-  //imagingStudys             ImagingStudy[]     @relation(fields: [imagingStudyIds], references: [id])
-  createdAt                 DateTime    @default(now())
-  updatedAt                 DateTime    @updatedAt
-  @@map("Medias")
 }
 
 model AuditEvent {

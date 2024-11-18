@@ -189,7 +189,6 @@ export default function Page() {
       daysBetweenAppointments: Number(formData.get("daysBetweenAppointments")),
       costEstimation: Number(formData.get("costEstimation")),
     } as Treatments;
-    console.log(tratamiento);
     try {
       const response = await editarTipoTratamiento(
         formData.get("id") as string,

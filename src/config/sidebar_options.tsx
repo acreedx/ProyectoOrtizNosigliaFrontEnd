@@ -59,6 +59,11 @@ export const menuOptions = [
             route: routes.citas,
             permission: permissionsList.CITAS,
           },
+          {
+            label: "Reportes",
+            route: routes.reportecitas,
+            permission: permissionsList.CITAS,
+          },
         ],
       },
       {
@@ -81,6 +86,11 @@ export const menuOptions = [
             route: routes.eventos_del_sistema,
             permission: permissionsList.LOGS,
           },
+          {
+            label: "Reportes",
+            route: routes.reporteusuarios,
+            permission: permissionsList.USUARIOS,
+          },
         ],
       },
       {
@@ -97,6 +107,11 @@ export const menuOptions = [
             label: "Tipos de tratamiento",
             route: routes.tipos_de_tratamiento,
             permission: permissionsList.TIPOS_TRATAMIENTO,
+          },
+          {
+            label: "Reportes",
+            route: routes.reportestratamiento,
+            permission: permissionsList.TRATAMIENTOS,
           },
         ],
       },

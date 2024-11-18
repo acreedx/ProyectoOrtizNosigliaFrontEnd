@@ -15,6 +15,7 @@ export enum auditEventSeverity {
 export enum auditEventOutcome {
   OUTCOME_EXITO = "exito",
   OUTCOME_ERROR = "error",
+  OUTCOME_DESCONOCIDO = "desconocido",
 }
 
 export enum auditEventAction {

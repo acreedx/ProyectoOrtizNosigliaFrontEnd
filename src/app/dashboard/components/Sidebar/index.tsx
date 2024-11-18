@@ -46,9 +46,9 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
     }
   }, [session]);
   return (
-    <ClickOutside onClick={() => setSidebarOpen(false)}>
+    <ClickOutside onClick={() => {}}>
       <aside
-        className={`shadow-gray-500/50 fixed left-0 top-0 z-9999 flex h-screen w-72.5 flex-col overflow-y-hidden bg-slate-50 shadow-lg duration-300 ease-linear dark:bg-boxdark lg:translate-x-0 ${
+        className={`shadow-gray-500/50 fixed left-0 top-0 z-20 flex h-screen w-72.5 flex-col overflow-y-hidden bg-slate-50 shadow-lg duration-300 ease-linear dark:bg-boxdark ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
@@ -62,14 +62,6 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               priority
             />
           </Link>
-
-          <button
-            onClick={() => setSidebarOpen(!sidebarOpen)}
-            aria-controls="sidebar"
-            className="absolute right-4 lg:hidden"
-          >
-            <ArrowLeftIcon />
-          </button>
         </div>
 
         <div className="no-scrollbar flex flex-col overflow-y-auto duration-300 ease-linear ">

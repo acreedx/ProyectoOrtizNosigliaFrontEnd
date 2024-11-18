@@ -5,7 +5,6 @@ import { Organization } from "@prisma/client";
 export async function listarOrganizaciones() {
   try {
     const organizaciones = await prisma.organization.findMany();
-    console.log(organizaciones);
     return organizaciones;
   } catch (error) {
     throw new Error("Error al listar los datos");

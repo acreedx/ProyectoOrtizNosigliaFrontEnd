@@ -25,7 +25,6 @@ export async function verifyCaptchaToken(token: string) {
     method: "POST",
   });
   const captchaData: CaptchaData = await res.json();
-  console.log(captchaData);
   if (!res.ok) {
     return null;
   }

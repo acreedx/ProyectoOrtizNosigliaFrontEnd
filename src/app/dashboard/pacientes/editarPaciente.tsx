@@ -21,9 +21,7 @@ export default function EditarPaciente({ paciente }: { paciente: Person }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const handleSubmitCreate: FormEventHandler<HTMLFormElement> = async (
     event,
-  ) => {
-    console.log(event);
-  };
+  ) => {};
   return (
     <>
       <Button

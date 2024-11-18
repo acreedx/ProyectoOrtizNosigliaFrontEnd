@@ -14,7 +14,6 @@ export async function listarOdontrograma(pacienteId: string) {
         personId: pacienteId,
       },
     });
-    console.log(odontograma);
     return odontograma;
   } catch (error) {
     console.log(error);

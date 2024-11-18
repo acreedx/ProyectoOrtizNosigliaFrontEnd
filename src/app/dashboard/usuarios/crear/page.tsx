@@ -22,6 +22,7 @@ import { createEmptyFormularioPersona } from "@/app/paginaweb/inicio_de_sesion/r
 import BotonVolver from "@/app/dashboard/components/Common/BotonVolver";
 import { routes } from "@/config/routes";
 import { createPerson } from "@/controller/paginaweb/inicio_de_sesion/registroController";
+import { mostrarAlertaError } from "@/utils/show_error_alert";
 
 interface FileWithPreview extends File {
   preview?: string;
@@ -113,7 +114,7 @@ export default function Page() {
       }
       setIsLoading(false);
     } catch (e: any) {
-      console.log(e.message);
+      mostrarAlertaError(e);
     } finally {
       setIsLoading(false);
     }

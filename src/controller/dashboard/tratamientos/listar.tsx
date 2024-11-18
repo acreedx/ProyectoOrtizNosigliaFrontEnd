@@ -6,6 +6,7 @@ export async function listarTratamientos() {
     const tratamientos = await prisma.carePlan.findMany({
       include: {
         subject: true,
+        imagingStudies: true,
       },
     });
     return tratamientos;

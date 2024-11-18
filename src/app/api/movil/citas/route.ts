@@ -5,7 +5,6 @@ import { NextRequest, NextResponse } from "next/server";
 export async function POST(req: NextRequest) {
   try {
     const { appointment }: { appointment: Appointment } = await req.json();
-    console.log(appointment);
     const validarFechaHora = await prisma.appointment.findMany({
       where: {
         start: appointment.start,

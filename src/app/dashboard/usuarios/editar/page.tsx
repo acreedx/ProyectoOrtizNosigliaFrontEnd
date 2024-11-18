@@ -54,8 +54,6 @@ export default function Page() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(formData);
-    // Aquí puedes manejar la lógica de envío del formulario.
   };
   return (
     <DefaultLayout>

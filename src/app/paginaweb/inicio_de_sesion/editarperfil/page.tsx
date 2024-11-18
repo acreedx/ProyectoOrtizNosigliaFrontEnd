@@ -81,7 +81,6 @@ export default function PersonForm() {
       if (response.message) {
         mostrarAlertaExito(response.message);
         fetchData();
-        console.log(usuario);
       }
       setIsLoading(false);
     } catch (e: any) {

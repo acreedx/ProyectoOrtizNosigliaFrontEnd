@@ -220,7 +220,6 @@ export default function ListadoCitas() {
   function renderEventContent(eventInfo: EventContentArg) {
     const now = new Date();
     const isPastEvent = eventInfo.event.start && eventInfo.event.start < now;
-    console.log(isPastEvent);
     return (
       <div
         className={`flex h-full w-full flex-wrap overflow-hidden ${

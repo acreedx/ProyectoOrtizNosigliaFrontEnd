@@ -1,9 +1,8 @@
 import { prisma } from "@/config/prisma";
 import { personFullNameFormater } from "@/utils/format_person_full_name";
 import { sendEmail } from "@/utils/mailer";
-import { NextResponse } from "next/server";
 import { carePlanStatus } from "@/enums/carePlanStatus";
-const DAYS_BEFORE_NOTIFICATION = 2;
+const DAYS_BEFORE_NOTIFICATION = 1;
 export async function GET(req: Request) {
   try {
     const today = new Date();
@@ -11,8 +10,6 @@ export async function GET(req: Request) {
       where: { status: carePlanStatus.ENCURSO },
       include: { subject: true },
     });
-
-    console.log(carePlans);
 
     for (const carePlan of carePlans) {
       const daysSinceStart = Math.floor(

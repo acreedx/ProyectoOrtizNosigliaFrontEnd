@@ -43,7 +43,6 @@ const TablePatients = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         const url = "" + "person/deletepatient/" + id;
-        console.log(url);
         const response = await fetch(url);
         if (!response.ok) {
           const error = await response.json();
@@ -75,7 +74,6 @@ const TablePatients = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         const url = "" + "person/restorepatient/" + id;
-        console.log(url);
         const response = await fetch(url);
         if (!response.ok) {
           const error = await response.json();

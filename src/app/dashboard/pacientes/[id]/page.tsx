@@ -57,7 +57,6 @@ export default function Pacientes({ params }: { params: { id: string } }) {
   });
   useEffect(() => {
     const url = "" + "person/" + params.id;
-    console.log(url);
     async function fectchPatient() {
       setloading(true);
       const response = await fetch(url, { method: "GET" });
@@ -67,7 +66,6 @@ export default function Pacientes({ params }: { params: { id: string } }) {
       }
       const data = await response.json();
       setFormData(data);
-      console.log(data);
       setloading(false);
     }
     fectchPatient();
@@ -84,7 +82,6 @@ export default function Pacientes({ params }: { params: { id: string } }) {
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     const url = "" + "person/" + params.id;
-    console.log("Datos del formulario:", formData);
     const response = await fetch(url, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },

@@ -16,7 +16,6 @@ export async function listarPacientes() {
         },
       },
     });
-    console.log(pacientes);
     return pacientes;
   } catch (error) {
     console.log(error);

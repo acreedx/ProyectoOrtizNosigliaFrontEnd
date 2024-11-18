@@ -38,7 +38,6 @@ export default function Page() {
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    console.log("Role Data Updated:", roleData);
     alert(`El rol ${roleData.roleName} se ha actualizado exitosamente.`);
   };
   return (

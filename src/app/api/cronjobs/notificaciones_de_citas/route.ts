@@ -7,10 +7,13 @@ import { userStatus } from "@/enums/userStatus";
 import { birthDateFormater } from "@/utils/birth_date_formater";
 import { timeFormatter } from "@/utils/time_formater";
 const DAYS_BEFORE_NOTIFICATION = 1;
-const tomorrow = new Date();
-tomorrow.setDate(tomorrow.getDate() + DAYS_BEFORE_NOTIFICATION);
 export async function GET(req: Request) {
   try {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    tomorrow.setHours(0, 0, 0, 0);
+    const dayAfterTomorrow = new Date(tomorrow.getTime() + 86400000);
+    dayAfterTomorrow.setHours(0, 0, 0, 0);
     const citas = await prisma.appointment.findMany({
       where: {
         status: AppointmentStatus.STATUS_CONFIRMADA,
@@ -24,7 +27,7 @@ export async function GET(req: Request) {
         },
         start: {
           gte: tomorrow,
-          lt: new Date(tomorrow.getTime() + 86400000),
+          lt: dayAfterTomorrow,
         },
       },
       include: {
@@ -32,6 +35,7 @@ export async function GET(req: Request) {
         practitioner: true,
       },
     });
+    console.log(citas);
     citas.forEach(async (e) => {
       await sendEmail({
         email: e.subject.email,
@@ -57,9 +61,9 @@ export async function GET(req: Request) {
         `,
       });
     });
-    return new Response(`Envio de notificaciones exitoso`);
+    return NextResponse.json({ ok: true });
   } catch (error: any) {
     console.log(error);
-    return new Response(`Error al enviar las notificaciones`);
+    return NextResponse.json({ ok: false });
   }
 }

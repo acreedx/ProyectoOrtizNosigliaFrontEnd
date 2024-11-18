@@ -13,7 +13,6 @@ export async function getDentistas() {
         qualifications: true,
       },
     });
-    console.log(dentistas);
     return dentistas;
   } catch (error) {
     console.log(error);

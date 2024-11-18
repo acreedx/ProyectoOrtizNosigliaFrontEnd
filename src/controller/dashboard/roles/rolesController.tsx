@@ -43,7 +43,6 @@ export async function updateRol(formData: FormData) {
       name: permission,
     };
   });
-  console.log(selectedPermissions);
   const permissionsDB = await prisma.permission.findMany({});
   let newPermissions: string[] = [];
   let index = 0;

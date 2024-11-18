@@ -108,7 +108,6 @@ export async function listarCitasPorPaciente(): Promise<Appointment[]> {
         practitioner: true,
       },
     });
-    console.log(citas);
     return citas;
   } catch (error: any) {
     console.log(error);
