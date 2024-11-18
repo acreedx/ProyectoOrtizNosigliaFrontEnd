@@ -1,4 +1,5 @@
 import { prisma } from "@/config/prisma";
+import { AppointmentStatus } from "@/enums/appointmentsStatus";
 import { NextRequest, NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
@@ -25,7 +26,7 @@ export async function PUT(
         id: id_cita,
       },
       data: {
-        status: STATUS_TEXT,
+        status: AppointmentStatus.STATUS_CANCELADA,
       },
     });
     return NextResponse.json({ message: "Cita cancelada con exito" });
