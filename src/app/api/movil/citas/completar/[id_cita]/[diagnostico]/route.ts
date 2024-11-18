@@ -29,7 +29,7 @@ export async function PUT(
         note: diagnostico,
       },
     });
-    return NextResponse.json({ message: "Cita completada con éxito" });
+    return NextResponse.json({ message: "Cita completada con exito" });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }

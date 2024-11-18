@@ -18,6 +18,13 @@ export async function GET(
           gt: new Date(),
         },
       },
+      include: {
+        subject: {
+          include: {
+            allergies: true,
+          },
+        },
+      },
     });
     return NextResponse.json({ citas: citasCanceladas });
   } catch (error: any) {

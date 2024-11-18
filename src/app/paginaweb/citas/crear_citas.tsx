@@ -344,19 +344,30 @@ function AppointmentCard({
             color={"white"}
           />
         )}
-        {appointmentData.status === AppointmentStatus.STATUS_CONFIRMADA ||
-          (appointmentData.status === AppointmentStatus.STATUS_PENDIENTE && (
-            <IconButton
-              aria-label="Cancel"
-              onClick={() => {
-                handleCancel(appointmentData);
-              }}
-              icon={<CloseIcon />}
-              _hover={{ shadow: "lg" }}
-              backgroundColor={"red.400"}
-              color={"white"}
-            />
-          ))}
+        {appointmentData.status === AppointmentStatus.STATUS_CONFIRMADA && (
+          <IconButton
+            aria-label="Cancel"
+            onClick={() => {
+              handleCancel(appointmentData);
+            }}
+            icon={<CloseIcon />}
+            _hover={{ shadow: "lg" }}
+            backgroundColor={"red.400"}
+            color={"white"}
+          />
+        )}
+        {appointmentData.status === AppointmentStatus.STATUS_PENDIENTE && (
+          <IconButton
+            aria-label="Cancel"
+            onClick={() => {
+              handleCancel(appointmentData);
+            }}
+            icon={<CloseIcon />}
+            _hover={{ shadow: "lg" }}
+            backgroundColor={"red.400"}
+            color={"white"}
+          />
+        )}
         <IconButton
           aria-label="Info"
           onClick={() => {
