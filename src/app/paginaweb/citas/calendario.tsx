@@ -14,13 +14,17 @@ import interactionPlugin from "@fullcalendar/interaction";
 import { events } from "./eventos_prueba";
 import {
   Box,
+  FormControl,
+  FormLabel,
   Heading,
+  Input,
   Modal,
   ModalBody,
   ModalCloseButton,
   ModalContent,
   ModalHeader,
   ModalOverlay,
+  Textarea,
   useDisclosure,
 } from "@chakra-ui/react";
 import { Appointment, Person } from "@prisma/client";
@@ -28,12 +32,25 @@ import { getDentistas } from "@/controller/paginaweb/dentistasController";
 import { listarCitasPorPaciente } from "@/controller/paginaweb/citasController";
 import ModalDeCreacion from "./modal_de_creacion";
 import { mostrarAlertaError } from "@/utils/show_error_alert";
+import { personFullNameFormater } from "@/utils/format_person_full_name";
+import { timeFormatter } from "@/utils/time_formater";
+import ModalDeInformacion from "./modal_de_informacion";
 interface CustomEvent extends EventInput {
   extendedProps?: {
     appointment: Appointment;
   };
 }
-export default function Calendario() {
+export default function Calendario({
+  appointments,
+  dentistas,
+  reloadData,
+}: {
+  appointments: (Appointment & {
+    practitioner: Person;
+  })[];
+  dentistas: Person[];
+  reloadData: Function;
+}) {
   const {
     isOpen: isSecondModalOpen,
     onOpen: onOpenSecondModal,
@@ -42,12 +59,15 @@ export default function Calendario() {
   const [loading, setLoading] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
-  const [selectedAppointment, setSelectedAppointment] = useState<Appointment>(
-    events[0].extendedProps?.appointment as Appointment,
-  );
-  const [dentistas, setdentistas] = useState<Person[]>([]);
+  const [selectedAppointment, setSelectedAppointment] = useState<
+    Appointment & { practitioner: Person }
+  >();
   const [eventos, seteventos] = useState<CustomEvent[]>([]);
   function handleDateSelect(selectInfo: DateSelectArg) {
+    if (selectInfo.start < new Date()) {
+      mostrarAlertaError("Escoja una fecha posterior para crear una cita");
+      return;
+    }
     setSelectedDate(selectInfo.start);
     onOpen();
   }
@@ -55,10 +75,8 @@ export default function Calendario() {
     setSelectedAppointment(selectInfo.event.extendedProps.appointment);
     onOpenSecondModal();
   }
-  const fetchData = async () => {
+  useEffect(() => {
     try {
-      setdentistas(await getDentistas());
-      const appointments: Appointment[] = await listarCitasPorPaciente();
       let customEvents: CustomEvent[] = [];
       appointments.map((appointment, index) => {
         customEvents.push({
@@ -76,10 +94,7 @@ export default function Calendario() {
     } catch (error: any) {
       mostrarAlertaError(error);
     }
-  };
-  useEffect(() => {
-    fetchData();
-  }, []);
+  }, [appointments]);
   return (
     <div className="w-full rounded-sm border border-stroke bg-white p-8 text-black shadow-default dark:border-strokedark dark:bg-boxdark">
       <FullCalendar
@@ -104,7 +119,7 @@ export default function Calendario() {
         dentistas={dentistas}
         isOpen={isOpen}
         onClose={onClose}
-        reloadData={fetchData}
+        reloadData={reloadData}
       />
       <Modal isOpen={isSecondModalOpen} onClose={onCloseSecondModal} isCentered>
         <ModalOverlay />
@@ -118,12 +133,120 @@ export default function Calendario() {
           <ModalBody>
             <Box w="full">
               <Box>
-                <pre>{JSON.stringify(selectedAppointment, null, 2)}</pre>
+                <form>
+                  <FormControl mb={4} isRequired>
+                    <FormLabel color="black" _dark={{ color: "white" }}>
+                      Motivo de la cita
+                    </FormLabel>
+                    <Textarea
+                      name="descripcion"
+                      placeholder="Describa brevemente el motivo de su consulta"
+                      bg="transparent"
+                      borderColor="gray.400"
+                      defaultValue={
+                        selectedAppointment ? selectedAppointment.reason : ""
+                      }
+                      readOnly
+                      _hover={{ borderColor: "orange.500" }}
+                      _focus={{ borderColor: "orange.500" }}
+                      _dark={{
+                        bg: "gray.700",
+                        color: "white",
+                        borderColor: "gray.600",
+                        _hover: { borderColor: "orange.500" },
+                      }}
+                    />
+                  </FormControl>
+                  <FormControl mb={6} isRequired>
+                    <FormLabel color="black" _dark={{ color: "white" }}>
+                      Fecha
+                    </FormLabel>
+                    <Input
+                      name="fecha"
+                      type="text"
+                      bg="transparent"
+                      borderColor="gray.400"
+                      defaultValue={
+                        selectedAppointment
+                          ? selectedAppointment.start
+                              .toISOString()
+                              .split("T")[0]
+                          : ""
+                      }
+                      readOnly
+                      _hover={{ borderColor: "orange.500" }}
+                      _focus={{ borderColor: "orange.500" }}
+                      _dark={{
+                        bg: "gray.700",
+                        color: "white",
+                        borderColor: "gray.600",
+                        _hover: { borderColor: "orange.500" },
+                      }}
+                    />
+                  </FormControl>
+                  <FormControl mb={6} isRequired>
+                    <FormLabel color="black" _dark={{ color: "white" }}>
+                      Hora
+                    </FormLabel>
+                    <Input
+                      name="fecha"
+                      type="text"
+                      bg="transparent"
+                      borderColor="gray.400"
+                      defaultValue={
+                        selectedAppointment
+                          ? timeFormatter(selectedAppointment.start)
+                          : ""
+                      }
+                      readOnly
+                      _hover={{ borderColor: "orange.500" }}
+                      _focus={{ borderColor: "orange.500" }}
+                      _dark={{
+                        bg: "gray.700",
+                        color: "white",
+                        borderColor: "gray.600",
+                        _hover: { borderColor: "orange.500" },
+                      }}
+                    />
+                  </FormControl>
+                  <FormControl mb={6} isRequired>
+                    <FormLabel color="black" _dark={{ color: "white" }}>
+                      Doctor
+                    </FormLabel>
+                    <Input
+                      name="fecha"
+                      type="text"
+                      bg="transparent"
+                      borderColor="gray.400"
+                      defaultValue={
+                        selectedAppointment
+                          ? personFullNameFormater(
+                              selectedAppointment.practitioner,
+                            )
+                          : ""
+                      }
+                      readOnly
+                      _hover={{ borderColor: "orange.500" }}
+                      _focus={{ borderColor: "orange.500" }}
+                      _dark={{
+                        bg: "gray.700",
+                        color: "white",
+                        borderColor: "gray.600",
+                        _hover: { borderColor: "orange.500" },
+                      }}
+                    />
+                  </FormControl>
+                </form>
               </Box>
             </Box>
           </ModalBody>
         </ModalContent>
       </Modal>
+      <ModalDeInformacion
+        selectedAppointment={selectedAppointment}
+        isSecondModalOpen={isSecondModalOpen}
+        onCloseSecondModal={onCloseSecondModal}
+      />
     </div>
   );
 }

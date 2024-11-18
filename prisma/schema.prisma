@@ -173,7 +173,7 @@ model Appointment {
   subjectId                 String      @db.ObjectId
   subject                   Person      @relation("subject_appointment",fields: [subjectId], references: [id])
   practitionerId            String      @db.ObjectId
-  practitioner              Person      @relation("practitioner_appointment",fields: [subjectId], references: [id])
+  practitioner              Person      @relation("practitioner_appointment",fields: [practitionerId], references: [id])
   encounters                Encounter[] @relation()
   createdAt                 DateTime    @default(now())
   updatedAt                 DateTime    @updatedAt

@@ -90,7 +90,8 @@ export async function POST(req: NextRequest) {
           mobile: "73744202",
           username: "DentistaFernando",
           password: await hashPassword("1234Aa@"),
-          photoUrl: "/images/paginaweb/team/Fernando.png",
+          photoUrl:
+            "https://firebasestorage.googleapis.com/v0/b/proyectoortiznosiglia.appspot.com/o/fotosDePerfil%2FFernando.png?alt=media&token=1eebe1de-72c7-4bf6-9337-861582e05593",
           passwordExpiration: getPasswordExpiration(),
           status: userStatus.ACTIVO,
           odontograma: {
@@ -129,7 +130,8 @@ export async function POST(req: NextRequest) {
           mobile: "73744202",
           username: "DentistaFernando",
           password: await hashPassword("1234Aa@"),
-          photoUrl: "/images/paginaweb/team/Alvaro.png",
+          photoUrl:
+            "https://firebasestorage.googleapis.com/v0/b/proyectoortiznosiglia.appspot.com/o/fotosDePerfil%2FAlvaro.png?alt=media&token=f9d131c2-b5d5-4cf5-8efe-7a96cb5e99ea",
           passwordExpiration: getPasswordExpiration(),
           status: userStatus.ACTIVO,
           odontograma: {
@@ -168,7 +170,8 @@ export async function POST(req: NextRequest) {
           mobile: "73744202",
           username: "DentistaFernando",
           password: await hashPassword("1234Aa@"),
-          photoUrl: "/images/paginaweb/team/Javier.png",
+          photoUrl:
+            "https://firebasestorage.googleapis.com/v0/b/proyectoortiznosiglia.appspot.com/o/fotosDePerfil%2FJavier.png?alt=media&token=451730fa-b8ab-453d-8d7a-929dfad026e0",
           passwordExpiration: getPasswordExpiration(),
           status: userStatus.ACTIVO,
           odontograma: {

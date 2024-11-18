@@ -1,20 +1,21 @@
-"use client";
-import { ReportePacientes } from "@/controller/dashboard/reportes/reportesController";
+import { jsPDF } from "jspdf";
+import autoTable from "jspdf-autotable";
 import { mostrarAlertaError } from "@/utils/show_error_alert";
 import { timeFormatter } from "@/utils/time_formater";
-import jsPDF from "jspdf";
-import autoTable from "jspdf-autotable";
+import { ReporteOrganizaciones } from "@/controller/dashboard/reportes/reportesController";
 
-export async function generarPDFPacientes(formData: FormData) {
+export async function generarPDFOrganizaciones(formData: FormData) {
   const startDate = formData.get("startDate")?.toString();
   const endDate = formData.get("endDate")?.toString();
-  const pacientes = await ReportePacientes({ startDate, endDate });
+
+  const organizaciones = await ReporteOrganizaciones({ startDate, endDate });
+
   const doc = new jsPDF();
   const pageWidth = doc.internal.pageSize.getWidth();
   doc.setFont("helvetica", "bold");
   doc.setFontSize(20);
   doc.setTextColor(255, 87, 34);
-  doc.text("Reporte de Pacientes", pageWidth / 2, 16, { align: "center" });
+  doc.text("Reporte de Organizaciones", pageWidth / 2, 16, { align: "center" });
   doc.setFontSize(12);
   doc.setFont("helvetica", "normal");
   doc.setTextColor(0, 0, 0);
@@ -29,6 +30,7 @@ export async function generarPDFPacientes(formData: FormData) {
     14,
     46,
   );
+
   if (startDate && endDate) {
     if (startDate > endDate) {
       mostrarAlertaError(
@@ -39,26 +41,22 @@ export async function generarPDFPacientes(formData: FormData) {
   } else {
     doc.text("Período: Todos los registros", 14, 54);
   }
-  const data = pacientes.map((paciente, index) => [
+
+  const data = organizaciones.map((org, index) => [
     index + 1,
-    `${paciente.firstName} ${paciente.secondName || ""} ${paciente.familyName}`,
-    paciente.gender,
-    paciente.identification,
-    paciente.status,
-    paciente.phone || "N/A",
-    paciente.email || "N/A",
-    new Date(paciente.createdAt).toLocaleDateString(),
+    org.name,
+    org.address,
+    org.active ? "Activo" : "Inactivo",
+    new Date(org.createdAt).toLocaleDateString(),
   ]);
+
   autoTable(doc, {
     head: [
       [
         "#",
-        "Nombre",
-        "Género",
-        "Identificación",
+        "Nombre de la Organización",
+        "Dirección",
         "Estado",
-        "Teléfono",
-        "Correo Electrónico",
         "Fecha de Registro",
       ],
     ],
@@ -80,5 +78,6 @@ export async function generarPDFPacientes(formData: FormData) {
     },
     margin: { left: 14, right: 14 },
   });
-  doc.save("reporte_pacientes.pdf");
+
+  doc.save("reporte_organizaciones.pdf");
 }

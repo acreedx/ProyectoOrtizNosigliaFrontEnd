@@ -33,6 +33,9 @@ export async function listarCitasPorPaciente(idPaciente: string) {
       where: {
         subjectId: idPaciente,
       },
+      include: {
+        practitioner: true,
+      },
     });
     return appointments;
   } catch (error) {
@@ -106,6 +109,21 @@ export async function confirmarCita(id: string) {
       },
       data: {
         status: AppointmentStatus.STATUS_CONFIRMADA,
+      },
+    });
+    return { message: "Éxito al habilitar la cita" };
+  } catch (error) {
+    throw new Error("Error al habilitar la cita");
+  }
+}
+export async function cancelarCita(id: string) {
+  try {
+    await prisma.appointment.update({
+      where: {
+        id: id,
+      },
+      data: {
+        status: AppointmentStatus.STATUS_CANCELADA,
       },
     });
     return { message: "Éxito al habilitar la cita" };

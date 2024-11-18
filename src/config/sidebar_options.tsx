@@ -42,6 +42,11 @@ export const menuOptions = [
             route: routes.organizaciones,
             permission: permissionsList.ORGANIZACIONES,
           },
+          {
+            label: "Reportes",
+            route: routes.reportepacientes,
+            permission: permissionsList.PACIENTES,
+          },
         ],
       },
       {

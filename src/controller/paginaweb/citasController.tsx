@@ -6,6 +6,7 @@ import {
   AppointmentStatus,
 } from "@/enums/appointmentsStatus";
 import { appointmentValidation } from "@/models/appointmentModel";
+import { Appointment, Person } from "@prisma/client";
 import { getServerSession } from "next-auth";
 
 export async function crearCita(formData: FormData) {
@@ -51,6 +52,28 @@ export async function crearCita(formData: FormData) {
           "Seleccione otro horario para la cita, ya hay una reservada en esa fecha y hora.",
       };
     }
+    const citaExistentePaciente = await prisma.appointment.findFirst({
+      where: {
+        subjectId: session.user.id,
+        AND: [
+          {
+            OR: [
+              { start: { lte: start }, end: { gt: start } },
+              { start: { lt: end }, end: { gte: end } },
+              { start: { gte: start }, end: { lte: end } },
+            ],
+          },
+        ],
+      },
+    });
+
+    if (citaExistentePaciente) {
+      return {
+        success: false,
+        error:
+          "Seleccione otro horario para la cita, ya tiene una reservada en esa fecha y hora.",
+      };
+    }
     await prisma.appointment.create({
       data: {
         start: start,
@@ -71,7 +94,7 @@ export async function crearCita(formData: FormData) {
     throw new Error("Error al crear la cita");
   }
 }
-export async function listarCitasPorPaciente() {
+export async function listarCitasPorPaciente(): Promise<Appointment[]> {
   try {
     const session = await getServerSession(authOptions);
     if (!session) {
@@ -81,10 +104,77 @@ export async function listarCitasPorPaciente() {
       where: {
         subjectId: session.user.id,
       },
+      include: {
+        practitioner: true,
+      },
     });
+    console.log(citas);
     return citas;
   } catch (error: any) {
     console.log(error);
     throw new Error("Error al crear la cita");
+  }
+}
+
+export async function rehabilitarCita(id: string) {
+  try {
+    await prisma.appointment.update({
+      where: {
+        id: id,
+      },
+      data: {
+        status: AppointmentStatus.STATUS_PENDIENTE,
+      },
+    });
+    return { message: "Éxito al habilitar la cita" };
+  } catch (error) {
+    throw new Error("Error al habilitar la cita");
+  }
+}
+
+export async function confirmarCita(id: string) {
+  try {
+    await prisma.appointment.update({
+      where: {
+        id: id,
+      },
+      data: {
+        status: AppointmentStatus.STATUS_CONFIRMADA,
+      },
+    });
+    return { message: "Éxito al habilitar la cita" };
+  } catch (error) {
+    throw new Error("Error al habilitar la cita");
+  }
+}
+export async function cancelarCita(id: string) {
+  try {
+    await prisma.appointment.update({
+      where: {
+        id: id,
+      },
+      data: {
+        status: AppointmentStatus.STATUS_CANCELADA,
+      },
+    });
+    return { message: "Éxito al habilitar la cita" };
+  } catch (error) {
+    throw new Error("Error al habilitar la cita");
+  }
+}
+
+export async function completarCita(id: string) {
+  try {
+    await prisma.appointment.update({
+      where: {
+        id: id,
+      },
+      data: {
+        status: AppointmentStatus.STATUS_COMPLETADA,
+      },
+    });
+    return { message: "Éxito al habilitar la cita" };
+  } catch (error) {
+    throw new Error("Error al habilitar la cita");
   }
 }

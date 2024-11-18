@@ -9,6 +9,7 @@ export const routes = {
   olvidarpassword: "/paginaweb/inicio_de_sesion/olvidarpassword",
   dashboard: "/dashboard",
   pacientes: "/dashboard/pacientes",
+  reportepacientes: "/dashboard/pacientes/reportes",
   odontograma: "/dashboard/pacientes/odontograma",
   organizaciones: "/dashboard/organizaciones",
   citas: "/dashboard/citas/calendario",
