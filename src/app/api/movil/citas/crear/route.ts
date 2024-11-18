@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { AppointmentStatus } from "@/enums/appointmentsStatus";
+import {
+  AppointmentSpecialty,
+  AppointmentStatus,
+} from "@/enums/appointmentsStatus";
 import { prisma } from "@/config/prisma";
 
 export const dynamic = "force-dynamic";
@@ -13,8 +16,30 @@ export async function POST(req: NextRequest) {
         { status: 400 },
       );
     }
-    const start = new Date(`${fecha}T${hora}`);
+    const [day, month, year] = fecha.split("/");
+    const formattedDate = `${year}-${month}-${day}`;
+    let [hour, minute] = hora.split(":");
+    let period = hora.split(" ")[1];
+    if (period === "PM" && hour !== "12") {
+      hour = parseInt(hour) + 12;
+    }
+
+    if (period === "AM" && hour === "12") {
+      hour = "00";
+    }
+    const formattedTime = `${String(hour).padStart(2, "0")}:${String(minute).slice(0, 2)}`;
+    const start = new Date(`${formattedDate}T${formattedTime}:00`);
     const end = new Date(start.getTime() + 30 * 60 * 1000);
+    const now = new Date();
+    if (start <= now) {
+      return NextResponse.json(
+        {
+          error:
+            "La fecha de la cita debe ser mayor a la fecha y hora actuales.",
+        },
+        { status: 400 },
+      );
+    }
     const citaExistente = await prisma.appointment.findFirst({
       where: {
         practitionerId: doctor,
@@ -62,7 +87,7 @@ export async function POST(req: NextRequest) {
       data: {
         start: start,
         end: end,
-        specialty: "ESPECIALIDAD_CONTINUA",
+        specialty: AppointmentSpecialty.ESPECIALIDAD_CONTINUA,
         reason: descripcion,
         subjectId: usuarioId,
         practitionerId: doctor,
@@ -70,7 +95,6 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    // Responder con éxito
     return NextResponse.json({ message: "Cita creada con éxito." });
   } catch (error: any) {
     console.log(error);
