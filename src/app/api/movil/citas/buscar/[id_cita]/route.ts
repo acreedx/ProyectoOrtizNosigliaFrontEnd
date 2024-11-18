@@ -12,15 +12,22 @@ export async function GET(
       where: {
         id: id_cita,
       },
+      include: {
+        subject: {
+          include: {
+            allergies: true,
+          },
+        },
+      },
     });
     if (!cita) {
       return NextResponse.json(
-        { error: "No existe esa cita" },
+        { message: "No existe esa cita" },
         { status: 500 },
       );
     }
-    return NextResponse.json({ cita });
+    return NextResponse.json({ cita: cita });
   } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ message: error.message }, { status: 500 });
   }
 }
