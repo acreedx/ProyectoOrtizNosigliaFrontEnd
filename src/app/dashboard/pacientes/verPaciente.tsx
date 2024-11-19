@@ -24,6 +24,7 @@ export default function VerPaciente({ paciente }: { paciente: Person }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   return (
     <>
+      {/* 
       <IconButton
         aria-label="Ver información"
         title="Ver información"
@@ -105,7 +106,7 @@ export default function VerPaciente({ paciente }: { paciente: Person }) {
             </Box>
           </ModalBody>
         </ModalContent>
-      </Modal>
+      </Modal>*/}
     </>
   );
 }

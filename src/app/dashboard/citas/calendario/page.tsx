@@ -26,6 +26,8 @@ import {
 } from "@/controller/dashboard/citas/citasController";
 import { useSession } from "next-auth/react";
 import { mostrarAlertaExito } from "@/utils/show_success_alert";
+import { personFullNameFormater } from "@/utils/format_person_full_name";
+import CrearCitas from "@/app/paginaweb/citas/crear_citas";
 
 export default function ListadoCitas() {
   const { data: session } = useSession();
@@ -245,7 +247,7 @@ export default function ListadoCitas() {
           <div className="mr-2">
             <div>
               <b>Paciente:</b>
-              <i>{` ${eventInfo.event.extendedProps.paciente}`}</i>
+              <i>{` ${personFullNameFormater(eventInfo.event.extendedProps.paciente)}`}</i>
             </div>
           </div>
         ) : (
@@ -369,27 +371,7 @@ export default function ListadoCitas() {
     <DefaultLayout>
       <Breadcrumb pageName="Calendario de Citas" />
       <div className="rounded-sm border border-stroke bg-white p-8 text-black shadow-default dark:border-strokedark dark:bg-boxdark">
-        <FullCalendar
-          plugins={[dayGridPlugin, interactionPlugin, timeGridPlugin]}
-          headerToolbar={{
-            left: "prev,next today",
-            center: "title",
-            right: "dayGridMonth,timeGridWeek,timeGridDay",
-          }}
-          initialView="dayGridMonth"
-          selectable={true}
-          select={handleDateSelect}
-          editable={true}
-          locale={esLocale}
-          events={eventos}
-          eventClick={handleEventClick}
-          eventContent={renderEventContent}
-          eventDrop={manejarDropEvento}
-          eventResize={handleResize}
-          slotMinTime="08:00:00"
-          slotMaxTime="17:00:00"
-          weekends={false}
-        />
+        <CrearCitas />
       </div>
     </DefaultLayout>
   );

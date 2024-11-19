@@ -49,7 +49,7 @@ export async function GET(req: Request) {
           📅 **Fecha sugerida para la cita**: ${nextAppointmentDate.toLocaleDateString()}
       
           No dejes pasar más tiempo, tu salud dental es muy importante para nosotros. Si tienes alguna duda o necesitas más información, ¡no dudes en contactarnos!
-      
+          El costo del estimado del tratamiento es de: ${carePlan.costEstimation} bs
           ¡Nos vemos pronto! 💙
       
           Saludos cordiales,  

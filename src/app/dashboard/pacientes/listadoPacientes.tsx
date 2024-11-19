@@ -103,12 +103,13 @@ const ListadoPacientes = () => {
           <>
             {row.status === userStatus.ACTIVO && (
               <>
+                {/* 
                 <IconButton
                   aria-label="Editar"
                   title="Editar"
                   icon={<EditIcon color={"blue"} />}
                   onClick={() => {}}
-                />
+                />*/}
                 <IconButton
                   aria-label="Eliminar"
                   title="Eliminar"

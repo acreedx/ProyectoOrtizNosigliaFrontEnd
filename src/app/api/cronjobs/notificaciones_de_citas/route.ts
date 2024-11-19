@@ -54,6 +54,7 @@ export async function GET(req: Request) {
       
           No olvides pasar por aqui, tu salud dental es muy importante para nosotros. Si tienes alguna duda o necesitas más información, ¡no dudes en contactarnos!
 
+          El costo promedio de la cita es de 150 bs
           ¡Nos vemos pronto! 💙
       
           Saludos cordiales,  

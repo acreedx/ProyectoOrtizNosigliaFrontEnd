@@ -23,6 +23,7 @@ export default function CrearPaciente() {
   ) => {};
   return (
     <>
+      {/*
       <Button
         colorScheme="teal"
         onClick={() => {
@@ -33,7 +34,7 @@ export default function CrearPaciente() {
         mb={4}
       >
         Crear Paciente
-      </Button>
+      </Button> */}
       <Modal isOpen={isOpen} onClose={onClose} isCentered>
         <ModalOverlay />
         <ModalContent p={8}>
