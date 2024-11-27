@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { FormEventHandler, useEffect, useState } from "react";
 import {
   deshabilitarPaciente,
   habilitarPaciente,
@@ -7,7 +7,25 @@ import {
 } from "@/controller/dashboard/pacientes/pacientesController";
 import { Person } from "@prisma/client";
 import DataTable, { TableColumn } from "react-data-table-component";
-import { Avatar, Badge, IconButton } from "@chakra-ui/react";
+import {
+  Avatar,
+  Badge,
+  Box,
+  Button,
+  Flex,
+  FormControl,
+  FormLabel,
+  Heading,
+  IconButton,
+  Input,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalHeader,
+  ModalOverlay,
+  useDisclosure,
+} from "@chakra-ui/react";
 import { personFullNameFormater } from "@/utils/format_person_full_name";
 import { userStatus } from "@/enums/userStatus";
 import {
@@ -15,7 +33,13 @@ import {
   paginationOptions,
 } from "@/utils/pagination_options";
 import { mostrarAlertaError } from "@/utils/show_error_alert";
-import { MdBookOnline, MdLibraryBooks, MdMenuBook } from "react-icons/md";
+import {
+  MdBookmarks,
+  MdBookOnline,
+  MdHistory,
+  MdLibraryBooks,
+  MdMenuBook,
+} from "react-icons/md";
 import { CheckIcon, DeleteIcon, EditIcon } from "@chakra-ui/icons";
 import RestoreIcon from "../components/Icons/RestoreIcon";
 import VerPaciente from "./verPaciente";
@@ -23,11 +47,13 @@ import Swal from "sweetalert2";
 import { mostrarAlertaExito } from "@/utils/show_success_alert";
 import { useRouter } from "next/navigation";
 import { routes } from "@/config/routes";
+import { generarPDFHistorialCitasPaciente } from "./reportes/reporteHistorialCitas";
 
 const ListadoPacientes = () => {
   const [patients, setpatients] = useState<Person[]>([]);
   const [loading, setloading] = useState<Boolean>(true);
   const [selectedPatient, setselectedPatient] = useState<Person>();
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const router = useRouter();
   async function fetchData() {
     setpatients(await listarPacientes());
@@ -40,6 +66,19 @@ const ListadoPacientes = () => {
   const handleDelete = async (e: number) => {};
   const handleShowInformation = async (patient: Person) => {
     setselectedPatient(patient);
+  };
+  const handleHistoryCreate = async (
+    event: React.FormEvent<HTMLFormElement>,
+  ) => {
+    try {
+      event.preventDefault();
+      const formData = new FormData(event.currentTarget);
+      await generarPDFHistorialCitasPaciente(formData);
+      onClose();
+      mostrarAlertaExito("Informe generado con éxito");
+    } catch (e: any) {
+      mostrarAlertaError(e);
+    }
   };
   useEffect(() => {
     try {
@@ -178,6 +217,15 @@ const ListadoPacientes = () => {
               />
             )}
             <VerPaciente paciente={row} />
+            <IconButton
+              aria-label="Historial"
+              title="Historial de citas"
+              icon={<MdHistory color={"blue"} />}
+              onClick={() => {
+                setselectedPatient(row);
+                onOpen();
+              }}
+            />
           </>
         </div>
       ),
@@ -214,6 +262,101 @@ const ListadoPacientes = () => {
           }}
         />
       </div>
+      <Modal isOpen={isOpen} onClose={onClose} isCentered>
+        <ModalOverlay />
+        <ModalContent p={8}>
+          <ModalHeader>
+            <Heading fontSize="2xl" color="black" _dark={{ color: "white" }}>
+              Generar historial de paciente?
+            </Heading>
+          </ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <Box w="full">
+              <Box>
+                <form onSubmit={handleHistoryCreate}>
+                  <input
+                    name="id"
+                    type="hidden"
+                    defaultValue={selectedPatient?.id}
+                  />
+                  <FormControl mb={4} isRequired>
+                    <FormLabel color="black" _dark={{ color: "white" }}>
+                      Nombre
+                    </FormLabel>
+                    <Input
+                      name="name"
+                      type="text"
+                      bg="transparent"
+                      borderColor="gray.400"
+                      readOnly
+                      defaultValue={
+                        selectedPatient
+                          ? personFullNameFormater(selectedPatient)
+                          : ""
+                      }
+                      _hover={{ borderColor: "orange.500" }}
+                      _focus={{ borderColor: "orange.500" }}
+                      _dark={{
+                        bg: "gray.700",
+                        color: "white",
+                        borderColor: "gray.600",
+                        _hover: { borderColor: "orange.500" },
+                      }}
+                    />
+                  </FormControl>
+                  <FormControl mb={4} isRequired>
+                    <FormLabel color="black" _dark={{ color: "white" }}>
+                      CI
+                    </FormLabel>
+                    <Input
+                      name="name"
+                      type="text"
+                      bg="transparent"
+                      borderColor="gray.400"
+                      readOnly
+                      defaultValue={selectedPatient?.identification}
+                      _hover={{ borderColor: "orange.500" }}
+                      _focus={{ borderColor: "orange.500" }}
+                      _dark={{
+                        bg: "gray.700",
+                        color: "white",
+                        borderColor: "gray.600",
+                        _hover: { borderColor: "orange.500" },
+                      }}
+                    />
+                  </FormControl>
+                  <Flex gap={4}>
+                    <Button
+                      type="button"
+                      w="full"
+                      bg="red.400"
+                      color="white"
+                      _hover={{ bg: "red.500" }}
+                      p={4}
+                      borderRadius="lg"
+                      onClick={onClose}
+                    >
+                      Cancelar
+                    </Button>
+                    <Button
+                      type="submit"
+                      w="full"
+                      bg="orange.400"
+                      color="white"
+                      _hover={{ bg: "orange.500" }}
+                      p={4}
+                      borderRadius="lg"
+                    >
+                      Aceptar
+                    </Button>
+                  </Flex>
+                </form>
+              </Box>
+            </Box>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
     </div>
   );
 };

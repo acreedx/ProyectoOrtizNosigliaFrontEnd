@@ -1,5 +1,6 @@
 "use server";
 import { prisma } from "@/config/prisma";
+import { AppointmentStatus } from "@/enums/appointmentsStatus";
 
 export async function ReportePacientes({
   startDate,
@@ -262,6 +263,30 @@ export async function ReporteTiposTratamiento({
       },
     });
     return tratamientos;
+  } catch (error) {
+    console.error("Error al obtener tipos de tratamiento:", error);
+    throw new Error("Error al listar los tratamientos");
+  }
+}
+export async function ReporteHistorialCitasPaciente(idPaciente: string) {
+  try {
+    const citasHistorial = await prisma.appointment.findMany({
+      where: {
+        subjectId: idPaciente,
+        OR: [
+          { status: AppointmentStatus.STATUS_COMPLETADA },
+          { start: { lt: new Date() } },
+        ],
+      },
+      include: {
+        subject: {
+          include: {
+            allergies: true,
+          },
+        },
+      },
+    });
+    return citasHistorial;
   } catch (error) {
     console.error("Error al obtener tipos de tratamiento:", error);
     throw new Error("Error al listar los tratamientos");

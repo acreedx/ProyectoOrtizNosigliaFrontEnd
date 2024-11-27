@@ -86,6 +86,9 @@ export async function editarRol(id: string, formData: FormData) {
     if (permissionsDB.length !== permissions.length) {
       throw new Error("Algunos permisos seleccionados no son válidos.");
     }
+    if (permissions.length === 0) {
+      throw new Error("Todos los Roles deben tener un permiso asignado");
+    }
     await prisma.rol.update({
       where: {
         id,

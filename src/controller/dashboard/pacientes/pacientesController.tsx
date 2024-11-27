@@ -136,3 +136,16 @@ export async function deshabilitarPaciente(id: string) {
     throw new Error("Error al inhabilitar el paciente");
   }
 }
+
+export async function historialDePaciente(id: string) {
+  try {
+    const citas = await prisma.appointment.findMany({
+      where: {
+        subjectId: id,
+      },
+    });
+    return citas;
+  } catch (error) {
+    throw new Error("Error al inhabilitar el paciente");
+  }
+}
