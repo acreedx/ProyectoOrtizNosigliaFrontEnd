@@ -32,17 +32,6 @@ export async function POST(req: NextRequest) {
         );
       }
 
-      const pacienteRole = await prisma.rol.findUnique({
-        where: { roleName: "Paciente" },
-      });
-
-      if (!pacienteRole) {
-        return NextResponse.json(
-          { error: "Rol de Paciente no encontrado" },
-          { status: 404 },
-        );
-      }
-
       const initialAdministrador = await prisma.person.create({
         data: {
           photoUrl:
@@ -59,15 +48,13 @@ export async function POST(req: NextRequest) {
           addressCity: "La Paz",
           maritalStatus: "soltero",
           identification: "13679995",
-          username: "AdrianHerrera",
-          password: await hashPassword("1234Aa@"),
-          passwordExpiration: getPasswordExpiration(),
-          status: userStatus.ACTIVO,
-          odontograma: {
-            create: odontogramaPorDefecto,
-          },
-          account: {
-            create: accountPorDefecto,
+          user: {
+            create: {
+              username: "AdrianHerrera",
+              password: await hashPassword("1234Aa@"),
+              passwordExpiration: getPasswordExpiration(),
+              status: userStatus.ACTIVO,
+            },
           },
           rol: {
             connect: { id: administradorRole.id },
@@ -77,6 +64,8 @@ export async function POST(req: NextRequest) {
 
       const dentist1 = await prisma.person.create({
         data: {
+          photoUrl:
+            "https://firebasestorage.googleapis.com/v0/b/proyectoortiznosiglia.appspot.com/o/fotosDePerfil%2FFernando.png?alt=media&token=1eebe1de-72c7-4bf6-9337-861582e05593",
           firstName: "Fernando",
           familyName: "Ortiz Nosiglia",
           gender: "masculino",
@@ -88,15 +77,6 @@ export async function POST(req: NextRequest) {
           identification: "13679988",
           phone: "2285515",
           mobile: "73744202",
-          username: "DentistaFernando",
-          password: await hashPassword("1234Aa@"),
-          photoUrl:
-            "https://firebasestorage.googleapis.com/v0/b/proyectoortiznosiglia.appspot.com/o/fotosDePerfil%2FFernando.png?alt=media&token=1eebe1de-72c7-4bf6-9337-861582e05593",
-          passwordExpiration: getPasswordExpiration(),
-          status: userStatus.ACTIVO,
-          odontograma: {
-            create: odontogramaPorDefecto,
-          },
           qualifications: {
             create: [
               {
@@ -107,8 +87,13 @@ export async function POST(req: NextRequest) {
               },
             ],
           },
-          account: {
-            create: accountPorDefecto,
+          user: {
+            create: {
+              username: "DentistaFernando",
+              password: await hashPassword("1234Aa@"),
+              passwordExpiration: getPasswordExpiration(),
+              status: userStatus.ACTIVO,
+            },
           },
           rol: {
             connect: { id: dentistaRole.id },
@@ -117,6 +102,8 @@ export async function POST(req: NextRequest) {
       });
       const dentist2 = await prisma.person.create({
         data: {
+          photoUrl:
+            "https://firebasestorage.googleapis.com/v0/b/proyectoortiznosiglia.appspot.com/o/fotosDePerfil%2FAlvaro.png?alt=media&token=f9d131c2-b5d5-4cf5-8efe-7a96cb5e99ea",
           firstName: "Álvaro",
           familyName: "Ortiz Nosiglia",
           gender: "masculino",
@@ -128,18 +115,6 @@ export async function POST(req: NextRequest) {
           identification: "13679989",
           phone: "2285515",
           mobile: "73744202",
-          username: "DentistaAlvaro",
-          password: await hashPassword("1234Aa@"),
-          photoUrl:
-            "https://firebasestorage.googleapis.com/v0/b/proyectoortiznosiglia.appspot.com/o/fotosDePerfil%2FAlvaro.png?alt=media&token=f9d131c2-b5d5-4cf5-8efe-7a96cb5e99ea",
-          passwordExpiration: getPasswordExpiration(),
-          status: userStatus.ACTIVO,
-          odontograma: {
-            create: odontogramaPorDefecto,
-          },
-          account: {
-            create: accountPorDefecto,
-          },
           qualifications: {
             create: [
               {
@@ -150,6 +125,14 @@ export async function POST(req: NextRequest) {
               },
             ],
           },
+          user: {
+            create: {
+              username: "DentistaAlvaro",
+              password: await hashPassword("1234Aa@"),
+              passwordExpiration: getPasswordExpiration(),
+              status: userStatus.ACTIVO,
+            },
+          },
           rol: {
             connect: { id: dentistaRole.id },
           },
@@ -157,6 +140,8 @@ export async function POST(req: NextRequest) {
       });
       const dentist3 = await prisma.person.create({
         data: {
+          photoUrl:
+            "https://firebasestorage.googleapis.com/v0/b/proyectoortiznosiglia.appspot.com/o/fotosDePerfil%2FJavier.png?alt=media&token=451730fa-b8ab-453d-8d7a-929dfad026e0",
           firstName: "Javier",
           familyName: "Ortiz Nosiglia",
           gender: "masculino",
@@ -168,18 +153,6 @@ export async function POST(req: NextRequest) {
           identification: "13679990",
           phone: "2285515",
           mobile: "73744202",
-          username: "DentistaJavier",
-          password: await hashPassword("1234Aa@"),
-          photoUrl:
-            "https://firebasestorage.googleapis.com/v0/b/proyectoortiznosiglia.appspot.com/o/fotosDePerfil%2FJavier.png?alt=media&token=451730fa-b8ab-453d-8d7a-929dfad026e0",
-          passwordExpiration: getPasswordExpiration(),
-          status: userStatus.ACTIVO,
-          odontograma: {
-            create: odontogramaPorDefecto,
-          },
-          account: {
-            create: accountPorDefecto,
-          },
           qualifications: {
             create: [
               {
@@ -190,13 +163,22 @@ export async function POST(req: NextRequest) {
               },
             ],
           },
+          user: {
+            create: {
+              username: "DentistaJavier",
+              password: await hashPassword("1234Aa@"),
+              passwordExpiration: getPasswordExpiration(),
+              status: userStatus.ACTIVO,
+            },
+          },
           rol: {
             connect: { id: dentistaRole.id },
           },
         },
       });
-      const initialPatient = await prisma.person.create({
+      const initialPatient = await prisma.patient.create({
         data: {
+          photoUrl: "https://cdn-icons-png.flaticon.com/512/1430/1430453.png",
           firstName: "Juan",
           secondName: "Pablo",
           familyName: "Mendoza Fernandez",
@@ -209,19 +191,19 @@ export async function POST(req: NextRequest) {
           identification: "13679997",
           phone: "2285515",
           mobile: "73744202",
-          username: "PacienteInicial",
-          password: await hashPassword("1234Aa@"),
-          photoUrl: "https://cdn-icons-png.flaticon.com/512/1430/1430453.png",
-          passwordExpiration: getPasswordExpiration(),
-          status: userStatus.ACTIVO,
           account: {
             create: accountPorDefecto,
           },
+          user: {
+            create: {
+              username: "PacienteInicial",
+              password: await hashPassword("1234Aa@"),
+              passwordExpiration: getPasswordExpiration(),
+              status: userStatus.ACTIVO,
+            },
+          },
           odontograma: {
             create: odontogramaPorDefecto,
-          },
-          rol: {
-            connect: { id: pacienteRole.id },
           },
         },
       });

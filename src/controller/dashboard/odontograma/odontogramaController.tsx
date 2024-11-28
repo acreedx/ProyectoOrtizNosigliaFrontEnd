@@ -11,7 +11,7 @@ export async function listarOdontrograma(pacienteId: string) {
   try {
     const odontograma = await prisma.odontogramRows.findMany({
       where: {
-        personId: pacienteId,
+        patientId: pacienteId,
       },
     });
     return odontograma;
@@ -23,14 +23,24 @@ export async function listarOdontrograma(pacienteId: string) {
 
 export async function editarOdontograma(odontogram: OdontogramRows[]) {
   try {
-    await prisma.odontogramRows.updateMany({
-      data: odontogram,
-    });
+    await prisma.$transaction(
+      odontogram.map((row) =>
+        prisma.odontogramRows.update({
+          where: { id: row.id },
+          data: {
+            fecha: row.fecha ? new Date(row.fecha) : null,
+            diagnostico: row.diagnostico,
+            tratamiento: row.tratamiento,
+          },
+        }),
+      ),
+    );
     return {
       success: true,
       message: "Exito al editar los datos",
     };
   } catch (error) {
-    throw new Error("Error al crear el paciente");
+    console.log(error);
+    throw new Error("Error editar los datos");
   }
 }

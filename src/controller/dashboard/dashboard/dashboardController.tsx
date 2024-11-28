@@ -47,3 +47,17 @@ export async function listarUsuarios() {
     throw new Error("Error al listar los datos");
   }
 }
+
+export async function listarPacientesDashboard() {
+  try {
+    const patients = await prisma.patient.findMany({
+      orderBy: {
+        createdAt: "desc",
+      },
+      take: 10,
+    });
+    return patients;
+  } catch (error) {
+    throw new Error("Error al listar los datos");
+  }
+}

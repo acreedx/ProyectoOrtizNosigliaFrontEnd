@@ -1,41 +1,23 @@
 "use client";
-import {
-  Box,
-  Button,
-  Table,
-  Thead,
-  Tbody,
-  Tr,
-  Th,
-  Td,
-  HStack,
-  TableCaption,
-  Link,
-  Badge,
-  IconButton,
-  Avatar,
-} from "@chakra-ui/react";
-import { Person, PrismaClient } from "@prisma/client";
-import BotonHabilitar from "./components/botonHabilitar";
-import BotonEditar from "./components/botonEditar";
+import { Button, Badge, IconButton, Avatar, Spinner } from "@chakra-ui/react";
+import { Person, User } from "@prisma/client";
 import { birthDateFormater } from "@/utils/birth_date_formater";
 import { userStatus } from "@/enums/userStatus";
 import DefaultLayout from "../components/Layouts/DefaultLayout";
 import Breadcrumb from "../components/Common/Breadcrumb";
 import { prisma } from "@/config/prisma";
-import { personFullNameFormater } from "@/utils/format_person_full_name";
 import { routes } from "@/config/routes";
-import { listarUsuarios } from "@/controller/dashboard/dashboard/listarUsuarios";
 import {
   habilitarUsuario,
   deshabilitarUsuario,
+  listarUsuarios,
+  bloquearUsuario,
 } from "@/controller/dashboard/usuarios/usuariosController";
 import { mostrarAlertaError } from "@/utils/show_error_alert";
 import { mostrarAlertaExito } from "@/utils/show_success_alert";
 import { EditIcon, DeleteIcon } from "@chakra-ui/icons";
 import { useState, useEffect } from "react";
 import DataTable, { TableColumn } from "react-data-table-component";
-import Swal from "sweetalert2";
 import RestoreIcon from "../components/Icons/RestoreIcon";
 import {
   paginationOptions,
@@ -43,14 +25,15 @@ import {
 } from "@/utils/pagination_options";
 import { mostrarAlertaConfirmacion } from "@/utils/show_question_alert";
 import { useRouter } from "next/navigation";
+import { personFullNameFormater } from "@/utils/format_person_full_name";
+import { MdLock } from "react-icons/md";
 export default function Usuarios() {
-  const [users, setUsers] = useState<Person[]>([]);
-  const [loading, setLoading] = useState(true);
   const router = useRouter();
+  const [users, setUsers] = useState<(Person & { user: User })[]>([]);
+  const [loading, setLoading] = useState(true);
   async function fetchData() {
     try {
-      const usuarios = await listarUsuarios();
-      setUsers(usuarios);
+      setUsers(await listarUsuarios());
     } catch (error: any) {
       mostrarAlertaError(error);
     } finally {
@@ -71,6 +54,15 @@ export default function Usuarios() {
     }
   };
 
+  const handleBloq = async (userId: string) => {
+    try {
+      const response = await bloquearUsuario(userId);
+      mostrarAlertaExito(response.message);
+      fetchData();
+    } catch (error: any) {
+      mostrarAlertaError(error);
+    }
+  };
   const handleDisable = async (userId: string) => {
     try {
       const response = await deshabilitarUsuario(userId);
@@ -90,7 +82,7 @@ export default function Usuarios() {
     },
     {
       name: "Avatar",
-      cell: (row) => <Avatar src={row.photoUrl} name={row.username} />,
+      cell: (row) => <Avatar src={row.photoUrl} name={row.firstName} />,
       ignoreRowClick: true,
     },
     {
@@ -118,18 +110,20 @@ export default function Usuarios() {
       cell: (row: any) => (
         <Badge
           colorScheme={
-            row.status === userStatus.ACTIVO
+            row.user.status === userStatus.ACTIVO
               ? "green"
-              : row.status === userStatus.ELIMINADO
+              : row.user.status === userStatus.ELIMINADO
                 ? "red"
-                : row.status === userStatus.NUEVO
+                : row.user.status === userStatus.NUEVO
                   ? "blue"
                   : "gray"
           }
           padding={2}
           rounded={20}
         >
-          {row.status === userStatus.ELIMINADO ? "Deshabilitado" : row.status}
+          {row.user.status === userStatus.ELIMINADO
+            ? "Deshabilitado"
+            : row.user.status}
         </Badge>
       ),
       sortable: true,
@@ -145,7 +139,7 @@ export default function Usuarios() {
               router.push(`${routes.usuarios}/editar/${row.id}`);
             }}
           />
-          {row.status === userStatus.ACTIVO && (
+          {row.user.status === userStatus.ACTIVO && (
             <IconButton
               aria-label="Deshabilitar"
               icon={<DeleteIcon color="red" />}
@@ -160,7 +154,22 @@ export default function Usuarios() {
               }}
             />
           )}
-          {row.status === userStatus.NUEVO && (
+          {row.user.status !== userStatus.BLOQUEADO && (
+            <IconButton
+              aria-label="Bloquear"
+              icon={<MdLock color="gray" />}
+              onClick={async () => {
+                const isConfirmed = await mostrarAlertaConfirmacion(
+                  "Confirmación",
+                  "¿Está seguro de bloquear este usuario?",
+                );
+                if (isConfirmed) {
+                  await handleBloq(row.id);
+                }
+              }}
+            />
+          )}
+          {row.user.status === userStatus.NUEVO && (
             <IconButton
               aria-label="Deshabilitar"
               icon={<DeleteIcon color="red" />}
@@ -175,8 +184,8 @@ export default function Usuarios() {
               }}
             />
           )}
-          {(row.status === userStatus.ELIMINADO ||
-            row.status === userStatus.BLOQUEADO) && (
+          {(row.user.status === userStatus.ELIMINADO ||
+            row.user.status === userStatus.BLOQUEADO) && (
             <IconButton
               aria-label="Habilitar"
               icon={<RestoreIcon />}
@@ -207,31 +216,37 @@ export default function Usuarios() {
       >
         Crear Usuario
       </Button>
-      <DataTable
-        columns={columns}
-        data={users}
-        pagination
-        highlightOnHover={false}
-        responsive
-        paginationPerPage={10}
-        paginationRowsPerPageOptions={[10, 15, 20]}
-        paginationComponentOptions={paginationOptions}
-        noDataComponent={noDataFoundComponent}
-        customStyles={{
-          headCells: {
-            style: {
-              fontSize: "1rem",
-              fontWeight: "bold",
-              justifyContent: "center",
+      {loading ? (
+        <div>
+          <Spinner />
+        </div>
+      ) : (
+        <DataTable
+          columns={columns}
+          data={users}
+          pagination
+          highlightOnHover={false}
+          responsive
+          paginationPerPage={10}
+          paginationRowsPerPageOptions={[10, 15, 20]}
+          paginationComponentOptions={paginationOptions}
+          noDataComponent={noDataFoundComponent}
+          customStyles={{
+            headCells: {
+              style: {
+                fontSize: "1rem",
+                fontWeight: "bold",
+                justifyContent: "center",
+              },
             },
-          },
-          cells: {
-            style: {
-              justifyContent: "center",
+            cells: {
+              style: {
+                justifyContent: "center",
+              },
             },
-          },
-        }}
-      />
+          }}
+        />
+      )}
     </DefaultLayout>
   );
 }

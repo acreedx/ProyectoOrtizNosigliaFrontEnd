@@ -24,9 +24,11 @@ import Swal from "sweetalert2";
 export default function EditUserForm({
   user,
   roles,
+  reloadData,
 }: {
   user: Person;
   roles: Rol[];
+  reloadData: Function;
 }) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
@@ -38,13 +40,8 @@ export default function EditUserForm({
       setErrors({});
       const formData = new FormData(event.currentTarget);
       const response = await editarUsuario(user.id, formData);
-      if (!response.success) {
-        if (response.errors) {
-          setErrors(response.errors);
-        } else {
-          mostrarAlertaError("Error al editar el usuario");
-        }
-      } else {
+      if (response.success) {
+        reloadData();
         Swal.fire({
           title: "Éxito",
           text: response.message,
@@ -54,6 +51,12 @@ export default function EditUserForm({
         }).then(() => {
           router.push(routes.usuarios);
         });
+      } else {
+        if (response.errors) {
+          setErrors(response.errors);
+        } else {
+          mostrarAlertaError("Error al editar el usuario");
+        }
       }
     } catch (e: any) {
       mostrarAlertaError(e);

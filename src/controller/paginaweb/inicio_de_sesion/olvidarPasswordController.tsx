@@ -19,17 +19,19 @@ export async function forgetPassword(formData: FormData) {
     email: formData.get("email")?.toString() || "",
   };
 
-  const person = await prisma.person.findFirst({
+  const person = await prisma.patient.findFirst({
     where: {
-      username: data.username,
+      user: {
+        username: data.username,
+      },
       email: data.email,
     },
     include: {
-      rol: true,
+      user: true,
     },
   });
 
-  if (!person || person.status === userStatus.ELIMINADO) {
+  if (!person || person.user.status === userStatus.ELIMINADO) {
     return {
       success: false,
       message: "Credenciales Incorrectas.",
@@ -40,7 +42,7 @@ export async function forgetPassword(formData: FormData) {
     person.familyName,
     person.identification,
   );
-  await prisma.person.update({
+  await prisma.user.update({
     where: {
       username: data.username,
     },
@@ -55,7 +57,7 @@ export async function forgetPassword(formData: FormData) {
     type: auditEventTypes.AUTHENTICATION,
     action: auditEventAction.ACCION_RECUPERAR_CONTRASENA,
     personId: person.id,
-    personRole: person.rol.roleName,
+    personRole: "Paciente",
     personName: person.firstName,
     moduleName: modulos.MODULO_PAGINA_WEB,
     detail: "Solicitud de restablecimiento de contraseña completada.",
@@ -69,7 +71,7 @@ export async function forgetPassword(formData: FormData) {
   
       Tus credenciales se han reestablecido exitosamente. Aquí tienes tus credenciales:
   
-      - **Nombre de usuario**: ${person.username}
+      - **Nombre de usuario**: ${person.user.username}
       - **Contraseña**: ${newPassword}
   
       Por favor, guarda esta información en un lugar seguro.

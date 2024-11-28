@@ -9,11 +9,6 @@ export async function POST(req: NextRequest) {
     if (roles.length === 0) {
       const rolesData = [
         {
-          roleName: "Paciente",
-          description: "Persona que adquiere servicios del centro",
-          active: true,
-        },
-        {
           roleName: "Dentista",
           description: "Persona encargada de tratar a los pacientes",
           active: true,

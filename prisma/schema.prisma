@@ -7,6 +7,54 @@ generator client {
   provider = "prisma-client-js"
 }
 
+model User {
+  id                  String            @id @default(auto()) @map("_id") @db.ObjectId
+  username            String            @unique
+  password            String
+  passwordExpiration  DateTime
+  passwordAttempts    Int               @default(0)
+  lastLogin           DateTime?
+  status              String            @default("nuevo")
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
+  patient             Patient?          
+  person              Person?           
+}
+
+model Patient {
+  id                        String            @id @default(auto()) @map("_id") @db.ObjectId
+  resourceType              String            @default("Patient")
+  photoUrl                  String
+  firstName                 String
+  secondName                String?
+  familyName                String
+  gender                    String
+  birthDate                 DateTime
+  phone                     String
+  mobile                    String
+  email                     String
+  addressLine               String
+  addressCity               String
+  maritalStatus             String
+  identification            String            @unique
+  allergies                 Allergy[]
+  contacts                  Contact[]
+  odontograma               OdontogramRows[]
+  carePlans                 CarePlan[]
+  auditEvents               AuditEvent[]
+  appointments              Appointment[]
+  encounters                Encounter[] 
+  userId                    String            @db.ObjectId @unique
+  user                      User              @relation(fields: [userId], references: [id])
+  organizationId            String?           @db.ObjectId
+  organization              Organization?     @relation(fields: [organizationId], references: [id])
+  accountId                 String            @db.ObjectId
+  account                   Account           @relation(fields: [accountId], references: [id])      
+  createdAt                 DateTime          @default(now())
+  updatedAt                 DateTime          @updatedAt
+  @@map("Patients")
+}
+
 model Person {
   id                        String            @id @default(auto()) @map("_id") @db.ObjectId
   resourceType              String            @default("Person")
@@ -23,29 +71,15 @@ model Person {
   addressCity               String
   maritalStatus             String
   identification            String            @unique
-  username                  String            @unique
-  password                  String
-  passwordExpiration        DateTime
-  passwordAttempts          Int               @default(0)
-  lastLogin                 DateTime?
-  status                    String            @default("nuevo")
-  allergies                 Allergy[]
-  contacts                  Contact[]
   qualifications            Qualification[]
-  odontograma               OdontogramRows[]
-  imagingStudies            ImagingStudy[]
-  carePlans                 CarePlan[]
-  auditEvents               AuditEvent[]       
-  organizationId            String?           @db.ObjectId
-  organization              Organization?     @relation(fields: [organizationId], references: [id])
+  auditEvents               AuditEvent[]
+  organizations             Organization[]
   rolId                     String            @db.ObjectId
   rol                       Rol               @relation(fields: [rolId], references: [id])
-  accountId                 String            @db.ObjectId
-  account                   Account           @relation(fields: [accountId], references: [id])
-  subject_appointments      Appointment[]     @relation("subject_appointment")
-  practitioner_appointments Appointment[]     @relation("practitioner_appointment")
-  subject_encounters        Encounter[]       @relation("subject_encounter")
-  practitioner_encounters   Encounter[]       @relation("practitioner_encounter")
+  appointments              Appointment[]     
+  encounters                Encounter[]       
+  userId                    String            @db.ObjectId @unique
+  user                      User              @relation(fields: [userId], references: [id])
   createdAt                 DateTime          @default(now())
   updatedAt                 DateTime          @updatedAt
   @@map("Persons")
@@ -63,8 +97,8 @@ model OdontogramRows {
   active            Boolean         @default(true)
   imagingStudyId    String?         @db.ObjectId
   imagingStudy      ImagingStudy?   @relation(fields: [imagingStudyId], references: [id])
-  personId          String          @db.ObjectId
-  person            Person          @relation(fields: [personId], references: [id])
+  patientId         String          @db.ObjectId
+  patient           Patient         @relation(fields: [patientId], references: [id])
   createdAt         DateTime        @default(now())
   updatedAt         DateTime        @updatedAt
   @@map("OdontogramRows")
@@ -78,8 +112,8 @@ model Allergy {
   severity      String 
   notes         String?
   active        Boolean   @default(true)
-  personId      String    @db.ObjectId
-  person        Person    @relation(fields: [personId], references: [id])
+  patientId     String    @db.ObjectId
+  patient       Patient   @relation(fields: [patientId], references: [id])
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   @@map("Allergies")
@@ -87,7 +121,7 @@ model Allergy {
 
 model Contact {
   id                String     @id @default(auto()) @map("_id") @db.ObjectId
-  resourceType      String     @default("Organization")
+  resourceType      String     @default("Contact")
   relationship      String
   name              String
   phone             String 
@@ -97,8 +131,8 @@ model Contact {
   addressCity       String
   gender            String
   active            Boolean
-  personId          String     @db.ObjectId
-  person            Person     @relation(fields: [personId], references: [id])
+  patientId         String     @db.ObjectId
+  patient           Patient    @relation(fields: [patientId], references: [id])
   createdAt         DateTime   @default(now())
   updatedAt         DateTime   @updatedAt
   @@map("Contacts")
@@ -110,7 +144,9 @@ model Organization {
   name              String
   address           String
   active            Boolean     @default(true)
-  persons           Person[]    @relation
+  personId          String?     @db.ObjectId
+  person            Person?     @relation(fields: [personId], references: [id])
+  patients          Patient[]   @relation
   createdAt         DateTime    @default(now())
   updatedAt         DateTime    @updatedAt
   @@map("Organizations")
@@ -125,7 +161,7 @@ model Qualification {
   issuer            String
   active            Boolean    @default(true)
   personId          String     @db.ObjectId
-  persons           Person     @relation(fields: [personId], references: [id])
+  person            Person     @relation(fields: [personId], references: [id])
   createdAt         DateTime   @default(now())
   updatedAt         DateTime   @updatedAt
   @@map("Qualification")
@@ -171,9 +207,9 @@ model Appointment {
   cancellationReason        String?
   status                    String      @default("Pendiente")
   subjectId                 String      @db.ObjectId
-  subject                   Person      @relation("subject_appointment",fields: [subjectId], references: [id])
+  subject                   Patient     @relation(fields: [subjectId], references: [id])
   practitionerId            String      @db.ObjectId
-  practitioner              Person      @relation("practitioner_appointment",fields: [practitionerId], references: [id])
+  practitioner              Person      @relation(fields: [practitionerId], references: [id])
   encounters                Encounter[] @relation()
   createdAt                 DateTime    @default(now())
   updatedAt                 DateTime    @updatedAt
@@ -190,9 +226,9 @@ model Encounter {
   diagnosis                 String 
   status                    String      @default("completado")
   subjectId                 String      @db.ObjectId
-  subject                   Person      @relation("subject_encounter",fields: [subjectId], references: [id])
+  subject                   Patient     @relation(fields: [subjectId], references: [id])
   practitionerId            String      @db.ObjectId
-  practitioner              Person      @relation("practitioner_encounter",fields: [practitionerId], references: [id])
+  practitioner              Person      @relation(fields: [practitionerId], references: [id])
   appointmentId             String      @db.ObjectId
   appointment               Appointment @relation(fields: [appointmentId], references: [id])    
   accountIds                String[]    @db.ObjectId
@@ -212,7 +248,7 @@ model Account {
   encounters                Encounter[] @relation(fields: [encounterIds], references: [id])
   carePlanIds               String[]    @db.ObjectId
   carePlans                 CarePlan[]  @relation(fields: [carePlanIds], references: [id])
-  persons                   Person[]    @relation
+  patients                  Patient[]    @relation
   createdAt                 DateTime    @default(now())
   updatedAt                 DateTime    @updatedAt
   @@map("Accounts")
@@ -233,9 +269,8 @@ model CarePlan {
   status                    String          @default("Pendiente")
   appointmentIds            String[]        @db.ObjectId
   subjectId                 String          @db.ObjectId
-  subject                   Person          @relation(fields: [subjectId], references: [id])
+  subject                   Patient         @relation(fields: [subjectId], references: [id])
   imagingStudies            ImagingStudy[]
-  practitionerId            String          @db.ObjectId
   accountIds                String[]        @db.ObjectId
   accounts                  Account[]       @relation(fields: [accountIds], references: [id])
   createdAt                 DateTime        @default(now())
@@ -265,8 +300,6 @@ model ImagingStudy {
   active                    Boolean
   media                     String[]     
   odontograms               OdontogramRows[]  
-  personId                  String            @db.ObjectId
-  person                    Person            @relation(fields: [personId], references: [id])
   carePlanId                String?           @db.ObjectId
   carePlans                 CarePlan?         @relation(fields: [carePlanId], references: [id])
   createdAt                 DateTime          @default(now())
@@ -288,8 +321,10 @@ model AuditEvent {
   network           String
   personName        String
   personRole        String
-  personId          String    @db.ObjectId
-  person            Person    @relation(fields: [personId], references: [id])
+  personId          String?   @db.ObjectId
+  person            Person?   @relation(fields: [personId], references: [id])
+  patientId         String?   @db.ObjectId
+  patient           Patient?   @relation(fields: [patientId], references: [id])
   createdAt         DateTime  @default(now())
   @@map("AuditEvents")
 }

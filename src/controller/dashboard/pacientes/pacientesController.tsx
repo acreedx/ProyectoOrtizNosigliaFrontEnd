@@ -6,14 +6,11 @@ import { odontogramaPorDefecto } from "@/utils/default_odontograma";
 import { getPasswordExpiration } from "@/utils/get_password_expiration";
 import { hashPassword } from "@/utils/password_hasher";
 import { Allergy, Contact, Person } from "@prisma/client";
-
 export async function listarPacientes() {
   try {
-    const pacientes = await prisma.person.findMany({
-      where: {
-        rol: {
-          roleName: "Paciente",
-        },
+    const pacientes = await prisma.patient.findMany({
+      include: {
+        user: true,
       },
     });
     return pacientes;
@@ -29,18 +26,7 @@ export async function crearPaciente(
   contactos: Contact[],
 ) {
   try {
-    const rolPaciente = await prisma.rol.findFirst({
-      where: {
-        roleName: "Paciente",
-      },
-    });
-    if (!rolPaciente) {
-      return {
-        success: false,
-        error: "No existe el rol de paciente registrado",
-      };
-    }
-    const nuevoPaciente = await prisma.person.create({
+    const nuevoPaciente = await prisma.patient.create({
       data: {
         photoUrl: paciente.photoUrl,
         firstName: paciente.firstName,
@@ -55,16 +41,13 @@ export async function crearPaciente(
         addressCity: paciente.addressCity,
         maritalStatus: paciente.maritalStatus,
         identification: paciente.identification,
-        username: paciente.identification,
-        password: await hashPassword(paciente.password),
-        passwordExpiration: getPasswordExpiration(),
-        ...(paciente.organizationId && {
-          organization: {
-            connect: {
-              id: paciente.organizationId,
-            },
+        user: {
+          create: {
+            username: paciente.identification,
+            password: await hashPassword(paciente.rolId),
+            passwordExpiration: getPasswordExpiration(),
           },
-        }),
+        },
         allergies: {
           create: alergias,
         },
@@ -76,9 +59,6 @@ export async function crearPaciente(
         },
         account: {
           create: accountPorDefecto,
-        },
-        rol: {
-          connect: { id: rolPaciente.id },
         },
       },
     });
@@ -93,7 +73,7 @@ export async function crearPaciente(
 
 export async function editarPaciente(id: string, paciente: Person) {
   try {
-    const pacienteActualizado = await prisma.person.update({
+    const pacienteActualizado = await prisma.patient.update({
       where: {
         id: id,
       },
@@ -107,12 +87,18 @@ export async function editarPaciente(id: string, paciente: Person) {
 
 export async function habilitarPaciente(id: string) {
   try {
-    await prisma.person.update({
+    await prisma.patient.update({
       where: {
         id: id,
       },
       data: {
-        status: userStatus.ACTIVO,
+        user: {
+          update: {
+            data: {
+              status: userStatus.ACTIVO,
+            },
+          },
+        },
       },
     });
     return { message: "Paciente habilitado con éxito" };
@@ -123,16 +109,23 @@ export async function habilitarPaciente(id: string) {
 
 export async function deshabilitarPaciente(id: string) {
   try {
-    await prisma.person.update({
+    await prisma.patient.update({
       where: {
         id: id,
       },
       data: {
-        status: userStatus.ELIMINADO,
+        user: {
+          update: {
+            data: {
+              status: userStatus.ELIMINADO,
+            },
+          },
+        },
       },
     });
     return { message: "Paciente inhabilitado con éxito" };
-  } catch (error) {
+  } catch (error: any) {
+    console.log(error);
     throw new Error("Error al inhabilitar el paciente");
   }
 }

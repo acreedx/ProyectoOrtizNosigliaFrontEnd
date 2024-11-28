@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { Spinner, Box, Heading } from "@chakra-ui/react";
-import { CarePlan, Person } from "@prisma/client";
+import { CarePlan, Patient, Person } from "@prisma/client";
 import { mostrarAlertaError } from "@/utils/show_error_alert";
 import TablaTratamientos from "./tabla_tratamientos";
 import BotonCreacion from "./boton_creacion";
@@ -13,7 +13,7 @@ import Breadcrumb from "../components/Common/Breadcrumb";
 export default function Page() {
   const [loading, setloading] = useState(true);
   const [carePlans, setCarePlans] = useState<
-    (CarePlan & { subject: Person })[]
+    (CarePlan & { subject: Patient })[]
   >([]);
   const fetchData = async () => {
     try {

@@ -35,6 +35,7 @@ import { mostrarAlertaError } from "@/utils/show_error_alert";
 import { personFullNameFormater } from "@/utils/format_person_full_name";
 import { timeFormatter } from "@/utils/time_formater";
 import ModalDeInformacion from "./modal_de_informacion";
+import { birthDateFormater } from "@/utils/birth_date_formater";
 interface CustomEvent extends EventInput {
   extendedProps?: {
     appointment: Appointment;
@@ -168,9 +169,7 @@ export default function Calendario({
                       borderColor="gray.400"
                       defaultValue={
                         selectedAppointment
-                          ? selectedAppointment.start
-                              .toISOString()
-                              .split("T")[0]
+                          ? birthDateFormater(selectedAppointment.start)
                           : ""
                       }
                       readOnly

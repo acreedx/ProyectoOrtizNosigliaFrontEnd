@@ -1,19 +1,23 @@
 "use server";
 import { prisma } from "@/config/prisma";
 import { userStatus } from "@/enums/userStatus";
+import personValidation from "@/models/personValidation";
 import userValidation from "@/models/personValidation";
+import { accountPorDefecto } from "@/utils/default_account";
+import { odontogramaPorDefecto } from "@/utils/default_odontograma";
+import { personFullNameFormater } from "@/utils/format_person_full_name";
+import { getPasswordExpiration } from "@/utils/get_password_expiration";
+import { sendEmail } from "@/utils/mailer";
+import { generatePassword } from "@/utils/password_generator";
+import { hashPassword } from "@/utils/password_hasher";
 import { subirFotoDePerfil } from "@/utils/upload_image";
-import { Person } from "@prisma/client";
+import { Allergy, Person } from "@prisma/client";
 
 export async function listarUsuarios() {
   try {
     const usuarios = await prisma.person.findMany({
-      where: {
-        rol: {
-          roleName: {
-            not: "Paciente",
-          },
-        },
+      include: {
+        user: true,
       },
     });
     return usuarios;
@@ -22,15 +26,123 @@ export async function listarUsuarios() {
   }
 }
 
-export async function crearUsuario(user: Person) {
+export async function listarUsuario(id: string) {
   try {
-    const usuario = await prisma.person.create({
-      data: user,
+    const usuario = await prisma.person.findUnique({
+      where: {
+        id: id,
+      },
     });
+    if (!usuario) throw new Error("Error al listar los datos");
     return usuario;
   } catch (error) {
     throw new Error("Error al listar los datos");
   }
+}
+export async function crearUsuario(formData: FormData) {
+  const profilePicture = formData.get("photoUrl") as File | undefined;
+  const data = {
+    firstName: formData.get("firstName")?.toString() || "",
+    secondName: formData.get("secondName")?.toString(),
+    familyName: formData.get("familyName")?.toString() || "",
+    phone: formData.get("phone")?.toString() || "",
+    mobile: formData.get("mobile")?.toString() || "",
+    gender: formData.get("gender")?.toString() || "",
+    email: formData.get("email")?.toString() || "",
+    birthDate: new Date(formData.get("birthDate")?.toString() || ""),
+    addressLine: formData.get("addressLine")?.toString() || "",
+    addressCity: formData.get("addressCity")?.toString() || "",
+    maritalStatus: formData.get("maritalStatus")?.toString() || "",
+    identification: formData.get("identification")?.toString() || "",
+    rol: formData.get("rol")?.toString() || "",
+  };
+  const result = personValidation.safeParse(data);
+  if (!result.success) {
+    return {
+      success: false,
+      errors: result.error.format(),
+    };
+  }
+  const AnyPersonUserName = await prisma.person.findFirst({
+    where: {
+      user: {
+        username: data.identification,
+      },
+    },
+  });
+  if (AnyPersonUserName) {
+    return {
+      success: false,
+      error: "Ya existe un Usuario con ese Carnet de Identidad",
+    };
+  }
+  const AnyPersonIdentificationName = await prisma.person.findFirst({
+    where: {
+      identification: data.identification,
+    },
+  });
+  if (AnyPersonIdentificationName) {
+    return {
+      success: false,
+      error: "Ya existe un Usuario con ese Carnet de Identidad",
+    };
+  }
+  const generatedPassword = await generatePassword(
+    data.firstName,
+    data.familyName,
+    data.identification,
+  );
+  const newPerson = await prisma.person.create({
+    data: {
+      photoUrl: await subirFotoDePerfil(profilePicture),
+      firstName: data.firstName,
+      secondName: data.secondName,
+      familyName: data.familyName,
+      gender: data.gender,
+      email: data.email,
+      birthDate: new Date(data.birthDate),
+      phone: data.phone,
+      mobile: data.mobile,
+      addressLine: data.addressLine,
+      addressCity: data.addressCity,
+      maritalStatus: data.maritalStatus,
+      identification: data.identification,
+      user: {
+        create: {
+          username: data.identification,
+          password: await hashPassword(generatedPassword),
+          passwordExpiration: getPasswordExpiration(),
+        },
+      },
+      rol: {
+        connect: {
+          id: data.rol,
+        },
+      },
+    },
+    include: {
+      user: true,
+    },
+  });
+  await sendEmail({
+    email: newPerson.email,
+    subject: "Creación exitosa de cuenta",
+    message: `
+        ¡Hola ${personFullNameFormater(newPerson)}!
+    
+        Tu cuenta de usuario ha sido creada exitosamente. Aquí tienes tus credenciales:
+    
+        - **Nombre de usuario**: ${newPerson.user.username}
+        - **Contraseña**: ${generatedPassword}
+    
+        Por favor, guarda esta información en un lugar seguro.
+        
+        Despues de tu primer inicio de sesión se te pedirá que cambies tu contraseña
+  
+        ¡Gracias por unirte a Ortiz Nosiglia!
+      `,
+  });
+  return { success: true };
 }
 
 export async function editarUsuario(id: string, formData: FormData) {
@@ -104,7 +216,11 @@ export async function habilitarUsuario(id: string) {
         id: id,
       },
       data: {
-        status: userStatus.ACTIVO,
+        user: {
+          update: {
+            status: userStatus.ACTIVO,
+          },
+        },
       },
     });
     return { message: "Éxito al actualizar los datos" };
@@ -120,7 +236,31 @@ export async function deshabilitarUsuario(id: string) {
         id: id,
       },
       data: {
-        status: userStatus.ELIMINADO,
+        user: {
+          update: {
+            status: userStatus.ELIMINADO,
+          },
+        },
+      },
+    });
+    return { message: "Éxito al actualizar los datos" };
+  } catch (error) {
+    throw new Error("Error al listar los datos");
+  }
+}
+
+export async function bloquearUsuario(id: string) {
+  try {
+    await prisma.person.update({
+      where: {
+        id: id,
+      },
+      data: {
+        user: {
+          update: {
+            status: userStatus.BLOQUEADO,
+          },
+        },
       },
     });
     return { message: "Éxito al actualizar los datos" };

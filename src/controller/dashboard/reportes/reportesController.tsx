@@ -34,7 +34,11 @@ export async function ReportePacientes({
         familyName: true,
         gender: true,
         identification: true,
-        status: true,
+        user: {
+          select: {
+            status: true,
+          },
+        },
         phone: true,
         email: true,
         createdAt: true,
@@ -165,7 +169,11 @@ export async function ReporteUsuarios({
         familyName: true,
         gender: true,
         identification: true,
-        status: true,
+        user: {
+          select: {
+            status: true,
+          },
+        },
         phone: true,
         email: true,
         createdAt: true,

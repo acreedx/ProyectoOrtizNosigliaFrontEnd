@@ -9,10 +9,16 @@ import Swal from "sweetalert2";
 import Banner from "../../components/Banner";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { mostrarAlertaError } from "@/utils/show_error_alert";
-import { MdOutlineVisibilityOff, MdRemoveRedEye } from "react-icons/md";
+import {
+  MdOutlineVisibilityOff,
+  MdRemoveRedEye,
+  MdTypeSpecimen,
+} from "react-icons/md";
 import { routes } from "@/config/routes";
 import { Button, Spinner } from "@chakra-ui/react";
 import { getCaptchaToken } from "@/utils/captcha";
+import { mostrarAlertaExito } from "@/utils/show_success_alert";
+import { FaClinicMedical, FaUserAlt } from "react-icons/fa";
 
 export default function Login() {
   const router = useRouter();
@@ -74,10 +80,10 @@ export default function Login() {
                   <p className="mb-6 text-black dark:text-white">
                     Ya estás autenticado en el sistema.
                   </p>
-                  {session.user.rol.roleName === "Paciente" ? (
+                  {session.user.resourceType === "Patient" ? (
                     <Button
                       onClick={() => {
-                        routes.paginawebcitas;
+                        router.push(routes.paginawebcitas);
                       }}
                       width="full"
                       cursor="pointer"
@@ -165,7 +171,6 @@ export default function Login() {
                         />
                       </div>
                     </div>
-
                     <div className="mb-6">
                       <label className="mb-2.5 block font-medium text-black dark:text-white">
                         Contraseña

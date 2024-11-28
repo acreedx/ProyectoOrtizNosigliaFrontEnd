@@ -18,11 +18,10 @@ export async function GET(req: Request) {
       where: {
         status: AppointmentStatus.STATUS_CONFIRMADA,
         subject: {
-          status: {
-            not: userStatus.ELIMINADO,
-          },
-          rol: {
-            roleName: "Paciente",
+          user: {
+            status: {
+              not: userStatus.ELIMINADO,
+            },
           },
         },
         start: {

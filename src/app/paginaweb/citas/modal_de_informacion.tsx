@@ -1,3 +1,4 @@
+import { birthDateFormater } from "@/utils/birth_date_formater";
 import { personFullNameFormater } from "@/utils/format_person_full_name";
 import { timeFormatter } from "@/utils/time_formater";
 import {
@@ -74,7 +75,7 @@ export default function ModalDeInformacion({
                     borderColor="gray.400"
                     defaultValue={
                       selectedAppointment
-                        ? selectedAppointment.start.toISOString().split("T")[0]
+                        ? birthDateFormater(selectedAppointment.start)
                         : ""
                     }
                     readOnly

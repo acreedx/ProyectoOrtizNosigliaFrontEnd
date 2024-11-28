@@ -1,4 +1,5 @@
 "use client";
+import { listarPacientesDashboard } from "@/controller/dashboard/dashboard/dashboardController";
 import { listarUsuarios } from "@/controller/dashboard/dashboard/listarUsuarios";
 import { personFullNameFormater } from "@/utils/format_person_full_name";
 import {
@@ -14,18 +15,18 @@ import {
   InputLeftElement,
   Spinner,
 } from "@chakra-ui/react";
-import { Person } from "@prisma/client";
+import { Patient, Person } from "@prisma/client";
 import React, { useEffect, useState } from "react";
 import DataTable, { TableColumn } from "react-data-table-component";
 
-export default function DashboardTable() {
-  const [persons, setpersons] = useState<Person[]>([]);
+export default function DashboardTablePatients() {
+  const [patients, setpatients] = useState<Patient[]>([]);
   const [loading, setloading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   useEffect(() => {
     const fetchData = async () => {
       try {
-        setpersons(await listarUsuarios());
+        setpatients(await listarPacientesDashboard());
         setloading(false);
       } catch (e: any) {
         mostrarAlertaError(e);
@@ -34,7 +35,7 @@ export default function DashboardTable() {
     fetchData();
   }, []);
 
-  const columns: TableColumn<Person>[] = [
+  const columns: TableColumn<Patient>[] = [
     {
       name: "Avatar",
       cell: (row) => <Avatar src={row.photoUrl} name={row.firstName} />,
@@ -59,8 +60,8 @@ export default function DashboardTable() {
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
   };
-  const filteredPersons = persons.filter((person) => {
-    const fullName = personFullNameFormater(person).toLowerCase();
+  const filteredPatients = patients.filter((patient) => {
+    const fullName = personFullNameFormater(patient).toLowerCase();
     return fullName.includes(searchTerm.toLowerCase());
   });
   return loading ? (
@@ -84,7 +85,7 @@ export default function DashboardTable() {
       </div>
       <DataTable
         columns={columns}
-        data={filteredPersons}
+        data={filteredPatients}
         pagination
         highlightOnHover
         responsive

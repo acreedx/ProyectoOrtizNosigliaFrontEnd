@@ -38,35 +38,41 @@ export async function generarPDFHistorialCitasPaciente(formData: FormData) {
     14,
     46,
   );
+  if (citas.length > 0) {
+    const data = citas.map((cita, index) => [
+      index + 1,
+      cita.specialty,
+      birthDateFormater(cita.start),
+      birthDateFormater(cita.end),
+      cita.reason,
+    ]);
 
-  const data = citas.map((cita, index) => [
-    index + 1,
-    cita.specialty,
-    birthDateFormater(cita.start),
-    birthDateFormater(cita.end),
-    cita.reason,
-  ]);
-
-  autoTable(doc, {
-    head: [["#", "Especialidad", "Fecha de Inicio", "Fecha de Fin", "Razón"]],
-    body: data,
-    startY: 62,
-    theme: "grid",
-    headStyles: {
-      fillColor: [255, 87, 34],
-      textColor: [255, 255, 255],
-      fontSize: 12,
-      fontStyle: "bold",
-    },
-    styles: {
-      fontSize: 10,
-      textColor: [51, 51, 51],
-    },
-    alternateRowStyles: {
-      fillColor: [255, 245, 235],
-    },
-    margin: { left: 14, right: 14 },
-  });
+    autoTable(doc, {
+      head: [["#", "Especialidad", "Fecha de Inicio", "Fecha de Fin", "Razón"]],
+      body: data,
+      startY: 62,
+      theme: "grid",
+      headStyles: {
+        fillColor: [255, 87, 34],
+        textColor: [255, 255, 255],
+        fontSize: 12,
+        fontStyle: "bold",
+      },
+      styles: {
+        fontSize: 10,
+        textColor: [51, 51, 51],
+      },
+      alternateRowStyles: {
+        fillColor: [255, 245, 235],
+      },
+      margin: { left: 14, right: 14 },
+    });
+  } else {
+    doc.setFontSize(12);
+    doc.setFont("helvetica", "normal");
+    doc.setTextColor(0, 0, 0);
+    doc.text("El paciente no tiene citas registradas", 14, 62);
+  }
 
   doc.save("reporte_historial_de_citas.pdf");
 }

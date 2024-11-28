@@ -48,7 +48,9 @@ export async function createPerson(formData: FormData) {
   }
   const AnyPersonUserName = await prisma.person.findFirst({
     where: {
-      username: data.identification,
+      user: {
+        username: data.identification,
+      },
     },
   });
   if (AnyPersonUserName) {
@@ -57,35 +59,23 @@ export async function createPerson(formData: FormData) {
       error: "Ya existe un Usuario con ese Carnet de Identidad",
     };
   }
-  const AnyPersonIdentificationName = await prisma.person.findFirst({
+  const AnyPatientIdentificationName = await prisma.patient.findFirst({
     where: {
       identification: data.identification,
     },
   });
-  if (AnyPersonIdentificationName) {
+  if (AnyPatientIdentificationName) {
     return {
       success: false,
       error: "Ya existe un Usuario con ese Carnet de Identidad",
     };
   }
-  const rolPaciente = await prisma.rol.findFirst({
-    where: {
-      roleName: "Paciente",
-    },
-  });
-  if (!rolPaciente) {
-    return {
-      success: false,
-      error: "No existe el rol de paciente registrado",
-    };
-  }
-
   const generatedPassword = await generatePassword(
     data.firstName,
     data.familyName,
     data.identification,
   );
-  const newPerson = await prisma.person.create({
+  const newPerson = await prisma.patient.create({
     data: {
       photoUrl: await subirFotoDePerfil(profilePicture),
       firstName: data.firstName,
@@ -100,9 +90,13 @@ export async function createPerson(formData: FormData) {
       addressCity: data.addressCity,
       maritalStatus: data.maritalStatus,
       identification: data.identification,
-      username: data.identification,
-      password: await hashPassword(generatedPassword),
-      passwordExpiration: getPasswordExpiration(),
+      user: {
+        create: {
+          username: data.identification,
+          password: await hashPassword(generatedPassword),
+          passwordExpiration: getPasswordExpiration(),
+        },
+      },
       allergies: {
         create: data.allergies.map(
           (allergy) =>
@@ -120,9 +114,9 @@ export async function createPerson(formData: FormData) {
       account: {
         create: accountPorDefecto,
       },
-      rol: {
-        connect: { id: rolPaciente.id },
-      },
+    },
+    include: {
+      user: true,
     },
   });
   await sendEmail({
@@ -133,7 +127,7 @@ export async function createPerson(formData: FormData) {
   
       Tu cuenta ha sido creada exitosamente. Aquí tienes tus credenciales:
   
-      - **Nombre de usuario**: ${newPerson.username}
+      - **Nombre de usuario**: ${newPerson.user.username}
       - **Contraseña**: ${generatedPassword}
   
       Por favor, guarda esta información en un lugar seguro.

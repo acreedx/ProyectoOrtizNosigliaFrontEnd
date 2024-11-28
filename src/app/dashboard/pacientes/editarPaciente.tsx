@@ -14,10 +14,10 @@ import {
   useDisclosure,
   Input,
 } from "@chakra-ui/react";
-import { Person } from "@prisma/client";
+import { Patient, Person } from "@prisma/client";
 import React, { FormEventHandler } from "react";
 
-export default function EditarPaciente({ paciente }: { paciente: Person }) {
+export default function EditarPaciente({ paciente }: { paciente: Patient }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const handleSubmitCreate: FormEventHandler<HTMLFormElement> = async (
     event,

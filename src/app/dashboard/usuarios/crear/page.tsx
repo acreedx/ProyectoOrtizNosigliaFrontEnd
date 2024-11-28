@@ -13,7 +13,7 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
 import Breadcrumb from "@/app/dashboard/components/Common/Breadcrumb";
@@ -21,8 +21,10 @@ import DefaultLayout from "@/app/dashboard/components/Layouts/DefaultLayout";
 import { createEmptyFormularioPersona } from "@/app/paginaweb/inicio_de_sesion/registro/formularioRegistro";
 import BotonVolver from "@/app/dashboard/components/Common/BotonVolver";
 import { routes } from "@/config/routes";
-import { createPerson } from "@/controller/paginaweb/inicio_de_sesion/registroController";
 import { mostrarAlertaError } from "@/utils/show_error_alert";
+import { crearUsuario } from "@/controller/dashboard/usuarios/usuariosController";
+import { Rol } from "@prisma/client";
+import { listarRoles } from "@/controller/dashboard/roles/rolesController";
 
 interface FileWithPreview extends File {
   preview?: string;
@@ -33,9 +35,21 @@ export default function Page() {
   const [formData, setFormData] = useState(createEmptyFormularioPersona());
   const [image, setImage] = useState<FileWithPreview | null>(null);
   const [errors, setErrors] = useState<any>({});
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+  const [roles, setRoles] = useState<Rol[]>();
+  const fetchData = async () => {
+    setRoles(await listarRoles());
+  };
+  useEffect(() => {
+    try {
+      fetchData();
+    } catch (e: any) {
+      mostrarAlertaError(e);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target as any;
@@ -52,35 +66,6 @@ export default function Page() {
       setImage(selectedImage);
     }
   };
-  const [allergies, setAllergies] = useState<
-    {
-      substance: string;
-      reaction: string;
-      severity: string;
-      notes: string;
-    }[]
-  >([]);
-
-  const handleAllergyChange = (index: number, field: string, value: string) => {
-    const updatedAllergies = allergies.map((allergy, i) =>
-      i === index ? { ...allergy, [field]: value } : allergy,
-    );
-    setAllergies(updatedAllergies);
-  };
-
-  const addAllergy = () => {
-    setAllergies((prevData) => [
-      ...prevData,
-      { substance: "", reaction: "", severity: "baja", notes: "" },
-    ]);
-  };
-
-  const handleRemoveAllergy = (index: number) => {
-    setAllergies((prevData) => prevData.filter((_, i) => i !== index));
-  };
-
-  const handleClick = () => setShowPassword((prev) => !prev);
-  const handleClickConfirm = () => setShowConfirmPassword((prev) => !prev);
 
   const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -88,20 +73,8 @@ export default function Page() {
     setErrors({});
     const formData = new FormData(event.currentTarget);
     try {
-      const response = await createPerson(formData);
-      if (!response.success) {
-        if (response.error) {
-          Swal.fire({
-            title: "Error",
-            text: response.error,
-            icon: "error",
-            confirmButtonText: "Aceptar",
-            confirmButtonColor: "#28a745",
-          });
-        } else {
-          setErrors(response.errors);
-        }
-      } else {
+      const response = await crearUsuario(formData);
+      if (response.success) {
         Swal.fire({
           title: "Éxito",
           text: "Bienvenido al centro Ortiz Nosiglia",
@@ -111,6 +84,12 @@ export default function Page() {
         }).then(() => {
           router.push(routes.login);
         });
+      } else {
+        if (response.error) {
+          mostrarAlertaError(response.error);
+        } else {
+          setErrors(response.errors);
+        }
       }
       setIsLoading(false);
     } catch (e: any) {
@@ -122,7 +101,7 @@ export default function Page() {
   return (
     <DefaultLayout>
       <Breadcrumb pageName="Crear Usuario" />
-      <BotonVolver direccion="/dashboard/pages/usuarios" />
+      <BotonVolver direccion={routes.usuarios} />
       <Box
         mx={12}
         my={4}
@@ -325,61 +304,21 @@ export default function Page() {
                 </Text>
               )}
             </FormControl>
-            {/* Alergias */}
-            <Heading as="h4" size="md">
-              Alergias
-            </Heading>
-            {allergies.map((allergy, index) => (
-              <Box key={index} borderWidth="1px" borderRadius="md" p={4} mb={2}>
-                <FormControl isRequired>
-                  <FormLabel>Nombre de la sustancia</FormLabel>
-                  <Input
-                    type="text"
-                    name={`allergies[${index}][substance]`}
-                    value={allergy.substance}
-                    onChange={(e) => {
-                      handleAllergyChange(index, "substance", e.target.value);
-                    }}
-                  />
-                </FormControl>
-                <FormControl isRequired>
-                  <FormLabel>Tipo de reacción</FormLabel>
-                  <Select
-                    name={`allergies[${index}][reaction]`}
-                    value={allergy.reaction}
-                    onChange={(e) => {
-                      handleAllergyChange(index, "reaction", e.target.value); // Asegúrate de manejar el cambio aquí
-                    }}
-                  >
-                    <option value="baja">Baja</option>
-                    <option value="moderada">Moderada</option>
-                    <option value="severa">Severa</option>
-                  </Select>
-                </FormControl>
-                <FormControl>
-                  <FormLabel>Comentario sobre la alergia</FormLabel>
-                  <Input
-                    type="text"
-                    name={`allergies[${index}][notes]`}
-                    value={allergy.notes}
-                    onChange={(e) => {
-                      handleAllergyChange(index, "notes", e.target.value);
-                    }}
-                  />
-                </FormControl>
-                <Box textAlign="right" mt={2}>
-                  <Button
-                    colorScheme="red"
-                    onClick={() => handleRemoveAllergy(index)}
-                  >
-                    Quitar Alergia
-                  </Button>
-                </Box>
-              </Box>
-            ))}
-            <Button onClick={addAllergy} colorScheme="blue" variant="outline">
-              Añadir Alergia
-            </Button>
+            <FormControl id="rol" isRequired>
+              <FormLabel>Rol</FormLabel>
+              {loading ? (
+                <Spinner />
+              ) : (
+                <Select name="rol">
+                  {roles &&
+                    roles.map((rol: Rol) => (
+                      <option key={rol.id} value={rol.id}>
+                        {rol.roleName}
+                      </option>
+                    ))}
+                </Select>
+              )}
+            </FormControl>
             <Button colorScheme="orange" type="submit" isDisabled={isLoading}>
               {isLoading ? <Spinner size="sm" /> : "Registrar"}
             </Button>

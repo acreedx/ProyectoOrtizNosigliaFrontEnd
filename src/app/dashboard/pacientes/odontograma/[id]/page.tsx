@@ -1,99 +1,141 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, FormEventHandler, FormEvent } from "react";
 import Breadcrumb from "@/app/dashboard/components/Common/Breadcrumb";
 import DefaultLayout from "@/app/dashboard/components/Layouts/DefaultLayout";
 import BotonVolver from "@/app/dashboard/components/Common/BotonVolver";
 import { OdontogramRows } from "@prisma/client";
 import { obtenerOdontograma } from "@/controller/dashboard/odontograma/odontogramaListar";
-import { Spinner } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Input,
+  Spinner,
+  Table,
+  Tbody,
+  Td,
+  Th,
+  Thead,
+  Tr,
+} from "@chakra-ui/react";
+import { mostrarAlertaError } from "@/utils/show_error_alert";
+import { routes } from "@/config/routes";
+import { useForm } from "react-hook-form";
+import { editarOdontograma } from "@/controller/dashboard/odontograma/odontogramaController";
+import { mostrarAlertaExito } from "@/utils/show_success_alert";
 export default function Odontograma({ params }: { params: { id: string } }) {
   const [odontograma, setOdontograma] = useState<OdontogramRows[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    async function fetchOdontograma() {
-      try {
-        setIsLoading(true);
-        const data = (await obtenerOdontograma(params.id)) as OdontogramRows[];
-        setOdontograma(data);
-      } catch (error: any) {
-        console.error("Error al cargar el odontograma:", error);
-        setError("No se pudo cargar el odontograma.");
-      } finally {
-        setIsLoading(false);
-      }
+  const [loading, setLoading] = useState(true);
+  const { register, handleSubmit, control, reset } = useForm({
+    defaultValues: {
+      odontograma: [] as OdontogramRows[],
+    },
+  });
+  const [isloading, setisLoading] = useState(false);
+  const onSubmit = async (data: { odontograma: OdontogramRows[] }) => {
+    try {
+      setisLoading(true);
+      const response = await editarOdontograma(data.odontograma);
+      mostrarAlertaExito(response.message);
+      fetchData();
+    } catch (e: any) {
+      mostrarAlertaError(e);
+    } finally {
+      setisLoading(false);
     }
-
-    fetchOdontograma();
+  };
+  async function fetchData() {
+    try {
+      setLoading(true);
+      setOdontograma((await obtenerOdontograma(params.id)) as OdontogramRows[]);
+    } catch (error: any) {
+      mostrarAlertaError(error);
+    } finally {
+      setLoading(false);
+    }
+  }
+  useEffect(() => {
+    fetchData();
   }, [params.id]);
   return (
     <DefaultLayout>
-      <BotonVolver direccion="/dashboard/pacientes" />
+      <BotonVolver direccion={routes.pacientes} />
       <Breadcrumb pageName="Editar odontograma" />
-      {isLoading ? (
+      {loading ? (
         <Spinner />
       ) : (
-        <form>
-          <div className="overflow-x-auto">
-            <table className="block min-w-full border-collapse md:table">
-              <thead className="block md:table-header-group">
-                <tr className="border-gray-300 block md:table-row">
-                  <th className="bg-gray-200 p-2 text-left font-bold">MSC</th>
-                  <th className="bg-gray-200 p-2 text-left font-bold">Temp.</th>
-                  <th className="bg-gray-200 p-2 text-left font-bold">
-                    Piezas
-                  </th>
-                  <th className="bg-gray-200 p-2 text-left font-bold">Fecha</th>
-                  <th className="bg-gray-200 p-2 text-left font-bold">
-                    Diagnóstico
-                  </th>
-                  <th className="bg-gray-200 p-2 text-left font-bold">
-                    Tratamiento presuntivo
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="block md:table-row-group">
+        <Box as="form" onSubmit={handleSubmit(onSubmit)}>
+          <Box overflowX="auto">
+            <Table variant="simple" size="md">
+              <Thead>
+                <Tr>
+                  <Th>MSC</Th>
+                  <Th>Temp.</Th>
+                  <Th>Piezas</Th>
+                  <Th>Fecha</Th>
+                  <Th>Diagnóstico</Th>
+                  <Th>Tratamiento presuntivo</Th>
+                </Tr>
+              </Thead>
+              <Tbody>
                 {odontograma.map((row, index) => (
-                  <tr
-                    key={index}
-                    className="border-gray-300 block md:table-row"
-                  >
-                    <td className="block p-2 text-left md:table-cell">
+                  <Tr key={index}>
+                    <Td>
+                      <input
+                        type="hidden"
+                        {...register(`odontograma.${index}.id`)}
+                        defaultValue={row.id}
+                      />
                       {row.msc}
-                    </td>
-                    <td className="block p-2 text-left md:table-cell">
-                      {row.temp}
-                    </td>
-                    <td className="block p-2 text-left md:table-cell">
-                      {row.piezas}
-                    </td>
-                    <td className="block p-2 text-left md:table-cell">
-                      {row.fecha
-                        ? new Date(row.fecha).toLocaleDateString()
-                        : ""}
-                    </td>
-                    <td className="block p-2 text-left md:table-cell">
-                      {row.diagnostico}
-                    </td>
-                    <td className="block p-2 text-left md:table-cell">
-                      {row.tratamiento}
-                    </td>
-                  </tr>
+                    </Td>
+                    <Td>{row.temp}</Td>
+                    <Td>{row.piezas}</Td>
+                    <Td>
+                      <Input
+                        type="date"
+                        {...register(`odontograma.${index}.fecha`)}
+                        defaultValue={
+                          row.fecha
+                            ? new Date(row.fecha).toISOString().split("T")[0]
+                            : ""
+                        }
+                        size="sm"
+                      />
+                    </Td>
+                    <Td>
+                      <Input
+                        type="text"
+                        {...register(`odontograma.${index}.diagnostico`)}
+                        defaultValue={row.diagnostico || ""}
+                        size="sm"
+                      />
+                    </Td>
+                    <Td>
+                      <Input
+                        type="text"
+                        {...register(`odontograma.${index}.tratamiento`)}
+                        defaultValue={row.tratamiento || ""}
+                        size="sm"
+                      />
+                    </Td>
+                  </Tr>
                 ))}
-              </tbody>
-            </table>
-          </div>
-          <div className="flex justify-end">
-            <button
+              </Tbody>
+            </Table>
+          </Box>
+          <Box display="flex" justifyContent="end" mt={10} mr={10}>
+            <Button
               type="submit"
-              className="mt-10 rounded bg-primary px-4 py-2 text-white hover:bg-opacity-90"
+              colorScheme="blue"
+              px={4}
+              py={2}
+              _hover={{ bg: "blue.600" }}
+              isLoading={isloading}
             >
               Guardar Cambios
-            </button>
-          </div>
-        </form>
+            </Button>
+          </Box>
+        </Box>
       )}
     </DefaultLayout>
   );

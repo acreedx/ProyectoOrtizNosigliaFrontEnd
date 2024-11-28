@@ -4,32 +4,43 @@ import {
   modulos,
   auditEventOutcome,
 } from "@/enums/auditEventTypes";
-import { userStatus } from "@/enums/userStatus";
 import { logEvent } from "@/utils/logger";
 import { prisma } from "./prisma";
 import bcrypt from "bcryptjs";
+import { Patient, Permission, Person, Rol, User } from "@prisma/client";
+import { personFullNameFormater } from "@/utils/format_person_full_name";
+import { userStatus } from "@/enums/userStatus";
 
 export async function authenticateUser(credentials: {
   username: string;
   password: string;
-}) {
-  const user = await prisma.person.findFirst({
+}): Promise<
+  | (Person & {
+      rol: Rol & {
+        permissions: Permission[];
+      };
+    })
+  | Patient
+> {
+  const user = await prisma.user.findFirst({
     where: {
       username: credentials.username,
-      rol: {
-        active: true,
-      },
     },
     include: {
-      rol: {
+      patient: true,
+      person: {
         include: {
-          permissions: true,
+          rol: {
+            include: {
+              permissions: true,
+            },
+          },
         },
       },
     },
   });
 
-  if (!user || user.status === userStatus.ELIMINADO) {
+  if (!user) {
     throw new Error("Credenciales Incorrectas");
   }
 
@@ -40,43 +51,55 @@ export async function authenticateUser(credentials: {
 
   if (!isPasswordValid) {
     if (user.passwordAttempts >= 5) {
-      await prisma.person.update({
+      await prisma.user.update({
         where: { id: user.id },
         data: { status: userStatus.BLOQUEADO },
       });
       throw new Error(
-        "El usuario esta bloqueado, cambie su contraseña para continuar",
+        "El usuario está bloqueado, cambie su contraseña para continuar",
       );
     }
-
-    await prisma.person.update({
+    if (user.patient) {
+      await logEvent({
+        type: auditEventTypes.AUTHENTICATION,
+        action: auditEventAction.ACCION_INICIAR_SESION,
+        moduleName: modulos.MODULO_PAGINA_WEB,
+        personName: personFullNameFormater(user.patient),
+        personRole: "Paciente",
+        detail: "Intento de inicio de sesión fallido",
+        personId: user.id,
+        outcome: auditEventOutcome.OUTCOME_ERROR,
+      });
+      return user.patient;
+    } else if (user.person) {
+      await logEvent({
+        type: auditEventTypes.AUTHENTICATION,
+        action: auditEventAction.ACCION_INICIAR_SESION,
+        moduleName: modulos.MODULO_PAGINA_WEB,
+        personName: personFullNameFormater(user.person),
+        personRole: user.person.rol.roleName,
+        detail: "Intento de inicio de sesión fallido",
+        personId: user.id,
+        outcome: auditEventOutcome.OUTCOME_ERROR,
+      });
+      return user.person;
+    }
+    await prisma.user.update({
       where: { id: user.id },
       data: { passwordAttempts: user.passwordAttempts + 1 },
     });
-
-    await logEvent({
-      type: auditEventTypes.AUTHENTICATION,
-      action: auditEventAction.ACCION_INICIAR_SESION,
-      moduleName: modulos.MODULO_PAGINA_WEB,
-      personName: user.firstName,
-      personRole: user.rol.roleName,
-      detail: "Intento de inicio de sesión fallido",
-      personId: user.id,
-      outcome: auditEventOutcome.OUTCOME_ERROR,
-    });
-
     throw new Error("Credenciales Incorrectas");
   }
 
   if (user.status === userStatus.BLOQUEADO) {
     throw new Error(
-      "El usuario esta bloqueado, cambie su contraseña para continuar",
+      "El usuario está bloqueado, cambie su contraseña para continuar",
     );
   }
 
   if (user.passwordExpiration < new Date()) {
     throw new Error(
-      "Su contraseña a expirado, debe cambiarla para iniciar sesión",
+      "Su contraseña ha expirado, debe cambiarla para iniciar sesión",
     );
   }
 
@@ -84,16 +107,7 @@ export async function authenticateUser(credentials: {
     throw new Error("Usuario Nuevo, debe cambiar su contraseña para acceder");
   }
 
-  await logEvent({
-    type: auditEventTypes.AUTHENTICATION,
-    action: auditEventAction.ACCION_INICIAR_SESION,
-    moduleName: modulos.MODULO_PAGINA_WEB,
-    personName: user.firstName,
-    personRole: user.rol.roleName,
-    personId: user.id,
-  });
-
-  await prisma.person.update({
+  await prisma.user.update({
     where: { id: user.id },
     data: {
       passwordAttempts: 0,
@@ -101,6 +115,31 @@ export async function authenticateUser(credentials: {
     },
   });
 
-  user.password = "_";
-  return user;
+  if (user.patient) {
+    await logEvent({
+      type: auditEventTypes.AUTHENTICATION,
+      action: auditEventAction.ACCION_INICIAR_SESION,
+      moduleName: modulos.MODULO_PAGINA_WEB,
+      personName: personFullNameFormater(user.patient),
+      personRole: "Paciente",
+      detail: "Intento de inicio de sesión fallido",
+      personId: user.id,
+      outcome: auditEventOutcome.OUTCOME_ERROR,
+    });
+    return user.patient;
+  } else if (user.person) {
+    await logEvent({
+      type: auditEventTypes.AUTHENTICATION,
+      action: auditEventAction.ACCION_INICIAR_SESION,
+      moduleName: modulos.MODULO_PAGINA_WEB,
+      personName: personFullNameFormater(user.person),
+      personRole: user.person.rol.roleName,
+      detail: "Intento de inicio de sesión fallido",
+      personId: user.id,
+      outcome: auditEventOutcome.OUTCOME_ERROR,
+    });
+    return user.person;
+  }
+
+  throw new Error("Tipo de usuario no encontrado");
 }

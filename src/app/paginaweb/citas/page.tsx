@@ -15,9 +15,9 @@ export default function Citas() {
           <div className="flex h-80 items-center justify-center">
             <Spinner />
           </div>
-        ) : !session ? (
+        ) : !session || !session.user ? (
           <IniciarSesion />
-        ) : session.user?.rol?.roleName === "Paciente" ? (
+        ) : session.user.resourceType === "Patient" ? (
           <CrearCitas />
         ) : (
           <AccesoRestringido />

@@ -16,11 +16,11 @@ import {
   UseDisclosureProps,
   IconButton,
 } from "@chakra-ui/react";
-import { Person } from "@prisma/client";
+import { Patient, Person } from "@prisma/client";
 import React, { FormEventHandler } from "react";
 import { MdMenuBook } from "react-icons/md";
 
-export default function VerPaciente({ paciente }: { paciente: Person }) {
+export default function VerPaciente({ paciente }: { paciente: Patient }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   return (
     <>

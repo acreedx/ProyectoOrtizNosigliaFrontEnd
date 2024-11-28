@@ -21,7 +21,7 @@ import {
   Select,
   useDisclosure,
 } from "@chakra-ui/react";
-import { CarePlan, Person, Treatments } from "@prisma/client";
+import { CarePlan, Patient, Person, Treatments } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import React, { useEffect, useState } from "react";
 
@@ -31,7 +31,7 @@ export default function BotonCreacion({
   reloadData: Function;
 }) {
   const [careplan, setcareplan] = useState<CarePlan>();
-  const [pacientes, setpacientes] = useState<Person[]>([]);
+  const [pacientes, setpacientes] = useState<Patient[]>([]);
   const [tratamientos, settratamientos] = useState<Treatments[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [nuevotratamiento, setnuevotratamiento] = useState<Treatments>();
@@ -70,7 +70,6 @@ export default function BotonCreacion({
       daysBetweenAppointments: Number(formData.get("daysBetweenAppointments")),
       costEstimation: Number(formData.get("costEstimation")),
       subjectId: formData.get("paciente") as string,
-      practitionerId: session?.user.id,
     } as CarePlan;
     try {
       const response = await crearTratamiento(tratamiento);

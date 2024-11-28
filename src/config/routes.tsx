@@ -1,5 +1,6 @@
 export const routes = {
   sitio_web: "/",
+  acceso_no_autorizado: "/paginaweb/acceso_no_autorizado",
   equipo: "/paginaweb/equipo",
   paginawebcitas: "/paginaweb/citas",
   editarperfil: "/paginaweb/inicio_de_sesion/editarperfil",

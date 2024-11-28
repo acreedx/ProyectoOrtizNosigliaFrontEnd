@@ -98,7 +98,7 @@ export default function PersoNavBar() {
             <Spinner />
           ) : session?.user ? (
             <>
-              {session.user.rol.roleName !== "Paciente" && (
+              {session.user.resourceType === "Person" && (
                 <li>
                   <Link
                     href={routes.dashboard}
@@ -168,7 +168,7 @@ export default function PersoNavBar() {
               <div className="mb-4 flex flex-col items-center">
                 <Avatar
                   size="2xl"
-                  name={session.user.username}
+                  name={session.user.firstName}
                   src={session.user.photoUrl}
                 />
                 <h2 className="mt-2 text-xl font-bold">

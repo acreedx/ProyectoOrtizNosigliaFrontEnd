@@ -5,7 +5,7 @@ import {
 } from "@/utils/pagination_options";
 import { EditIcon, DeleteIcon, CheckIcon } from "@chakra-ui/icons";
 import { Badge, IconButton, useDisclosure } from "@chakra-ui/react";
-import { CarePlan, ImagingStudy, Person } from "@prisma/client";
+import { CarePlan, ImagingStudy, Patient, Person } from "@prisma/client";
 import React, { useEffect, useState } from "react";
 import DataTable, { TableColumn } from "react-data-table-component";
 import Swal from "sweetalert2";
@@ -31,7 +31,7 @@ export default function TablaTratamientos({
   carePlans,
   reloadData,
 }: {
-  carePlans: (CarePlan & { subject: Person })[];
+  carePlans: (CarePlan & { subject: Patient })[];
   reloadData: Function;
 }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -46,13 +46,13 @@ export default function TablaTratamientos({
     onClose: onCloseThirdModal,
   } = useDisclosure();
   const [selectedTreatment, setselectedTreatment] = useState<CarePlan>();
-  const [pacientes, setpacientes] = useState<Person[]>([]);
+  const [pacientes, setpacientes] = useState<Patient[]>([]);
 
   const fetchData = async () => {
     setpacientes(await listarPacientes());
   };
 
-  const columns: TableColumn<CarePlan & { subject: Person }>[] = [
+  const columns: TableColumn<CarePlan & { subject: Patient }>[] = [
     {
       name: "Nro",
       cell: (_, index) => index + 1,

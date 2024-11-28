@@ -44,7 +44,7 @@ export async function generarPDFUsuarios(formData: FormData) {
     `${paciente.firstName} ${paciente.secondName || ""} ${paciente.familyName}`,
     paciente.gender,
     paciente.identification,
-    paciente.status,
+    paciente.user.status,
     paciente.phone || "N/A",
     paciente.email || "N/A",
     paciente.rol.roleName,

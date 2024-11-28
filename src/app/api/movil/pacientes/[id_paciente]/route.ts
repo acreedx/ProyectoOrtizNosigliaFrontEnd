@@ -8,11 +8,8 @@ export async function GET(
   const { id_paciente } = params;
 
   try {
-    const paciente = await prisma.person.findFirst({
+    const paciente = await prisma.patient.findFirst({
       where: {
-        rol: {
-          roleName: "Paciente",
-        },
         id: id_paciente,
       },
       include: {

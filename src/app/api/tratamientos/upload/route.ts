@@ -31,7 +31,6 @@ export async function POST(req: NextRequest) {
           data: {
             active: study.active,
             description: "",
-            personId: study.personId,
             carePlanId: study.carePlanId,
             media: urls,
           },

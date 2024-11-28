@@ -19,6 +19,7 @@ export async function logEvent({
   personName,
   personRole,
   personId,
+  patientId,
 }: {
   type?: string;
   action: string;
@@ -31,7 +32,8 @@ export async function logEvent({
   network?: string;
   personName: string;
   personRole: string;
-  personId: string;
+  personId?: string;
+  patientId?: string;
 }) {
   await logAuditEvent({
     type: type,
@@ -46,6 +48,7 @@ export async function logEvent({
     personName: personName,
     personRole: personRole,
     personId: personId,
+    patientId: patientId,
   } as Partial<AuditEvent>);
 }
 
@@ -63,6 +66,7 @@ const logAuditEvent = async (eventData: Partial<AuditEvent>) => {
     personName: eventData.personName,
     personRole: eventData.personRole,
     personId: eventData.personId,
+    patientId: eventData.patientId,
   } as AuditEvent;
 
   try {

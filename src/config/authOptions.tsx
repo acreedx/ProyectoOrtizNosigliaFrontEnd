@@ -18,7 +18,10 @@ export const authOptions: NextAuthOptions = {
         token: { label: "token", type: "text" },
       },
       async authorize(credentials, req) {
-        if (!credentials?.token) {
+        if (!credentials) {
+          throw new Error("Credenciales inválidas");
+        }
+        if (!credentials.token) {
           throw new Error("Token no encontrado");
         }
         const captchaData = await verifyCaptchaToken(credentials.token);
@@ -28,7 +31,7 @@ export const authOptions: NextAuthOptions = {
         if (!captchaData.success || captchaData.score < 0.5) {
           throw new Error("Captcha Fallido");
         }
-        return authenticateUser({
+        return await authenticateUser({
           username: credentials.username,
           password: credentials.password,
         });
@@ -41,8 +44,8 @@ export const authOptions: NextAuthOptions = {
   },
 
   jwt: {
-    secret: process.env.JWT_SECRET,
     maxAge: 3600,
+    secret: process.env.JWT_SECRET,
   },
   callbacks: {
     async jwt({ account, token, user, profile, session }) {

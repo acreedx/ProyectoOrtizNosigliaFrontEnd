@@ -1,5 +1,4 @@
 "use server";
-import { AuditEvent, PrismaClient } from "@prisma/client";
 import { hashPassword } from "../../../utils/password_hasher";
 import bcrypt from "bcryptjs";
 import changePasswordValidation from "../../../models/changePasswordValidation";
@@ -28,12 +27,14 @@ export async function changePassword(formData: FormData) {
       errors: result.error.format(),
     };
   }
-  const person = await prisma.person.findFirst({
+  const person = await prisma.patient.findFirst({
     where: {
-      username: data.username,
+      user: {
+        username: data.username,
+      },
     },
     include: {
-      rol: true,
+      user: true,
     },
   });
   if (!person) {
@@ -42,20 +43,23 @@ export async function changePassword(formData: FormData) {
       message: "Credenciales Incorrectas",
     };
   }
-  if (person.status === userStatus.ELIMINADO) {
+  if (person.user.status === userStatus.ELIMINADO) {
     return {
       success: false,
       message: "Credenciales Incorrectas",
     };
   }
-  const isPasswordValid = await bcrypt.compare(data.password, person.password);
+  const isPasswordValid = await bcrypt.compare(
+    data.password,
+    person.user.password,
+  );
   if (!isPasswordValid) {
     return {
       success: false,
       message: "Credenciales Incorrectas",
     };
   }
-  await prisma.person.update({
+  await prisma.user.update({
     where: {
       username: data.username,
     },
@@ -71,7 +75,7 @@ export async function changePassword(formData: FormData) {
     action: auditEventAction.ACCION_CAMBIAR_CONTRASENA,
     moduleName: modulos.MODULO_PAGINA_WEB,
     personName: person.firstName,
-    personRole: person.rol.roleName,
+    personRole: "Paciente",
     personId: person.id,
     outcome: auditEventOutcome.OUTCOME_EXITO,
     detail: "Cambio de contraseña exitoso.",

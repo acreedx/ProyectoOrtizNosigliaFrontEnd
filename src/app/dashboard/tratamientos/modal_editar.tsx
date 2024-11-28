@@ -17,7 +17,7 @@ import {
   Button,
   Input,
 } from "@chakra-ui/react";
-import { CarePlan, Person } from "@prisma/client";
+import { CarePlan, Patient, Person } from "@prisma/client";
 
 import React, { useState } from "react";
 
@@ -32,7 +32,7 @@ export default function ModalEditar({
   onClose: () => void;
   reloadData: Function;
   selectedTreatment: CarePlan | undefined;
-  pacientes: Person[];
+  pacientes: Patient[];
 }) {
   const [isLoading, setIsLoading] = useState(false);
   const handleSubmitEditar = async (event: React.FormEvent) => {

@@ -141,7 +141,7 @@ export async function confirmarCita(id: string) {
         status: AppointmentStatus.STATUS_CONFIRMADA,
       },
     });
-    return { message: "Éxito al habilitar la cita" };
+    return { message: "Éxito al confirmar la cita" };
   } catch (error) {
     throw new Error("Error al habilitar la cita");
   }
@@ -156,7 +156,7 @@ export async function cancelarCita(id: string) {
         status: AppointmentStatus.STATUS_CANCELADA,
       },
     });
-    return { message: "Éxito al habilitar la cita" };
+    return { message: "Éxito al cancelar la cita" };
   } catch (error) {
     throw new Error("Error al habilitar la cita");
   }
@@ -172,7 +172,7 @@ export async function completarCita(id: string) {
         status: AppointmentStatus.STATUS_COMPLETADA,
       },
     });
-    return { message: "Éxito al habilitar la cita" };
+    return { message: "Éxito al completar la cita" };
   } catch (error) {
     throw new Error("Error al habilitar la cita");
   }

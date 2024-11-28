@@ -24,7 +24,12 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   const [accessibleMenu, setAccessibleMenu] = useState(menuOptions);
   const [pageName, setPageName] = useLocalStorage("selectedMenu", "dashboard");
   useEffect(() => {
-    if (session && session.user && session.user.rol.permissions) {
+    if (
+      session &&
+      session.user &&
+      "rol" in session.user &&
+      session.user.rol.permissions
+    ) {
       const userPermissions = session.user.rol.permissions.map((e) => {
         return e.code;
       });

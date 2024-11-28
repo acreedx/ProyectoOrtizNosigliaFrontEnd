@@ -10,6 +10,7 @@ import { routes } from "@/config/routes";
 import Layout from "../../components/Layout";
 import Banner from "../../components/Banner";
 import { forgetPassword } from "@/controller/paginaweb/inicio_de_sesion/olvidarPasswordController";
+import { mostrarAlertaConfirmacion } from "@/utils/show_question_alert";
 
 export default function OlvidarPassword() {
   const router = useRouter();
@@ -19,43 +20,36 @@ export default function OlvidarPassword() {
   const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
-    Swal.fire({
-      title: "Confirmación",
-      text: "Al confirmar se enviara una nueva contraseña a tu correo electrónico",
-      icon: "question",
-      showCancelButton: true,
-      cancelButtonText: "Cancelar",
-      cancelButtonColor: "#a72828",
-      confirmButtonText: "Aceptar",
-      confirmButtonColor: "#28a745",
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        try {
-          setIsLoading(true);
-          setErrors({});
-          const response = await forgetPassword(formData);
-          if (!response.success) {
-            if (response.message) {
-              mostrarAlertaError(response.message);
-            }
-          } else {
-            Swal.fire({
-              title: "Éxito",
-              text: "La contraseña se cambio exitosamente.",
-              icon: "success",
-              confirmButtonText: "Aceptar",
-              confirmButtonColor: "#28a745",
-            }).then(() => {
-              router.push(routes.login);
-            });
+    const isConfirmed = await mostrarAlertaConfirmacion(
+      "Confirmación",
+      "Al confirmar se enviara una nueva contraseña a tu correo electrónico",
+    );
+    if (isConfirmed) {
+      try {
+        setIsLoading(true);
+        setErrors({});
+        const response = await forgetPassword(formData);
+        if (!response.success) {
+          if (response.message) {
+            mostrarAlertaError(response.message);
           }
-        } catch (e: any) {
-          mostrarAlertaError(e);
-        } finally {
-          setIsLoading(false);
+        } else {
+          Swal.fire({
+            title: "Éxito",
+            text: "La contraseña se cambio exitosamente.",
+            icon: "success",
+            confirmButtonText: "Aceptar",
+            confirmButtonColor: "#28a745",
+          }).then(() => {
+            router.push(routes.login);
+          });
         }
+      } catch (e: any) {
+        mostrarAlertaError(e);
+      } finally {
+        setIsLoading(false);
       }
-    });
+    }
   };
   return (
     <Layout>

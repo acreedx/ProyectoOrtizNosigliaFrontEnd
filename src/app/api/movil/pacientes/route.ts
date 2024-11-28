@@ -4,16 +4,15 @@ import { NextRequest, NextResponse } from "next/server";
 export const dynamic = "force-dynamic";
 export async function GET() {
   try {
-    const pacientes = await prisma.person.findMany({
-      where: {
-        rol: {
-          roleName: "Paciente",
-        },
-      },
+    const pacientes = await prisma.patient.findMany({
       select: {
         id: true,
         resourceType: true,
-        status: true,
+        user: {
+          select: {
+            status: true,
+          },
+        },
         firstName: true,
         secondName: true,
         familyName: true,
@@ -26,10 +25,6 @@ export async function GET() {
         addressCity: true,
         maritalStatus: true,
         identification: true,
-        username: true,
-        password: true,
-        lastLogin: true,
-        passwordExpiration: true,
         photoUrl: true,
         allergies: true,
       },

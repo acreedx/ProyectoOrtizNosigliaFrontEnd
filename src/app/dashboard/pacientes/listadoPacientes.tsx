@@ -5,7 +5,7 @@ import {
   habilitarPaciente,
   listarPacientes,
 } from "@/controller/dashboard/pacientes/pacientesController";
-import { Person } from "@prisma/client";
+import { Patient, User } from "@prisma/client";
 import DataTable, { TableColumn } from "react-data-table-component";
 import {
   Avatar,
@@ -24,9 +24,9 @@ import {
   ModalContent,
   ModalHeader,
   ModalOverlay,
+  Spinner,
   useDisclosure,
 } from "@chakra-ui/react";
-import { personFullNameFormater } from "@/utils/format_person_full_name";
 import { userStatus } from "@/enums/userStatus";
 import {
   noDataFoundComponent,
@@ -48,23 +48,24 @@ import { mostrarAlertaExito } from "@/utils/show_success_alert";
 import { useRouter } from "next/navigation";
 import { routes } from "@/config/routes";
 import { generarPDFHistorialCitasPaciente } from "./reportes/reporteHistorialCitas";
+import { personFullNameFormater } from "@/utils/format_person_full_name";
 
 const ListadoPacientes = () => {
-  const [patients, setpatients] = useState<Person[]>([]);
+  const [patients, setpatients] = useState<(Patient & { user: User })[]>([]);
   const [loading, setloading] = useState<Boolean>(true);
-  const [selectedPatient, setselectedPatient] = useState<Person>();
+  const [selectedPatient, setselectedPatient] = useState<Patient>();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const router = useRouter();
   async function fetchData() {
     setpatients(await listarPacientes());
     setloading(false);
   }
-  const handleUpdate = async (patient: Person) => {
+  const handleUpdate = async (patient: Patient) => {
     setselectedPatient(patient);
   };
   const handleRestore = async (e: number) => {};
   const handleDelete = async (e: number) => {};
-  const handleShowInformation = async (patient: Person) => {
+  const handleShowInformation = async (patient: Patient) => {
     setselectedPatient(patient);
   };
   const handleHistoryCreate = async (
@@ -87,7 +88,7 @@ const ListadoPacientes = () => {
       mostrarAlertaError(e);
     }
   }, []);
-  const columns: TableColumn<Person>[] = [
+  const columns: TableColumn<Patient & { user: User }>[] = [
     {
       name: "Nro",
       cell: (_, index) => index + 1,
@@ -96,7 +97,7 @@ const ListadoPacientes = () => {
     },
     {
       name: "Avatar",
-      cell: (row) => <Avatar src={row.photoUrl} name={row.username} />,
+      cell: (row) => <Avatar src={row.photoUrl} name={row.firstName} />,
       ignoreRowClick: true,
     },
     {
@@ -119,18 +120,18 @@ const ListadoPacientes = () => {
       cell: (row) => (
         <Badge
           colorScheme={
-            row.status === userStatus.ACTIVO
+            row.user.status === userStatus.ACTIVO
               ? "green"
-              : row.status === userStatus.ELIMINADO
+              : row.user.status === userStatus.ELIMINADO
                 ? "red"
-                : row.status === userStatus.NUEVO
+                : row.user.status === userStatus.NUEVO
                   ? "blue"
                   : "gray"
           }
           padding={2}
           rounded={20}
         >
-          {row.status}
+          {row.user.status}
         </Badge>
       ),
       sortable: true,
@@ -140,7 +141,7 @@ const ListadoPacientes = () => {
       cell: (row) => (
         <div className="flex gap-4">
           <>
-            {row.status === userStatus.ACTIVO && (
+            {row.user.status === userStatus.ACTIVO && (
               <>
                 {/* 
                 <IconButton
@@ -185,8 +186,8 @@ const ListadoPacientes = () => {
                 />
               </>
             )}
-            {(row.status === userStatus.ELIMINADO ||
-              row.status === userStatus.BLOQUEADO) && (
+            {(row.user.status === userStatus.ELIMINADO ||
+              row.user.status === userStatus.BLOQUEADO) && (
               <IconButton
                 aria-label="Habilitar"
                 title="Habilitar"
@@ -236,31 +237,35 @@ const ListadoPacientes = () => {
   return (
     <div className="rounded-sm border border-stroke bg-white px-1 pb-2.5 pt-6 shadow-default dark:border-strokedark dark:bg-boxdark  xl:pb-1">
       <div className="max-w-full overflow-x-auto">
-        <DataTable
-          columns={columns}
-          data={patients}
-          pagination
-          highlightOnHover={false}
-          responsive
-          paginationPerPage={10}
-          paginationRowsPerPageOptions={[10, 15, 20]}
-          paginationComponentOptions={paginationOptions}
-          noDataComponent={noDataFoundComponent}
-          customStyles={{
-            headCells: {
-              style: {
-                fontSize: "1rem",
-                fontWeight: "bold",
-                justifyContent: "center",
+        {loading ? (
+          <Spinner />
+        ) : (
+          <DataTable
+            columns={columns}
+            data={patients}
+            pagination
+            highlightOnHover={false}
+            responsive
+            paginationPerPage={10}
+            paginationRowsPerPageOptions={[10, 15, 20]}
+            paginationComponentOptions={paginationOptions}
+            noDataComponent={noDataFoundComponent}
+            customStyles={{
+              headCells: {
+                style: {
+                  fontSize: "1rem",
+                  fontWeight: "bold",
+                  justifyContent: "center",
+                },
               },
-            },
-            cells: {
-              style: {
-                justifyContent: "center",
+              cells: {
+                style: {
+                  justifyContent: "center",
+                },
               },
-            },
-          }}
-        />
+            }}
+          />
+        )}
       </div>
       <Modal isOpen={isOpen} onClose={onClose} isCentered>
         <ModalOverlay />

@@ -45,14 +45,14 @@ const DropdownUser = () => {
                     {personFullNameFormater(session.user)}
                   </span>
                   <span className="block text-xs">
-                    {session.user.rol.roleName}
+                    {"rol" in session.user && session.user.rol.roleName}
                   </span>
                 </span>
 
                 <span className="h-12 w-12 rounded-full">
                   <Avatar
                     size={"md"}
-                    name={session.user.username}
+                    name={session.user.firstName}
                     src={session.user.photoUrl}
                   />
                 </span>

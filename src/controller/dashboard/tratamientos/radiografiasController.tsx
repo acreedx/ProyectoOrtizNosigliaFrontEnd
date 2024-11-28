@@ -34,7 +34,6 @@ export async function agregarRadiografias(
             description: descripcion,
             active: true,
             media: fileUrls,
-            personId: session.user.id,
             carePlanId: carePlanId,
           },
         });

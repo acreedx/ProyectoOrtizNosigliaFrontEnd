@@ -6,7 +6,7 @@ export async function obtenerOdontograma(pacienteId: string) {
   try {
     const odontograma = await prisma.odontogramRows.findMany({
       where: {
-        personId: pacienteId,
+        patientId: pacienteId,
       },
     });
     return odontograma;
@@ -20,7 +20,7 @@ export async function editarOdontograma(pacienteId: string) {
   try {
     const odontograma = await prisma.odontogramRows.findMany({
       where: {
-        personId: pacienteId,
+        patientId: pacienteId,
       },
     });
     return odontograma;
