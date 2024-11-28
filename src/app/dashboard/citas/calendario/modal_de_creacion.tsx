@@ -1,4 +1,5 @@
 "use client";
+import { crearCitaDentista } from "@/controller/dashboard/citas/citasController";
 import { crearCita } from "@/controller/paginaweb/citasController";
 import { personFullNameFormater } from "@/utils/format_person_full_name";
 import generateTimeOptions from "@/utils/generate_time_options";
@@ -21,17 +22,18 @@ import {
   Input,
   Text,
 } from "@chakra-ui/react";
+import { Patient } from "@prisma/client";
 import { useState } from "react";
 
 export default function ModalDeCreacion({
   selectedDate,
-  dentistas,
+  pacientes,
   isOpen,
   onClose,
   reloadData,
 }: {
   selectedDate: any;
-  dentistas: any[];
+  pacientes: Patient[];
   isOpen: boolean;
   onClose: () => void;
   reloadData: Function;
@@ -44,7 +46,7 @@ export default function ModalDeCreacion({
     setErrors({});
     const formData = new FormData(event.currentTarget);
     try {
-      const response = await crearCita(formData);
+      const response = await crearCitaDentista(formData);
       if (response.message) {
         onClose();
         reloadData();
@@ -165,7 +167,7 @@ export default function ModalDeCreacion({
                     Paciente
                   </FormLabel>
                   <Select
-                    name="doctor"
+                    name="paciente"
                     placeholder="Seleccione un paciente"
                     bg="transparent"
                     borderColor="gray.400"
@@ -178,17 +180,17 @@ export default function ModalDeCreacion({
                       _hover: { borderColor: "orange.500" },
                     }}
                   >
-                    {dentistas.map((dentista, index) => {
+                    {pacientes.map((paciente, index) => {
                       return (
-                        <option key={index} value={dentista.id}>
-                          {personFullNameFormater(dentista)}
+                        <option key={index} value={paciente.id}>
+                          {personFullNameFormater(paciente)}
                         </option>
                       );
                     })}
                   </Select>
-                  {errors.doctor && (
+                  {errors.paciente && (
                     <Text color="red.500">
-                      {errors.doctor._errors.join(", ")}
+                      {errors.paciente._errors.join(", ")}
                     </Text>
                   )}
                 </FormControl>

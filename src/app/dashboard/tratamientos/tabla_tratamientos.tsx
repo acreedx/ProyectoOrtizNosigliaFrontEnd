@@ -265,6 +265,7 @@ export default function TablaTratamientos({
         isOpen={isOpen}
         onClose={onClose}
         reloadData={fetchData}
+        reloadUpperData={reloadData}
         selectedTreatment={selectedTreatment}
         pacientes={pacientes}
       />

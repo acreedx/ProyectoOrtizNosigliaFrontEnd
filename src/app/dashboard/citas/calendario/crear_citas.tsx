@@ -11,7 +11,7 @@ import {
 } from "@chakra-ui/react";
 import { CheckIcon, CloseIcon, InfoIcon } from "@chakra-ui/icons";
 import { SetStateAction, useEffect, useState } from "react";
-import { Appointment, Person } from "@prisma/client";
+import { Appointment, Patient, Person } from "@prisma/client";
 import {
   cancelarCita,
   confirmarCita,
@@ -24,36 +24,37 @@ import { timeFormatter } from "@/utils/time_formater";
 import { mostrarAlertaError } from "@/utils/show_error_alert";
 import { mostrarAlertaExito } from "@/utils/show_success_alert";
 import { mostrarAlertaConfirmacion } from "@/utils/show_question_alert";
-import { getDentistas } from "@/controller/paginaweb/dentistasController";
-import ModalDeInformacion from "@/app/paginaweb/citas/modal_de_informacion";
 import Calendario from "./calendario";
+import { listarPacientes } from "@/controller/dashboard/pacientes/pacientesController";
+import ModalDeInformacion from "./modal_de_informacion";
+import { listarCitasPorDentista } from "@/controller/dashboard/citas/citasController";
 
 export default function CrearCitas() {
   const [loading, setloading] = useState(true);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [selectedAppointment, setselectedAppointment] = useState<
-    Appointment & { practitioner: Person }
+    Appointment & { subject: Patient }
   >();
-  const [dentistas, setdentistas] = useState<Person[]>([]);
+  const [pacientes, setpacientes] = useState<Patient[]>([]);
   const [citaspaciente, setcitaspaciente] = useState<
-    (Appointment & { practitioner: Person })[]
+    (Appointment & { subject: Patient })[]
   >([]);
   const [citaspacientependientes, setcitaspacientependientes] = useState<
-    (Appointment & { practitioner: Person })[]
+    (Appointment & { subject: Patient })[]
   >([]);
   const [citaspacienteconfirmadas, setcitaspacienteconfirmadas] = useState<
-    (Appointment & { practitioner: Person })[]
+    (Appointment & { subject: Patient })[]
   >([]);
   const [citaspacientecanceladas, setcitaspacientecanceladas] = useState<
-    (Appointment & { practitioner: Person })[]
+    (Appointment & { subject: Patient })[]
   >([]);
   const [citaspacientehistorial, setcitaspacientehistorial] = useState<
-    (Appointment & { practitioner: Person })[]
+    (Appointment & { subject: Patient })[]
   >([]);
   const fetchData = async () => {
-    const citas: (Appointment & { practitioner: Person })[] =
-      (await listarCitasPorPaciente()) as (Appointment & {
-        practitioner: Person;
+    const citas: (Appointment & { subject: Patient })[] =
+      (await listarCitasPorDentista()) as (Appointment & {
+        subject: Patient;
       })[];
     setcitaspaciente(citas);
     setcitaspacientependientes(
@@ -84,7 +85,7 @@ export default function CrearCitas() {
           cita.status === AppointmentStatus.STATUS_COMPLETADA,
       ),
     );
-    setdentistas(await getDentistas());
+    setpacientes(await listarPacientes());
     setloading(false);
   };
   useEffect(() => {
@@ -244,7 +245,7 @@ export default function CrearCitas() {
           Escoja una fecha para empezar...
         </Heading>
         <Calendario
-          dentistas={dentistas}
+          pacientes={pacientes}
           appointments={citaspaciente}
           reloadData={fetchData}
         />
@@ -264,7 +265,7 @@ function AppointmentCard({
   setselectedappointment,
   onOpen,
 }: {
-  appointmentData: Appointment & { practitioner: Person };
+  appointmentData: Appointment & { subject: Patient };
   reloadData: Function;
   setselectedappointment: Function;
   onOpen: () => void;
@@ -284,11 +285,11 @@ function AppointmentCard({
       mostrarAlertaError(e);
     }
   };
-  const handleCancel = async (e: Appointment & { practitioner: Person }) => {
+  const handleCancel = async (e: Appointment & { subject: Patient }) => {
     try {
       const isAccepted = await mostrarAlertaConfirmacion(
         "Confirmación",
-        `Esta seguro de cancelar su cita para el día ${birthDateFormater(e.start)} a las ${timeFormatter(e.start)}? Si cancela la cita con menos de un día de anticipación no podrá realizar mas citas`,
+        `Esta seguro de cancelar su cita para el día ${birthDateFormater(e.start)} a las ${timeFormatter(e.start)}?`,
       );
       if (isAccepted) {
         const response = await cancelarCita(e.id);
@@ -299,7 +300,7 @@ function AppointmentCard({
       mostrarAlertaError(e);
     }
   };
-  const handleShowInfo = async (e: Appointment & { practitioner: Person }) => {
+  const handleShowInfo = async (e: Appointment & { subject: Patient }) => {
     setselectedappointment(e);
     onOpen();
   };
@@ -322,7 +323,7 @@ function AppointmentCard({
         </Text>
         <Text color="white">
           <b>Paciente:</b>{" "}
-          <span>{personFullNameFormater(appointmentData.practitioner)}</span>
+          <span>{personFullNameFormater(appointmentData.subject)}</span>
         </Text>
       </Box>
       <Flex

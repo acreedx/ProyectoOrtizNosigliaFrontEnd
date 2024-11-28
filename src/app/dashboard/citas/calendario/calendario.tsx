@@ -26,7 +26,7 @@ import {
   Textarea,
   useDisclosure,
 } from "@chakra-ui/react";
-import { Appointment, Person } from "@prisma/client";
+import { Appointment, Patient, Person } from "@prisma/client";
 import ModalDeCreacion from "./modal_de_creacion";
 import { mostrarAlertaError } from "@/utils/show_error_alert";
 import { personFullNameFormater } from "@/utils/format_person_full_name";
@@ -40,13 +40,13 @@ interface CustomEvent extends EventInput {
 }
 export default function Calendario({
   appointments,
-  dentistas,
+  pacientes,
   reloadData,
 }: {
   appointments: (Appointment & {
-    practitioner: Person;
+    subject: Patient;
   })[];
-  dentistas: Person[];
+  pacientes: Patient[];
   reloadData: Function;
 }) {
   const {
@@ -58,7 +58,7 @@ export default function Calendario({
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [selectedAppointment, setSelectedAppointment] = useState<
-    Appointment & { practitioner: Person }
+    Appointment & { subject: Patient }
   >();
   const [eventos, seteventos] = useState<CustomEvent[]>([]);
   function handleDateSelect(selectInfo: DateSelectArg) {
@@ -114,7 +114,7 @@ export default function Calendario({
       />
       <ModalDeCreacion
         selectedDate={selectedDate}
-        dentistas={dentistas}
+        pacientes={pacientes}
         isOpen={isOpen}
         onClose={onClose}
         reloadData={reloadData}
@@ -216,9 +216,7 @@ export default function Calendario({
                       borderColor="gray.400"
                       defaultValue={
                         selectedAppointment
-                          ? personFullNameFormater(
-                              selectedAppointment.practitioner,
-                            )
+                          ? personFullNameFormater(selectedAppointment.subject)
                           : ""
                       }
                       readOnly

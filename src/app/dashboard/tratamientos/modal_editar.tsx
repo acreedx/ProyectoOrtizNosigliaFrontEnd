@@ -25,12 +25,14 @@ export default function ModalEditar({
   isOpen,
   onClose,
   reloadData,
+  reloadUpperData,
   selectedTreatment,
   pacientes,
 }: {
   isOpen: boolean;
   onClose: () => void;
   reloadData: Function;
+  reloadUpperData: Function;
   selectedTreatment: CarePlan | undefined;
   pacientes: Patient[];
 }) {
@@ -55,8 +57,9 @@ export default function ModalEditar({
         tratamiento,
       );
       onClose();
-      mostrarAlertaExito(response.message);
       reloadData();
+      reloadUpperData();
+      mostrarAlertaExito(response.message);
     } catch (error: any) {
       onClose();
       mostrarAlertaError(error);

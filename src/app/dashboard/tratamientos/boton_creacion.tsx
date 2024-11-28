@@ -19,30 +19,56 @@ import {
   ModalHeader,
   ModalOverlay,
   Select,
+  SimpleGrid,
   useDisclosure,
 } from "@chakra-ui/react";
-import { CarePlan, Patient, Person, Treatments } from "@prisma/client";
-import { useSession } from "next-auth/react";
-import React, { useEffect, useState } from "react";
+import { CarePlan, Patient, Treatments } from "@prisma/client";
+import React, {
+  ChangeEvent,
+  ChangeEventHandler,
+  useEffect,
+  useState,
+} from "react";
 
 export default function BotonCreacion({
   reloadData,
 }: {
   reloadData: Function;
 }) {
-  const [careplan, setcareplan] = useState<CarePlan>();
   const [pacientes, setpacientes] = useState<Patient[]>([]);
   const [tratamientos, settratamientos] = useState<Treatments[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [nuevotratamiento, setnuevotratamiento] = useState<Treatments>();
   const [selectedtreatmentType, setselectedtreatmentType] =
     useState<Treatments>();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { data: session, status } = useSession();
   const fetchData = async () => {
     setpacientes(await listarPacientes());
     settratamientos(await listarTiposTratamientoActivos());
   };
+  const [fechaFin, setfechaFin] = useState(
+    new Date(
+      new Date().setDate(
+        new Date().getDate() +
+          (selectedtreatmentType?.estimatedAppointments || 0) *
+            (selectedtreatmentType?.daysBetweenAppointments || 0),
+      ),
+    )
+      .toISOString()
+      .split("T")[0],
+  );
+  useEffect(() => {
+    setfechaFin(
+      new Date(
+        new Date().setDate(
+          new Date().getDate() +
+            (selectedtreatmentType?.estimatedAppointments || 0) *
+              (selectedtreatmentType?.daysBetweenAppointments || 0),
+        ),
+      )
+        .toISOString()
+        .split("T")[0],
+    );
+  }, [selectedtreatmentType]);
   useEffect(() => {
     try {
       fetchData();
@@ -90,7 +116,9 @@ export default function BotonCreacion({
       </Button>
       <Modal isOpen={isOpen} onClose={onClose} isCentered>
         <ModalOverlay />
-        <ModalContent p={8}>
+        <ModalContent p={8} maxWidth="800px">
+          {" "}
+          {/* Fijar el ancho máximo del modal */}
           <ModalHeader>
             <Heading fontSize="2xl" color="black" _dark={{ color: "white" }}>
               Asignar Tratamiento
@@ -99,9 +127,11 @@ export default function BotonCreacion({
           <ModalCloseButton />
           <ModalBody>
             <Box w="full">
-              <Box>
-                <form onSubmit={handleSubmit}>
-                  <FormControl mb={4} isRequired>
+              <form onSubmit={handleSubmit}>
+                <SimpleGrid columns={[1, 1, 2]} spacing={4}>
+                  {" "}
+                  {/* Usar SimpleGrid para distribuir en columnas */}
+                  <FormControl isRequired>
                     <FormLabel color="black" _dark={{ color: "white" }}>
                       Tipo de Tratamiento
                     </FormLabel>
@@ -121,16 +151,14 @@ export default function BotonCreacion({
                         _hover: { borderColor: "orange.500" },
                       }}
                     >
-                      {tratamientos.map((tratamiento, index) => {
-                        return (
-                          <option key={index} value={tratamiento.treatmentType}>
-                            {tratamiento.treatmentType}
-                          </option>
-                        );
-                      })}
+                      {tratamientos.map((tratamiento, index) => (
+                        <option key={index} value={tratamiento.treatmentType}>
+                          {tratamiento.treatmentType}
+                        </option>
+                      ))}
                     </Select>
                   </FormControl>
-                  <FormControl mb={4} isRequired>
+                  <FormControl isRequired>
                     <FormLabel color="black" _dark={{ color: "white" }}>
                       Título
                     </FormLabel>
@@ -150,7 +178,7 @@ export default function BotonCreacion({
                       }}
                     />
                   </FormControl>
-                  <FormControl mb={4} isRequired>
+                  <FormControl isRequired>
                     <FormLabel color="black" _dark={{ color: "white" }}>
                       Paciente
                     </FormLabel>
@@ -168,18 +196,16 @@ export default function BotonCreacion({
                         _hover: { borderColor: "orange.500" },
                       }}
                     >
-                      {pacientes.map((paciente, index) => {
-                        return (
-                          <option key={index} value={paciente.id}>
-                            {personFullNameFormater(paciente) +
-                              " - " +
-                              paciente.identification}
-                          </option>
-                        );
-                      })}
+                      {pacientes.map((paciente, index) => (
+                        <option key={index} value={paciente.id}>
+                          {personFullNameFormater(paciente) +
+                            " - " +
+                            paciente.identification}
+                        </option>
+                      ))}
                     </Select>
                   </FormControl>
-                  <FormControl mb={4} isRequired>
+                  <FormControl isRequired>
                     <FormLabel color="black" _dark={{ color: "white" }}>
                       Descripción
                     </FormLabel>
@@ -199,7 +225,7 @@ export default function BotonCreacion({
                       }}
                     />
                   </FormControl>
-                  <FormControl mb={4} isRequired>
+                  <FormControl isRequired>
                     <FormLabel color="black" _dark={{ color: "white" }}>
                       Citas estimadas
                     </FormLabel>
@@ -221,7 +247,7 @@ export default function BotonCreacion({
                       }}
                     />
                   </FormControl>
-                  <FormControl mb={4} isRequired>
+                  <FormControl isRequired>
                     <FormLabel color="black" _dark={{ color: "white" }}>
                       Días entre citas
                     </FormLabel>
@@ -243,7 +269,7 @@ export default function BotonCreacion({
                       }}
                     />
                   </FormControl>
-                  <FormControl mb={4} isRequired>
+                  <FormControl isRequired>
                     <FormLabel color="black" _dark={{ color: "white" }}>
                       Costo Estimado
                     </FormLabel>
@@ -263,7 +289,7 @@ export default function BotonCreacion({
                       }}
                     />
                   </FormControl>
-                  <FormControl mb={4} isRequired>
+                  <FormControl isRequired mb={6}>
                     <FormLabel color="black" _dark={{ color: "white" }}>
                       Fecha Inicio
                     </FormLabel>
@@ -283,52 +309,21 @@ export default function BotonCreacion({
                       }}
                     />
                   </FormControl>
-                  <FormControl mb={6} isRequired>
-                    <FormLabel color="black" _dark={{ color: "white" }}>
-                      Fecha Fin Estimada
-                    </FormLabel>
-                    <Input
-                      name="fecha_fin"
-                      type="date"
-                      bg="transparent"
-                      borderColor="gray.400"
-                      defaultValue={
-                        new Date(
-                          new Date().setDate(
-                            new Date().getDate() +
-                              (selectedtreatmentType?.estimatedAppointments ||
-                                0) *
-                                (selectedtreatmentType?.daysBetweenAppointments ||
-                                  0),
-                          ),
-                        )
-                          .toISOString()
-                          .split("T")[0]
-                      }
-                      _hover={{ borderColor: "orange.500" }}
-                      _focus={{ borderColor: "orange.500" }}
-                      _dark={{
-                        bg: "gray.700",
-                        color: "white",
-                        borderColor: "gray.600",
-                        _hover: { borderColor: "orange.500" },
-                      }}
-                      readOnly
-                    />
-                  </FormControl>
-                  <Button
-                    type="submit"
-                    w="full"
-                    bg="orange.400"
-                    color="white"
-                    _hover={{ bg: "orange.500" }}
-                    p={4}
-                    borderRadius="lg"
-                  >
-                    Crear nuevo Tratamiento
-                  </Button>
-                </form>
-              </Box>
+                </SimpleGrid>
+
+                <Button
+                  type="submit"
+                  w="full"
+                  bg="orange.400"
+                  color="white"
+                  _hover={{ bg: "orange.500" }}
+                  p={4}
+                  borderRadius="lg"
+                  isLoading={isLoading}
+                >
+                  Crear nuevo Tratamiento
+                </Button>
+              </form>
             </Box>
           </ModalBody>
         </ModalContent>

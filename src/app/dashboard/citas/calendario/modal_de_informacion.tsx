@@ -15,7 +15,7 @@ import {
   Textarea,
   Input,
 } from "@chakra-ui/react";
-import { Appointment, Person } from "@prisma/client";
+import { Appointment, Patient, Person } from "@prisma/client";
 import React from "react";
 
 export default function ModalDeInformacion({
@@ -23,7 +23,7 @@ export default function ModalDeInformacion({
   isSecondModalOpen,
   onCloseSecondModal,
 }: {
-  selectedAppointment: (Appointment & { practitioner: Person }) | undefined;
+  selectedAppointment: (Appointment & { subject: Patient }) | undefined;
   isSecondModalOpen: boolean;
   onCloseSecondModal: () => void;
 }) {
@@ -116,7 +116,7 @@ export default function ModalDeInformacion({
                 </FormControl>
                 <FormControl mb={6} isRequired>
                   <FormLabel color="black" _dark={{ color: "white" }}>
-                    Doctor
+                    Paciente
                   </FormLabel>
                   <Input
                     name="fecha"
@@ -125,9 +125,7 @@ export default function ModalDeInformacion({
                     borderColor="gray.400"
                     defaultValue={
                       selectedAppointment
-                        ? personFullNameFormater(
-                            selectedAppointment.practitioner,
-                          )
+                        ? personFullNameFormater(selectedAppointment.subject)
                         : ""
                     }
                     readOnly
