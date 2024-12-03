@@ -18,6 +18,7 @@ export const routes = {
   eventos_del_sistema: "/dashboard/usuarios/eventos_del_sistema",
   tratamientos: "/dashboard/tratamientos",
   tipos_de_tratamiento: "/dashboard/tratamientos/tipos_de_tratamiento",
+  deudas: "/dashboard/deudas",
   reportepacientes: "/dashboard/pacientes/reportes",
   reportecitas: "/dashboard/citas/reportes",
   reporteusuarios: "/dashboard/usuarios/reportes",

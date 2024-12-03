@@ -2,7 +2,7 @@ import CitasIcon from "../app/dashboard/components/Icons/CitasIcon";
 import DashboardIcon from "../app/dashboard/components/Icons/DashboardIcon";
 import PacienteIcon from "../app/dashboard/components/Icons/PacienteIcon";
 import UserIcon from "../app/dashboard/components/Icons/UserIcon";
-import { MdMedicalServices } from "react-icons/md";
+import { MdMedicalServices, MdMoney } from "react-icons/md";
 import { routes } from "./routes";
 import { permissionsList } from "@/enums/permissionsList";
 
@@ -111,6 +111,18 @@ export const menuOptions = [
           {
             label: "Reportes",
             route: routes.reportestratamiento,
+            permission: permissionsList.TRATAMIENTOS,
+          },
+        ],
+      },
+      {
+        icon: <MdMoney />,
+        label: "Gestión de Deudas",
+        route: "#",
+        children: [
+          {
+            label: "Panel de deudas",
+            route: routes.deudas,
             permission: permissionsList.TRATAMIENTOS,
           },
         ],
