@@ -1,12 +1,9 @@
 "use server";
 import { prisma } from "@/config/prisma";
 import { userStatus } from "@/enums/userStatus";
-import personValidation from "@/models/personValidation";
-import userValidation from "@/models/personValidation";
-import { accountPorDefecto } from "@/utils/default_account";
-import { odontogramaPorDefecto } from "@/utils/default_odontograma";
+import personValidation from "@/models/dashboard/personValidation";
 import { personFullNameFormater } from "@/utils/format_person_full_name";
-import { getPasswordExpiration } from "@/utils/get_password_expiration";
+import { getPasswordExpiration } from "@/utils/generate_password_expiration";
 import { sendEmail } from "@/utils/mailer";
 import { generatePassword } from "@/utils/password_generator";
 import { hashPassword } from "@/utils/password_hasher";
@@ -162,7 +159,7 @@ export async function editarUsuario(id: string, formData: FormData) {
       maritalStatus: formData.get("maritalStatus")?.toString() || "",
       identification: formData.get("identification")?.toString() || "",
     };
-    const result = userValidation.safeParse(data);
+    const result = personValidation.safeParse(data);
     if (!result.success) {
       return {
         success: false,

@@ -21,6 +21,7 @@ import { useRouter } from "next/navigation";
 import { mostrarAlertaError } from "@/utils/show_error_alert";
 import { routes } from "@/config/routes";
 import { createPerson } from "@/controller/paginaweb/inicio_de_sesion/registroController";
+import { getCaptchaToken } from "@/utils/captcha";
 
 interface FileWithPreview extends File {
   preview?: string;
@@ -54,23 +55,24 @@ export default function PersonForm() {
     setErrors({});
     const formData = new FormData(event.currentTarget);
     try {
-      const response = await createPerson(formData);
-      if (!response.success) {
-        if (response.error) {
-          mostrarAlertaError(response.error);
-        } else {
-          setErrors(response.errors);
-        }
-      } else {
+      const token = await getCaptchaToken();
+      const response = await createPerson(token, formData);
+      if (response.success) {
         Swal.fire({
           title: "Éxito",
-          text: "Bienvenido al centro Ortiz Nosiglia",
+          text: "Bienvenido al centro Ortiz Nosiglia \n se le envio su usuario y contraseña a su correo electrónico",
           icon: "success",
           confirmButtonText: "Aceptar",
           confirmButtonColor: "#28a745",
         }).then(() => {
           router.push(routes.login);
         });
+      } else {
+        if (response.error) {
+          mostrarAlertaError(response.error);
+        } else {
+          setErrors(response.errors);
+        }
       }
       setIsLoading(false);
     } catch (e: any) {

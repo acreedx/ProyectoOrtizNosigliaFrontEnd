@@ -1,15 +1,5 @@
 import { prisma } from "@/config/prisma";
 import { NextRequest, NextResponse } from "next/server";
-
-const getBolivianTime = () => {
-  const nowUTC = new Date();
-  const bolivianOffset = 4 * 60;
-  nowUTC.setMinutes(
-    nowUTC.getMinutes() - nowUTC.getTimezoneOffset() + bolivianOffset,
-  );
-  return nowUTC;
-};
-
 export const dynamic = "force-dynamic";
 
 export async function GET(
@@ -18,15 +8,14 @@ export async function GET(
 ) {
   try {
     const { id_dentista } = params;
-    const bolivianTime = getBolivianTime();
     const citasActivas = await prisma.appointment.findMany({
       where: {
         practitionerId: id_dentista,
         start: {
-          lte: bolivianTime,
+          lte: new Date(),
         },
         end: {
-          gte: bolivianTime,
+          gte: new Date(),
         },
       },
       include: {

@@ -3,7 +3,7 @@ import { prisma } from "@/config/prisma";
 import { userStatus } from "@/enums/userStatus";
 import { accountPorDefecto } from "@/utils/default_account";
 import { odontogramaPorDefecto } from "@/utils/default_odontograma";
-import { getPasswordExpiration } from "@/utils/get_password_expiration";
+import { getPasswordExpiration } from "@/utils/generate_password_expiration";
 import { hashPassword } from "@/utils/password_hasher";
 import { Allergy, Contact, OdontogramRows, Person } from "@prisma/client";
 

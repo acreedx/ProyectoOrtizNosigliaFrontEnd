@@ -1,6 +1,6 @@
 "use server";
 import { prisma } from "@/config/prisma";
-import personValidation from "@/models/personValidation";
+import personValidation from "@/models/dashboard/personValidation";
 import { subirFotoDePerfil } from "@/utils/upload_image";
 import { Allergy, Contact } from "@prisma/client";
 

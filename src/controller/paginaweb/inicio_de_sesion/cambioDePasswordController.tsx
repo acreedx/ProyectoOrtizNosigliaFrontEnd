@@ -1,10 +1,10 @@
 "use server";
 import { hashPassword } from "../../../utils/password_hasher";
 import bcrypt from "bcryptjs";
-import changePasswordValidation from "../../../models/changePasswordValidation";
+import changePasswordValidation from "../../../models/paginaweb/changePasswordValidation";
 import { userStatus } from "@/enums/userStatus";
 import { prisma } from "@/config/prisma";
-import { getPasswordExpiration } from "@/utils/get_password_expiration";
+import { getPasswordExpiration } from "@/utils/generate_password_expiration";
 import { logEvent } from "@/utils/logger";
 import {
   auditEventAction,
@@ -12,8 +12,29 @@ import {
   auditEventTypes,
   modulos,
 } from "@/enums/auditEventTypes";
+import { verifyCaptchaToken } from "@/utils/captcha";
 
-export async function changePassword(formData: FormData) {
+export async function changePassword(token: string | null, formData: FormData) {
+  if (!token) {
+    return {
+      success: false,
+      error: "Token no encontrado",
+    };
+  }
+  const captchaData = await verifyCaptchaToken(token);
+  console.log(token);
+  if (!captchaData) {
+    return {
+      success: false,
+      error: "Error al verificar el captcha",
+    };
+  }
+  if (!captchaData.success || captchaData.score < 0.5) {
+    return {
+      success: false,
+      error: "Captcha Fallido",
+    };
+  }
   const data = {
     username: formData.get("username")?.toString() || "",
     password: formData.get("password")?.toString() || "",

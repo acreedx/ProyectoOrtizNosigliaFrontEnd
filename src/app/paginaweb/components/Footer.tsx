@@ -75,7 +75,7 @@ export default function Footer() {
                   <li>
                     <a
                       className="inline-block text-white no-underline transition-all duration-300 ease-out hover:text-orange-400  focus:shadow-none focus:outline-none"
-                      href="#"
+                      href="#services"
                     >
                       Servicios
                     </a>
@@ -94,31 +94,57 @@ export default function Footer() {
             <div className="md:w-5/12 lg:w-1/4 xl:w-1/6">
               <div className="footer-widget mb-30">
                 <h4 className="m-0 font-raleway text-[25px] font-semibold text-[#393e46]">
-                  Reservas
+                  Servicios
                 </h4>
                 <ul className="footer-links m-0 mb-4 mt-0 list-none p-0">
                   <li>
                     <a
                       className="inline-block text-white no-underline transition-all duration-300 ease-out hover:text-orange-400 focus:shadow-none focus:outline-none"
-                      href="#"
+                      href="#services"
                     >
-                      Implantes
+                      Implantes Dentales
                     </a>
                   </li>
                   <li>
                     <a
                       className="inline-block text-white no-underline transition-all duration-300 ease-out hover:text-orange-400 focus:shadow-none focus:outline-none"
-                      href="#"
+                      href="#services"
                     >
-                      Ortodoncia
+                      Carillas - Coronas
                     </a>
                   </li>
                   <li>
                     <a
                       className="inline-block text-white no-underline transition-all duration-300 ease-out hover:text-orange-400 focus:shadow-none focus:outline-none"
-                      href="#"
+                      href="#services"
                     >
-                      Tratamiento de caries
+                      Ortodoncia Tradicional
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      className="inline-block text-white no-underline transition-all duration-300 ease-out hover:text-orange-400 focus:shadow-none focus:outline-none"
+                      href="#services"
+                    >
+                      Ortodoncia Invisible
+                    </a>
+                  </li>
+
+                  <li>
+                    <a
+                      className="inline-block text-white no-underline transition-all duration-300 ease-out hover:text-orange-400 focus:shadow-none focus:outline-none"
+                      href="#services"
+                    >
+                      Odontopediatría
+                    </a>
+                  </li>
+
+                  <li>
+                    <a
+                      className="inline-block text-white no-underline transition-all duration-300 ease-out hover:text-orange-400 focus:shadow-none focus:outline-none"
+                      href="#services"
+                    >
+                      Tratamiento Anti Ronquidos
                     </a>
                   </li>
                 </ul>

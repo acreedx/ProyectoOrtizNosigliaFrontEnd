@@ -5,7 +5,7 @@ import {
   AppointmentSpecialty,
   AppointmentStatus,
 } from "@/enums/appointmentsStatus";
-import { appointmentValidation } from "@/models/appointmentModel";
+import { appointmentValidation } from "@/models/paginaweb/appointmentValidation";
 import { Appointment, Person } from "@prisma/client";
 import { getServerSession } from "next-auth";
 

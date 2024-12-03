@@ -70,7 +70,6 @@ export async function authenticateUser(credentials: {
         personId: user.id,
         outcome: auditEventOutcome.OUTCOME_ERROR,
       });
-      return user.patient;
     } else if (user.person) {
       await logEvent({
         type: auditEventTypes.AUTHENTICATION,
@@ -82,7 +81,6 @@ export async function authenticateUser(credentials: {
         personId: user.id,
         outcome: auditEventOutcome.OUTCOME_ERROR,
       });
-      return user.person;
     }
     await prisma.user.update({
       where: { id: user.id },
@@ -139,7 +137,7 @@ export async function authenticateUser(credentials: {
       outcome: auditEventOutcome.OUTCOME_ERROR,
     });
     return user.person;
+  } else {
+    throw new Error("Tipo de usuario no encontrado");
   }
-
-  throw new Error("Tipo de usuario no encontrado");
 }

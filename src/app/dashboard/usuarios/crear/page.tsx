@@ -18,7 +18,6 @@ import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
 import Breadcrumb from "@/app/dashboard/components/Common/Breadcrumb";
 import DefaultLayout from "@/app/dashboard/components/Layouts/DefaultLayout";
-import { createEmptyFormularioPersona } from "@/app/paginaweb/inicio_de_sesion/registro/formularioRegistro";
 import BotonVolver from "@/app/dashboard/components/Common/BotonVolver";
 import { routes } from "@/config/routes";
 import { mostrarAlertaError } from "@/utils/show_error_alert";
@@ -32,7 +31,6 @@ interface FileWithPreview extends File {
 
 export default function Page() {
   const router = useRouter();
-  const [formData, setFormData] = useState(createEmptyFormularioPersona());
   const [image, setImage] = useState<FileWithPreview | null>(null);
   const [errors, setErrors] = useState<any>({});
   const [loading, setLoading] = useState(true);
@@ -51,14 +49,6 @@ export default function Page() {
     }
   }, []);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target as any;
-    setFormData((prevData) => ({ ...prevData, [name]: value }));
-  };
-  const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({ ...prevData, [name]: value }));
-  };
   const handleImageChange = async (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const selectedImage = e.target.files[0] as FileWithPreview;
@@ -154,11 +144,7 @@ export default function Page() {
             </Flex>
             <FormControl id="firstName" isRequired>
               <FormLabel>Primer Nombre</FormLabel>
-              <Input
-                name="firstName"
-                value={formData.firstName}
-                onChange={handleInputChange}
-              />
+              <Input name="firstName" />
               {errors.firstName && (
                 <Text color="red.500">
                   {errors.firstName._errors.join(", ")}
@@ -167,11 +153,7 @@ export default function Page() {
             </FormControl>
             <FormControl id="secondName" isRequired>
               <FormLabel>Segundo Nombre</FormLabel>
-              <Input
-                name="secondName"
-                value={formData.secondName}
-                onChange={handleInputChange}
-              />
+              <Input name="secondName" />
               {errors.secondName && (
                 <Text color="red.500">
                   {errors.secondName._errors.join(", ")}
@@ -180,11 +162,7 @@ export default function Page() {
             </FormControl>
             <FormControl id="familyName" isRequired>
               <FormLabel>Apellido</FormLabel>
-              <Input
-                name="familyName"
-                value={formData.familyName}
-                onChange={handleInputChange}
-              />
+              <Input name="familyName" />
               {errors.familyName && (
                 <Text color="red.500">
                   {errors.familyName._errors.join(", ")}
@@ -193,11 +171,7 @@ export default function Page() {
             </FormControl>
             <FormControl id="gender" isRequired>
               <FormLabel>Género</FormLabel>
-              <Select
-                name="gender"
-                value={formData.gender}
-                onChange={handleSelectChange}
-              >
+              <Select name="gender">
                 <option value="Masculino">Masculino</option>
                 <option value="Femenino">Femenino</option>
                 <option value="Otro">Otro</option>
@@ -205,48 +179,28 @@ export default function Page() {
             </FormControl>
             <FormControl id="phone" isRequired>
               <FormLabel>Teléfono</FormLabel>
-              <Input
-                type="number"
-                name="phone"
-                value={formData.phone}
-                onChange={handleInputChange}
-              />
+              <Input type="number" name="phone" />
               {errors.phone && (
                 <Text color="red.500">{errors.phone._errors.join(", ")}</Text>
               )}
             </FormControl>
             <FormControl id="mobile" isRequired>
               <FormLabel>Celular</FormLabel>
-              <Input
-                type="number"
-                name="mobile"
-                value={formData.mobile}
-                onChange={handleInputChange}
-              />
+              <Input type="number" name="mobile" />
               {errors.mobile && (
                 <Text color="red.500">{errors.mobile._errors.join(", ")}</Text>
               )}
             </FormControl>
             <FormControl id="email" isRequired>
               <FormLabel>Correo</FormLabel>
-              <Input
-                type="text"
-                name="email"
-                value={formData.email}
-                onChange={handleInputChange}
-              />
+              <Input type="text" name="email" />
               {errors.email && (
                 <Text color="red.500">{errors.email._errors.join(", ")}</Text>
               )}
             </FormControl>
             <FormControl id="birthDate" isRequired>
               <FormLabel>Fecha de Nacimiento</FormLabel>
-              <Input
-                type="date"
-                name="birthDate"
-                value={formData.birthDate}
-                onChange={handleInputChange}
-              />
+              <Input type="date" name="birthDate" />
               {errors.birthDate && (
                 <Text color="red.500">
                   {errors.birthDate._errors.join(", ")}
@@ -255,11 +209,7 @@ export default function Page() {
             </FormControl>
             <FormControl id="direccion" isRequired>
               <FormLabel>Dirección</FormLabel>
-              <Input
-                name="addressLine"
-                value={formData.addressLine}
-                onChange={handleInputChange}
-              />
+              <Input name="addressLine" />
               {errors.addressLine && (
                 <Text color="red.500">
                   {errors.addressLine._errors.join(", ")}
@@ -268,11 +218,7 @@ export default function Page() {
             </FormControl>
             <FormControl id="ciudad" isRequired>
               <FormLabel>Ciudad</FormLabel>
-              <Input
-                name="addressCity"
-                value={formData.addressCity}
-                onChange={handleInputChange}
-              />
+              <Input name="addressCity" />
               {errors.addressCity && (
                 <Text color="red.500">
                   {errors.addressCity._errors.join(", ")}
@@ -281,23 +227,14 @@ export default function Page() {
             </FormControl>
             <FormControl id="estadoCivil" isRequired>
               <FormLabel>Estado Civil</FormLabel>
-              <Select
-                name="maritalStatus"
-                value={formData.maritalStatus}
-                onChange={handleSelectChange}
-              >
+              <Select name="maritalStatus">
                 <option value="soltero">Soltero</option>
                 <option value="casado">Casado</option>
               </Select>
             </FormControl>
             <FormControl id="identification" isRequired>
               <FormLabel>Carnet De Identidad</FormLabel>
-              <Input
-                type="number"
-                name="identification"
-                value={formData.identification}
-                onChange={handleInputChange}
-              />
+              <Input type="number" name="identification" />
               {errors.identification && (
                 <Text color="red.500">
                   {errors.identification._errors.join(", ")}

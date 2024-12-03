@@ -12,6 +12,7 @@ import { MdOutlineVisibilityOff, MdRemoveRedEye } from "react-icons/md";
 import { mostrarAlertaError } from "@/utils/show_error_alert";
 import { routes } from "@/config/routes";
 import { changePassword } from "@/controller/paginaweb/inicio_de_sesion/cambioDePasswordController";
+import { getCaptchaToken } from "@/utils/captcha";
 
 export default function Editar() {
   const router = useRouter();
@@ -25,7 +26,8 @@ export default function Editar() {
     setIsLoading(true);
     setErrors({});
     const formData = new FormData(event.currentTarget);
-    const response = await changePassword(formData);
+    const token = await getCaptchaToken();
+    const response = await changePassword(token, formData);
     if (!response.success) {
       if (response.message) {
         mostrarAlertaError(response.message);

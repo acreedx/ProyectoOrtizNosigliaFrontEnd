@@ -1,13 +1,11 @@
 "use server";
-import AppointmentStats from "@/app/dashboard/components/Dashboard/AppointmentStats";
 import { authOptions } from "@/config/authOptions";
 import { prisma } from "@/config/prisma";
 import {
   AppointmentSpecialty,
   AppointmentStatus,
 } from "@/enums/appointmentsStatus";
-import { appointmentDentistValidation } from "@/models/appointmentDentistModel";
-import { appointmentValidation } from "@/models/appointmentModel";
+import { appointmentDentistValidation } from "@/models/dashboard/appointmentValidation";
 import { Appointment } from "@prisma/client";
 import { getServerSession } from "next-auth";
 

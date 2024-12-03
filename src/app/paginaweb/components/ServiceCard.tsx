@@ -23,13 +23,6 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
           <p className="m-0 text-[18px] font-normal leading-[28px] text-[#8c96a7]">
             {description}
           </p>
-          <a
-            href={url}
-            className="read-more inline-block text-orange-500 no-underline transition-all duration-300 ease-out hover:text-orange-700  focus:shadow-none focus:outline-none"
-          >
-            Aprender más{" "}
-            <i className="lni lni-arflex -mt-[0rem]-right -mx-[calc(1.5rem*0.5)] inline-block flex-wrap no-underline"></i>
-          </a>
         </div>
         <div className="service-overlay img-bg"></div>
       </div>

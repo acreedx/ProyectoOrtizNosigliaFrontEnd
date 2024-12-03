@@ -11,6 +11,7 @@ import Layout from "../../components/Layout";
 import Banner from "../../components/Banner";
 import { forgetPassword } from "@/controller/paginaweb/inicio_de_sesion/olvidarPasswordController";
 import { mostrarAlertaConfirmacion } from "@/utils/show_question_alert";
+import { getCaptchaToken } from "@/utils/captcha";
 
 export default function OlvidarPassword() {
   const router = useRouter();
@@ -28,12 +29,9 @@ export default function OlvidarPassword() {
       try {
         setIsLoading(true);
         setErrors({});
-        const response = await forgetPassword(formData);
-        if (!response.success) {
-          if (response.message) {
-            mostrarAlertaError(response.message);
-          }
-        } else {
+        const token = await getCaptchaToken();
+        const response = await forgetPassword(token, formData);
+        if (response.success) {
           Swal.fire({
             title: "Éxito",
             text: "La contraseña se cambio exitosamente.",
@@ -43,6 +41,10 @@ export default function OlvidarPassword() {
           }).then(() => {
             router.push(routes.login);
           });
+        } else {
+          if (response.message) {
+            mostrarAlertaError(response.message);
+          }
         }
       } catch (e: any) {
         mostrarAlertaError(e);

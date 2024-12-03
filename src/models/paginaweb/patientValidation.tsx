@@ -12,7 +12,8 @@ const schema = z
     secondName: z
       .string()
       .min(3, "Debe tener más de 3 caracteres")
-      .max(50, "Debe tener menos de 50 caracteres"),
+      .max(50, "Debe tener menos de 50 caracteres")
+      .optional(),
     familyName: z
       .string()
       .min(3, "Debe tener más de 3 caracteres")
@@ -21,7 +22,7 @@ const schema = z
       .string()
       .length(7, "El teléfono debe tener 8 dígitos")
       .regex(
-        /^(?!.*(\d)\1{7})[234]\d{6}$/, // Valida 8 dígitos, empieza con 2, 3 o 4, y no contiene números repetidos
+        /^(?!.*(\d)\1{7})[234]\d{6}$/,
         "El teléfono debe tener 8 dígitos, empezar con 2, 3 o 4, y contener solo números válidos.",
       )
       .refine(
@@ -32,7 +33,7 @@ const schema = z
       .string()
       .length(8, "El celular debe tener 8 dígitos")
       .regex(
-        /^(?!.*(\d)\1{7})[67]\d{7}$/, // Valida 8 dígitos, empieza con 6 o 7, y no contiene números repetidos
+        /^(?!.*(\d)\1{7})[67]\d{7}$/,
         "El celular debe tener 8 dígitos, empezar con 6 o 7, y contener solo números válidos.",
       )
       .refine(

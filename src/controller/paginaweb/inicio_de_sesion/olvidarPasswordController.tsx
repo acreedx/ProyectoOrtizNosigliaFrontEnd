@@ -4,7 +4,7 @@ import { sendEmail } from "@/utils/mailer";
 import { generatePassword } from "@/utils/password_generator";
 import { hashPassword } from "@/utils/password_hasher";
 import { prisma } from "@/config/prisma";
-import { getPasswordExpiration } from "@/utils/get_password_expiration";
+import { getPasswordExpiration } from "@/utils/generate_password_expiration";
 import {
   auditEventAction,
   auditEventOutcome,
@@ -12,8 +12,29 @@ import {
   modulos,
 } from "@/enums/auditEventTypes";
 import { logEvent } from "@/utils/logger";
+import { verifyCaptchaToken } from "@/utils/captcha";
 
-export async function forgetPassword(formData: FormData) {
+export async function forgetPassword(token: string | null, formData: FormData) {
+  if (!token) {
+    return {
+      success: false,
+      error: "Token no encontrado",
+    };
+  }
+  const captchaData = await verifyCaptchaToken(token);
+  console.log(token);
+  if (!captchaData) {
+    return {
+      success: false,
+      error: "Error al verificar el captcha",
+    };
+  }
+  if (!captchaData.success || captchaData.score < 0.5) {
+    return {
+      success: false,
+      error: "Captcha Fallido",
+    };
+  }
   const data = {
     username: formData.get("username")?.toString() || "",
     email: formData.get("email")?.toString() || "",

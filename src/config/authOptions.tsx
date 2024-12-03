@@ -31,10 +31,15 @@ export const authOptions: NextAuthOptions = {
         if (!captchaData.success || captchaData.score < 0.5) {
           throw new Error("Captcha Fallido");
         }
-        return await authenticateUser({
+        const response = await authenticateUser({
           username: credentials.username,
           password: credentials.password,
         });
+        if (!response) {
+          throw new Error("Credenciales inválidas");
+        }
+        console.log(response);
+        return response;
       },
     }),
   ],
