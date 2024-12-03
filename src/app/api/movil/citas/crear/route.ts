@@ -27,6 +27,10 @@ export async function POST(req: NextRequest) {
     if (period === "AM" && hour === "12") {
       hour = "00";
     }
+    hour = parseInt(hour) + 4;
+    if (hour >= 24) {
+      hour = hour - 24;
+    }
     const formattedTime = `${String(hour).padStart(2, "0")}:${String(minute).slice(0, 2)}`;
     const start = new Date(`${formattedDate}T${formattedTime}:00`);
     const end = new Date(start.getTime() + 30 * 60 * 1000);
