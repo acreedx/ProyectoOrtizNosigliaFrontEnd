@@ -36,10 +36,18 @@ export async function POST(req: NextRequest) {
           { error: "El usuario no tiene los permisos requeridos" },
           { status: 403 },
         );
+      } else {
+        const token = jwt.sign({ access_token: user }, key, {
+          expiresIn: "1h",
+        });
+        return NextResponse.json({ access_token: token });
       }
+    } else {
+      return NextResponse.json(
+        { error: "El usuario no tiene los permisos requeridos" },
+        { status: 500 },
+      );
     }
-    const token = jwt.sign({ access_token: user }, key, { expiresIn: "1h" });
-    return NextResponse.json({ access_token: token });
   } catch (error: any) {
     return NextResponse.json({ message: error.message }, { status: 500 });
   }
