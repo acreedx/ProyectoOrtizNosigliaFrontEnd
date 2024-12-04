@@ -1,7 +1,7 @@
 export enum permissionsList {
   SIN_PERMISO = "all",
   PAGINA_WEB = "pg_adm",
-  APLICACION_MOVIL = "dsh_adm",
+  APLICACION_MOVIL = "mov_adm",
   DASHBOARD = "dsh_pct_adm",
   PACIENTES = "dsh_org_adm",
   ORGANIZACIONES = "dsh_cts_adm",

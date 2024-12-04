@@ -185,7 +185,9 @@ export async function editarUsuario(id: string, formData: FormData) {
       addressCity: formData.get("addressCity")?.toString() || "",
       maritalStatus: formData.get("maritalStatus")?.toString() || "",
       identification: formData.get("identification")?.toString() || "",
+      rolId: formData.get("rol")?.toString() || "",
     };
+    console.log(data);
     const result = personValidation.safeParse(data);
     if (!result.success) {
       return {
@@ -201,6 +203,7 @@ export async function editarUsuario(id: string, formData: FormData) {
         data: {
           ...data,
           photoUrl: await subirFotoDePerfil(profilePicture),
+          rolId: data.rolId,
         },
       });
       if (!updatedUser) {
@@ -227,6 +230,7 @@ export async function editarUsuario(id: string, formData: FormData) {
         },
         data: {
           ...data,
+          rolId: data.rolId,
         },
       });
       if (!updatedUser) {

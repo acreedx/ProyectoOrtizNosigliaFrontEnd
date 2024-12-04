@@ -26,21 +26,23 @@ export async function POST(req: NextRequest) {
       );
     }
     if ("rol" in user && user.rol) {
-      if (
-        !PersonHasPermission(
-          user.rol.permissions,
-          permissionsList.APLICACION_MOVIL,
-        )
-      ) {
-        return NextResponse.json(
-          { error: "El usuario no tiene los permisos requeridos" },
-          { status: 403 },
-        );
-      } else {
+      const isPermited = PersonHasPermission(
+        user.rol.permissions,
+        permissionsList.APLICACION_MOVIL,
+      );
+      console.log(user.rol.permissions);
+      console.log(permissionsList.APLICACION_MOVIL);
+
+      if (isPermited) {
         const token = jwt.sign({ access_token: user }, key, {
           expiresIn: "1h",
         });
         return NextResponse.json({ access_token: token });
+      } else {
+        return NextResponse.json(
+          { error: "El usuario no tiene los permisos requeridos" },
+          { status: 403 },
+        );
       }
     } else {
       return NextResponse.json(

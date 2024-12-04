@@ -194,7 +194,11 @@ export default function EditUserForm({
           <FormLabel>Rol</FormLabel>
           <Select name="rol" defaultValue={user.rolId}>
             {roles.map((rol: Rol) => (
-              <option key={rol.id} value={rol.id}>
+              <option
+                key={rol.id}
+                value={rol.id}
+                selected={user.rolId === rol.id}
+              >
                 {rol.roleName}
               </option>
             ))}
