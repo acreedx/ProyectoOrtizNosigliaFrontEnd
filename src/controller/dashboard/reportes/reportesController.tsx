@@ -25,7 +25,7 @@ export async function ReportePacientes({
       }
     }
 
-    const pacientes = await prisma.person.findMany({
+    const pacientes = await prisma.patient.findMany({
       where: whereClause,
       select: {
         id: true,
