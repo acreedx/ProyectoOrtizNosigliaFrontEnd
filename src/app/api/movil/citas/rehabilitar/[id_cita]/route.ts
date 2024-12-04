@@ -29,7 +29,7 @@ export async function PUT(
         status: AppointmentStatus.STATUS_PENDIENTE,
       },
     });
-    return NextResponse.json({ message: "Cita confirmada con éxito" });
+    return NextResponse.json({ message: "Cita confirmada con exito" });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
