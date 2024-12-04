@@ -16,6 +16,7 @@ import {
   Select,
   Button,
   Input,
+  SimpleGrid,
 } from "@chakra-ui/react";
 import { CarePlan, Patient, Person } from "@prisma/client";
 
@@ -70,7 +71,7 @@ export default function ModalEditar({
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered>
       <ModalOverlay />
-      <ModalContent p={8}>
+      <ModalContent p={8} maxWidth="800px">
         <ModalHeader>
           <Heading fontSize="2xl" color="black" _dark={{ color: "white" }}>
             Editar Tratamiento
@@ -81,195 +82,220 @@ export default function ModalEditar({
           <Box w="full">
             <Box>
               <form onSubmit={handleSubmitEditar}>
-                <input
-                  type="hidden"
-                  name="id"
-                  defaultValue={selectedTreatment?.id}
-                />
-                <FormControl mb={4} isRequired>
-                  <FormLabel color="black" _dark={{ color: "white" }}>
-                    Tipo de tratamiento
-                  </FormLabel>
-                  <Input
-                    name="treatmentType"
-                    type="text"
-                    bg="transparent"
-                    borderColor="gray.400"
-                    defaultValue={selectedTreatment?.treatmentType}
-                    _hover={{ borderColor: "orange.500" }}
-                    _focus={{ borderColor: "orange.500" }}
-                    _dark={{
-                      bg: "gray.700",
-                      color: "white",
-                      borderColor: "gray.600",
-                      _hover: { borderColor: "orange.500" },
-                    }}
+                <SimpleGrid columns={[1, 1, 2]} spacing={4}>
+                  <input
+                    type="hidden"
+                    name="id"
+                    defaultValue={selectedTreatment?.id}
                   />
-                </FormControl>
-                <FormControl mb={4} isRequired>
-                  <FormLabel color="black" _dark={{ color: "white" }}>
-                    Título
-                  </FormLabel>
-                  <Input
-                    name="title"
-                    type="text"
-                    bg="transparent"
-                    borderColor="gray.400"
-                    defaultValue={selectedTreatment?.title}
-                    _hover={{ borderColor: "orange.500" }}
-                    _focus={{ borderColor: "orange.500" }}
-                    _dark={{
-                      bg: "gray.700",
-                      color: "white",
-                      borderColor: "gray.600",
-                      _hover: { borderColor: "orange.500" },
-                    }}
-                  />
-                </FormControl>
-                <FormControl mb={4} isRequired>
-                  <FormLabel color="black" _dark={{ color: "white" }}>
-                    Paciente
-                  </FormLabel>
-                  <Select
-                    name="paciente"
-                    bg="transparent"
-                    placeholder="Seleccione un Paciente"
-                    borderColor="gray.400"
-                    _hover={{ borderColor: "orange.500" }}
-                    _focus={{ borderColor: "orange.500" }}
-                    _dark={{
-                      bg: "gray.700",
-                      color: "white",
-                      borderColor: "gray.600",
-                      _hover: { borderColor: "orange.500" },
-                    }}
-                    defaultValue={selectedTreatment?.subjectId}
-                  >
-                    {pacientes.map((paciente, index) => {
-                      return (
-                        <option key={index} value={paciente.id}>
-                          {personFullNameFormater(paciente) +
-                            " - " +
-                            paciente.identification}
-                        </option>
-                      );
-                    })}
-                  </Select>
-                </FormControl>
-                <FormControl mb={4} isRequired>
-                  <FormLabel color="black" _dark={{ color: "white" }}>
-                    Descripción
-                  </FormLabel>
-                  <Input
-                    name="description"
-                    type="text"
-                    bg="transparent"
-                    borderColor="gray.400"
-                    defaultValue={selectedTreatment?.description}
-                    _hover={{ borderColor: "orange.500" }}
-                    _focus={{ borderColor: "orange.500" }}
-                    _dark={{
-                      bg: "gray.700",
-                      color: "white",
-                      borderColor: "gray.600",
-                      _hover: { borderColor: "orange.500" },
-                    }}
-                  />
-                </FormControl>
-                <FormControl mb={4} isRequired>
-                  <FormLabel color="black" _dark={{ color: "white" }}>
-                    Citas estimadas
-                  </FormLabel>
-                  <Input
-                    name="estimatedAppointments"
-                    type="number"
-                    bg="transparent"
-                    borderColor="gray.400"
-                    defaultValue={selectedTreatment?.estimatedAppointments}
-                    _hover={{ borderColor: "orange.500" }}
-                    _focus={{ borderColor: "orange.500" }}
-                    _dark={{
-                      bg: "gray.700",
-                      color: "white",
-                      borderColor: "gray.600",
-                      _hover: { borderColor: "orange.500" },
-                    }}
-                  />
-                </FormControl>
-                <FormControl mb={4} isRequired>
-                  <FormLabel color="black" _dark={{ color: "white" }}>
-                    Costo Estimado
-                  </FormLabel>
-                  <Input
-                    name="costEstimation"
-                    type="number"
-                    bg="transparent"
-                    borderColor="gray.400"
-                    defaultValue={selectedTreatment?.costEstimation}
-                    _hover={{ borderColor: "orange.500" }}
-                    _focus={{ borderColor: "orange.500" }}
-                    _dark={{
-                      bg: "gray.700",
-                      color: "white",
-                      borderColor: "gray.600",
-                      _hover: { borderColor: "orange.500" },
-                    }}
-                  />
-                </FormControl>
-                <FormControl mb={4} isRequired>
-                  <FormLabel color="black" _dark={{ color: "white" }}>
-                    Fecha Inicio
-                  </FormLabel>
-                  <Input
-                    name="fecha_inicio"
-                    type="date"
-                    bg="transparent"
-                    borderColor="gray.400"
-                    defaultValue={
-                      selectedTreatment?.startDate.toISOString().split("T")[0]
-                    }
-                    _hover={{ borderColor: "orange.500" }}
-                    _focus={{ borderColor: "orange.500" }}
-                    _dark={{
-                      bg: "gray.700",
-                      color: "white",
-                      borderColor: "gray.600",
-                      _hover: { borderColor: "orange.500" },
-                    }}
-                    readOnly
-                  />
-                </FormControl>
-                <FormControl mb={6} isRequired>
-                  <FormLabel color="black" _dark={{ color: "white" }}>
-                    Fecha Fin Estimada
-                  </FormLabel>
-                  <Input
-                    name="fecha_fin"
-                    type="date"
-                    bg="transparent"
-                    borderColor="gray.400"
-                    defaultValue={
-                      new Date(
-                        new Date().setDate(
-                          new Date().getDate() +
-                            (selectedTreatment?.estimatedAppointments || 0) *
-                              (selectedTreatment?.daysBetweenAppointments || 0),
-                        ),
-                      )
-                        .toISOString()
-                        .split("T")[0]
-                    }
-                    _hover={{ borderColor: "orange.500" }}
-                    _focus={{ borderColor: "orange.500" }}
-                    _dark={{
-                      bg: "gray.700",
-                      color: "white",
-                      borderColor: "gray.600",
-                      _hover: { borderColor: "orange.500" },
-                    }}
-                    readOnly
-                  />
-                </FormControl>
+                  <FormControl mb={4} isRequired>
+                    <FormLabel color="black" _dark={{ color: "white" }}>
+                      Tipo de tratamiento
+                    </FormLabel>
+                    <Input
+                      name="treatmentType"
+                      type="text"
+                      bg="transparent"
+                      borderColor="gray.400"
+                      defaultValue={selectedTreatment?.treatmentType}
+                      _hover={{ borderColor: "orange.500" }}
+                      _focus={{ borderColor: "orange.500" }}
+                      _dark={{
+                        bg: "gray.700",
+                        color: "white",
+                        borderColor: "gray.600",
+                        _hover: { borderColor: "orange.500" },
+                      }}
+                    />
+                  </FormControl>
+                  <FormControl mb={4} isRequired>
+                    <FormLabel color="black" _dark={{ color: "white" }}>
+                      Título
+                    </FormLabel>
+                    <Input
+                      name="title"
+                      type="text"
+                      bg="transparent"
+                      borderColor="gray.400"
+                      defaultValue={selectedTreatment?.title}
+                      _hover={{ borderColor: "orange.500" }}
+                      _focus={{ borderColor: "orange.500" }}
+                      _dark={{
+                        bg: "gray.700",
+                        color: "white",
+                        borderColor: "gray.600",
+                        _hover: { borderColor: "orange.500" },
+                      }}
+                    />
+                  </FormControl>
+                  <FormControl mb={4} isRequired>
+                    <FormLabel color="black" _dark={{ color: "white" }}>
+                      Paciente
+                    </FormLabel>
+                    <Select
+                      name="paciente"
+                      bg="transparent"
+                      placeholder="Seleccione un Paciente"
+                      borderColor="gray.400"
+                      _hover={{ borderColor: "orange.500" }}
+                      _focus={{ borderColor: "orange.500" }}
+                      _dark={{
+                        bg: "gray.700",
+                        color: "white",
+                        borderColor: "gray.600",
+                        _hover: { borderColor: "orange.500" },
+                      }}
+                      defaultValue={selectedTreatment?.subjectId}
+                    >
+                      {pacientes.map((paciente, index) => {
+                        return (
+                          <option key={index} value={paciente.id}>
+                            {personFullNameFormater(paciente) +
+                              " - " +
+                              paciente.identification}
+                          </option>
+                        );
+                      })}
+                    </Select>
+                  </FormControl>
+                  <FormControl mb={4} isRequired>
+                    <FormLabel color="black" _dark={{ color: "white" }}>
+                      Descripción
+                    </FormLabel>
+                    <Input
+                      name="description"
+                      type="text"
+                      bg="transparent"
+                      borderColor="gray.400"
+                      defaultValue={selectedTreatment?.description}
+                      _hover={{ borderColor: "orange.500" }}
+                      _focus={{ borderColor: "orange.500" }}
+                      _dark={{
+                        bg: "gray.700",
+                        color: "white",
+                        borderColor: "gray.600",
+                        _hover: { borderColor: "orange.500" },
+                      }}
+                    />
+                  </FormControl>
+                  <FormControl mb={4} isRequired>
+                    <FormLabel color="black" _dark={{ color: "white" }}>
+                      Citas estimadas
+                    </FormLabel>
+                    <Input
+                      name="estimatedAppointments"
+                      type="number"
+                      bg="transparent"
+                      borderColor="gray.400"
+                      defaultValue={selectedTreatment?.estimatedAppointments}
+                      _hover={{ borderColor: "orange.500" }}
+                      _focus={{ borderColor: "orange.500" }}
+                      _dark={{
+                        bg: "gray.700",
+                        color: "white",
+                        borderColor: "gray.600",
+                        _hover: { borderColor: "orange.500" },
+                      }}
+                    />
+                  </FormControl>
+                  <FormControl mb={4} isRequired>
+                    <FormLabel color="black" _dark={{ color: "white" }}>
+                      Días entre citas
+                    </FormLabel>
+                    <Input
+                      name="daysBetweenAppointments"
+                      type="number"
+                      bg="transparent"
+                      borderColor="gray.400"
+                      defaultValue={
+                        selectedTreatment?.daysBetweenAppointments || ""
+                      }
+                      _hover={{ borderColor: "orange.500" }}
+                      _focus={{ borderColor: "orange.500" }}
+                      _dark={{
+                        bg: "gray.700",
+                        color: "white",
+                        borderColor: "gray.600",
+                        _hover: { borderColor: "orange.500" },
+                      }}
+                    />
+                  </FormControl>
+                  <FormControl mb={4} isRequired>
+                    <FormLabel color="black" _dark={{ color: "white" }}>
+                      Costo Estimado
+                    </FormLabel>
+                    <Input
+                      name="costEstimation"
+                      type="number"
+                      bg="transparent"
+                      borderColor="gray.400"
+                      defaultValue={selectedTreatment?.costEstimation}
+                      _hover={{ borderColor: "orange.500" }}
+                      _focus={{ borderColor: "orange.500" }}
+                      _dark={{
+                        bg: "gray.700",
+                        color: "white",
+                        borderColor: "gray.600",
+                        _hover: { borderColor: "orange.500" },
+                      }}
+                    />
+                  </FormControl>
+                  <FormControl mb={4} isRequired>
+                    <FormLabel color="black" _dark={{ color: "white" }}>
+                      Fecha Inicio
+                    </FormLabel>
+                    <Input
+                      name="fecha_inicio"
+                      type="date"
+                      bg="transparent"
+                      borderColor="gray.400"
+                      defaultValue={
+                        selectedTreatment?.startDate.toISOString().split("T")[0]
+                      }
+                      _hover={{ borderColor: "orange.500" }}
+                      _focus={{ borderColor: "orange.500" }}
+                      _dark={{
+                        bg: "gray.700",
+                        color: "white",
+                        borderColor: "gray.600",
+                        _hover: { borderColor: "orange.500" },
+                      }}
+                      readOnly
+                    />
+                  </FormControl>
+                  <FormControl mb={6} isRequired>
+                    <FormLabel color="black" _dark={{ color: "white" }}>
+                      Fecha Fin Estimada
+                    </FormLabel>
+                    <Input
+                      name="fecha_fin"
+                      type="date"
+                      bg="transparent"
+                      borderColor="gray.400"
+                      defaultValue={
+                        new Date(
+                          new Date().setDate(
+                            new Date().getDate() +
+                              (selectedTreatment?.estimatedAppointments || 0) *
+                                (selectedTreatment?.daysBetweenAppointments ||
+                                  0),
+                          ),
+                        )
+                          .toISOString()
+                          .split("T")[0]
+                      }
+                      _hover={{ borderColor: "orange.500" }}
+                      _focus={{ borderColor: "orange.500" }}
+                      _dark={{
+                        bg: "gray.700",
+                        color: "white",
+                        borderColor: "gray.600",
+                        _hover: { borderColor: "orange.500" },
+                      }}
+                      readOnly
+                    />
+                  </FormControl>
+                </SimpleGrid>
                 <Button
                   type="submit"
                   w="full"

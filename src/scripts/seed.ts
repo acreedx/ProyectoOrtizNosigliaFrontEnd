@@ -258,6 +258,93 @@ async function seed() {
     } else {
       console.log("Los roles ya existen.");
     }
+    const existingtreatments = await prisma.treatments.findMany();
+    const treatmentsData = [
+      {
+        treatmentType: "Endodoncia",
+        title: "Endodoncia Dental",
+        description:
+          "La endodoncia es un procedimiento para eliminar el tejido dañado o infectado dentro de un diente y sellarlo para prevenir infecciones futuras.",
+        estimatedAppointments: 1,
+        daysBetweenAppointments: 1,
+        costEstimation: 650.0,
+        active: true,
+      },
+      {
+        treatmentType: "Implantes Dentales",
+        title: "Implantes Dentales",
+        description:
+          "Los implantes dentales son tornillos de titanio que se colocan en el hueso maxilar con el fin de sustituir a las raíces de las piezas perdidas.",
+        estimatedAppointments: 3,
+        daysBetweenAppointments: 14,
+        costEstimation: 5000.0,
+        active: true,
+      },
+      {
+        treatmentType: "Carillas - Coronas",
+        title: "Carillas y Coronas Dentales",
+        description:
+          "Ofrecemos carillas y coronas impresas con sistema CAD CAM, confeccionadas en una impresora digital para máxima calidad y fiabilidad.",
+        estimatedAppointments: 2,
+        daysBetweenAppointments: 7,
+        costEstimation: 2500.0,
+        active: true,
+      },
+      {
+        treatmentType: "Ortodoncia Tradicional",
+        title: "Ortodoncia Tradicional",
+        description:
+          "Utilizamos brackets estéticos y efectivos que benefician la sonrisa y la salud oral, reduciendo las visitas a consulta.",
+        estimatedAppointments: 10,
+        daysBetweenAppointments: 30,
+        costEstimation: 18000.0,
+        active: true,
+      },
+      {
+        treatmentType: "Ortodoncia Invisible",
+        title: "Ortodoncia Invisible (Invisalign)",
+        description:
+          "La ortodoncia invisible consiste en férulas transparentes removibles situadas en la parte externa de los dientes, casi imperceptibles.",
+        estimatedAppointments: 10,
+        daysBetweenAppointments: 30,
+        costEstimation: 22000.0,
+        active: true,
+      },
+      {
+        treatmentType: "Odontopediatría",
+        title: "Odontología Pediátrica",
+        description:
+          "Tratamientos preventivos enfocados en la salud dental infantil, marcando el futuro de la salud dental de los menores.",
+        estimatedAppointments: 1,
+        daysBetweenAppointments: 7,
+        costEstimation: 300.0,
+        active: true,
+      },
+      {
+        treatmentType: "Tratamiento Anti Ronquidos",
+        title: "Tratamiento Anti-Ronquidos",
+        description:
+          "Ayudamos a corregir la posición de la mandíbula durante el sueño, mejorando la oxigenación y el paso del aire.",
+        estimatedAppointments: 2,
+        daysBetweenAppointments: 15,
+        costEstimation: 1200.0,
+        active: true,
+      },
+    ];
+    if (existingtreatments.length === 0) {
+      console.log("No se encontraron Tratamientos. Insertando...");
+      await Promise.all(
+        treatmentsData.map(async (treatment) => {
+          await prisma.treatments.create({
+            data: {
+              ...treatment,
+            },
+          });
+        }),
+      );
+    } else {
+      console.log("Los tratamientos ya existen.");
+    }
   } catch (error) {
     console.error("Error al inicializar los datos:", error);
   } finally {

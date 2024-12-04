@@ -4,8 +4,17 @@ import { AccountStatus } from "@/enums/accountStatus";
 
 export async function listarDeudas() {
   try {
-    const deudas = await prisma.account.findMany();
-    return deudas;
+    const cuentas = await prisma.patient.findMany({
+      include: {
+        account: true,
+      },
+      where: {
+        account: {
+          billingStatus: AccountStatus.CON_DEUDA,
+        },
+      },
+    });
+    return cuentas;
   } catch (error) {
     console.log(error);
     throw new Error("Error al listar las cuentas");

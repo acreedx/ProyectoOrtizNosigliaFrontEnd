@@ -67,6 +67,10 @@ export default function PersonForm() {
       if (response.message) {
         mostrarAlertaExito(response.message);
         fetchData();
+      } else {
+        if (response.errors) {
+          setErrors(response.errors);
+        }
       }
       setIsLoading(false);
     } catch (e: any) {

@@ -9,7 +9,12 @@ import {
   Spinner,
   useDisclosure,
 } from "@chakra-ui/react";
-import { CheckIcon, CloseIcon, InfoIcon } from "@chakra-ui/icons";
+import {
+  CheckCircleIcon,
+  CheckIcon,
+  CloseIcon,
+  InfoIcon,
+} from "@chakra-ui/icons";
 import { SetStateAction, useEffect, useState } from "react";
 import { Appointment, Patient, Person } from "@prisma/client";
 import {
@@ -28,10 +33,18 @@ import Calendario from "./calendario";
 import { listarPacientes } from "@/controller/dashboard/pacientes/pacientesController";
 import ModalDeInformacion from "./modal_de_informacion";
 import { listarCitasPorDentista } from "@/controller/dashboard/citas/citasController";
+import { MdOutlineIncompleteCircle } from "react-icons/md";
+import ModalDeCompletacion from "./modal_de_completacion";
 
 export default function CrearCitas() {
   const [loading, setloading] = useState(true);
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const {
+    isOpen: isSecondModalOpen,
+    onOpen: onSecondModalOpen,
+    onClose: onSecondModalClose,
+  } = useDisclosure();
+
   const [selectedAppointment, setselectedAppointment] = useState<
     Appointment & { subject: Patient }
   >();
@@ -134,6 +147,7 @@ export default function CrearCitas() {
                     onOpen={onOpen}
                     appointmentData={citaspaciente}
                     reloadData={fetchData}
+                    onOpenSecondModal={onSecondModalOpen}
                   />
                 );
               })}
@@ -164,6 +178,7 @@ export default function CrearCitas() {
                     onOpen={onOpen}
                     appointmentData={citaspaciente}
                     reloadData={fetchData}
+                    onOpenSecondModal={onSecondModalOpen}
                   />
                 );
               })}
@@ -194,6 +209,7 @@ export default function CrearCitas() {
                     appointmentData={citaspaciente}
                     onOpen={onOpen}
                     reloadData={fetchData}
+                    onOpenSecondModal={onSecondModalOpen}
                   />
                 );
               })}
@@ -224,6 +240,7 @@ export default function CrearCitas() {
                     appointmentData={citaspaciente}
                     onOpen={onOpen}
                     reloadData={fetchData}
+                    onOpenSecondModal={onSecondModalOpen}
                   />
                 );
               })}
@@ -255,6 +272,12 @@ export default function CrearCitas() {
         isSecondModalOpen={isOpen}
         onCloseSecondModal={onClose}
       />
+      <ModalDeCompletacion
+        selectedAppointment={selectedAppointment}
+        isSecondModalOpen={isSecondModalOpen}
+        onCloseSecondModal={onSecondModalClose}
+        reloadData={fetchData}
+      />
     </Flex>
   );
 }
@@ -264,11 +287,13 @@ function AppointmentCard({
   reloadData,
   setselectedappointment,
   onOpen,
+  onOpenSecondModal,
 }: {
   appointmentData: Appointment & { subject: Patient };
   reloadData: Function;
   setselectedappointment: Function;
   onOpen: () => void;
+  onOpenSecondModal: () => void;
 }) {
   const handleConfirm = async (e: string) => {
     try {
@@ -303,6 +328,10 @@ function AppointmentCard({
   const handleShowInfo = async (e: Appointment & { subject: Patient }) => {
     setselectedappointment(e);
     onOpen();
+  };
+  const handleComplete = async (e: Appointment & { subject: Patient }) => {
+    setselectedappointment(e);
+    onOpenSecondModal();
   };
   return (
     <Flex
@@ -346,16 +375,28 @@ function AppointmentCard({
           />
         )}
         {appointmentData.status === AppointmentStatus.STATUS_CONFIRMADA && (
-          <IconButton
-            aria-label="Cancel"
-            onClick={() => {
-              handleCancel(appointmentData);
-            }}
-            icon={<CloseIcon />}
-            _hover={{ shadow: "lg" }}
-            backgroundColor={"red.400"}
-            color={"white"}
-          />
+          <>
+            <IconButton
+              aria-label="Complete"
+              icon={<CheckCircleIcon />}
+              onClick={() => {
+                handleComplete(appointmentData);
+              }}
+              _hover={{ shadow: "lg" }}
+              backgroundColor={"green.400"}
+              color={"white"}
+            />
+            <IconButton
+              aria-label="Cancel"
+              onClick={() => {
+                handleCancel(appointmentData);
+              }}
+              icon={<CloseIcon />}
+              _hover={{ shadow: "lg" }}
+              backgroundColor={"red.400"}
+              color={"white"}
+            />
+          </>
         )}
         {appointmentData.status === AppointmentStatus.STATUS_PENDIENTE && (
           <IconButton

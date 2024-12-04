@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import Breadcrumb from "../components/Common/Breadcrumb";
 import DefaultLayout from "../components/Layouts/DefaultLayout";
-import { Account } from "@prisma/client";
+import { Account, Patient } from "@prisma/client";
 import { mostrarAlertaError } from "@/utils/show_error_alert";
 import {
   listarDeudas,
@@ -14,19 +14,25 @@ import {
   noDataFoundComponent,
 } from "@/utils/pagination_options";
 import DataTable, { TableColumn } from "react-data-table-component";
-import { EditIcon } from "@chakra-ui/icons";
 import { AccountStatus } from "@/enums/accountStatus";
 import { MdPayment } from "react-icons/md";
 import { mostrarAlertaConfirmacion } from "@/utils/show_question_alert";
 import { mostrarAlertaExito } from "@/utils/show_success_alert";
+import { personFullNameFormater } from "@/utils/format_person_full_name";
 
 export default function Page() {
   const [loading, setloading] = useState(true);
-  const [deudas, setdeudas] = useState<Account[]>([]);
-  const columns: TableColumn<Account>[] = [
+  const [deudas, setdeudas] = useState<(Patient & { account: Account })[]>([]);
+  const columns: TableColumn<Patient & { account: Account }>[] = [
+    {
+      name: "Paciente",
+      cell: (row) => personFullNameFormater(row),
+      ignoreRowClick: true,
+      sortable: true,
+    },
     {
       name: "Balance de cuenta",
-      cell: (row) => row.balance,
+      cell: (row) => row.account.balance + " bs",
       ignoreRowClick: true,
       sortable: true,
     },
@@ -35,12 +41,14 @@ export default function Page() {
       cell: (row) => (
         <Badge
           colorScheme={
-            row.billingStatus === AccountStatus.CON_DEUDA ? "red" : "green"
+            row.account.billingStatus === AccountStatus.CON_DEUDA
+              ? "red"
+              : "green"
           }
           padding={2}
           rounded={20}
         >
-          {row.billingStatus === AccountStatus.CON_DEUDA
+          {row.account.billingStatus === AccountStatus.CON_DEUDA
             ? "En deuda"
             : "Sin deuda"}
         </Badge>
@@ -51,7 +59,7 @@ export default function Page() {
       name: "Acciones",
       cell: (row) => (
         <div className="flex gap-4">
-          {row.billingStatus === AccountStatus.CON_DEUDA && (
+          {row.account.billingStatus === AccountStatus.CON_DEUDA && (
             <IconButton
               aria-label="Pagar deuda"
               title="Pagar deuda"

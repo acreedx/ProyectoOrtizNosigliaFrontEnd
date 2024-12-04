@@ -1,6 +1,8 @@
 "use server";
 import { authOptions } from "@/config/authOptions";
 import { prisma } from "@/config/prisma";
+import { costoCita } from "@/config/system_options";
+import { AccountStatus } from "@/enums/accountStatus";
 import {
   AppointmentSpecialty,
   AppointmentStatus,
@@ -217,14 +219,43 @@ export async function cancelarCita(id: string) {
   }
 }
 
-export async function completarCita(id: string) {
+export async function completarCita(id: string, form: FormData) {
   try {
-    await prisma.appointment.update({
+    const updatedAppointment = await prisma.appointment.update({
       where: {
         id: id,
       },
       data: {
         status: AppointmentStatus.STATUS_COMPLETADA,
+      },
+    });
+    await prisma.encounter.create({
+      data: {
+        type: updatedAppointment.specialty,
+        start: updatedAppointment.start,
+        end: updatedAppointment.end,
+        reason: updatedAppointment.reason,
+        diagnosis: "",
+        subjectId: updatedAppointment.subjectId,
+        practitionerId: updatedAppointment.practitionerId,
+        appointmentId: updatedAppointment.id,
+      },
+    });
+    await prisma.patient.update({
+      where: {
+        id: updatedAppointment.subjectId,
+      },
+      data: {
+        account: {
+          update: {
+            data: {
+              balance: {
+                increment: costoCita,
+              },
+              billingStatus: AccountStatus.CON_DEUDA,
+            },
+          },
+        },
       },
     });
     return { message: "Éxito al completar la cita" };

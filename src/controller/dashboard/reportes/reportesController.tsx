@@ -84,8 +84,8 @@ export async function ReporteOrganizaciones({
 
     return organizaciones;
   } catch (error) {
-    console.error("Error al obtener organizaciones:", error);
-    throw new Error("Error al listar las organizaciones");
+    console.error(error);
+    throw new Error("Error al realizar el reporte");
   }
 }
 
@@ -129,8 +129,8 @@ export async function ReporteCitas({
     console.log(citas);
     return citas;
   } catch (error) {
-    console.error("Error al obtener citas:", error);
-    throw new Error("Error al listar las citas");
+    console.error(error);
+    throw new Error("Error al realizar el reporte");
   }
 }
 
@@ -182,8 +182,8 @@ export async function ReporteUsuarios({
     });
     return usuarios;
   } catch (error) {
-    console.error("Error al obtener organizaciones:", error);
-    throw new Error("Error al listar las organizaciones");
+    console.error(error);
+    throw new Error("Error al realizar el reporte");
   }
 }
 
@@ -233,8 +233,8 @@ export async function ReporteTratamientos({
 
     return carePlans;
   } catch (error) {
-    console.error("Error al obtener tratamientos:", error);
-    throw new Error("Error al listar los tratamientos");
+    console.error(error);
+    throw new Error("Error al realizar el reporte");
   }
 }
 
@@ -272,8 +272,8 @@ export async function ReporteTiposTratamiento({
     });
     return tratamientos;
   } catch (error) {
-    console.error("Error al obtener tipos de tratamiento:", error);
-    throw new Error("Error al listar los tratamientos");
+    console.error(error);
+    throw new Error("Error al realizar el reporte");
   }
 }
 export async function ReporteHistorialCitasPaciente(idPaciente: string) {
@@ -296,7 +296,21 @@ export async function ReporteHistorialCitasPaciente(idPaciente: string) {
     });
     return citasHistorial;
   } catch (error) {
-    console.error("Error al obtener tipos de tratamiento:", error);
-    throw new Error("Error al listar los tratamientos");
+    console.error(error);
+    throw new Error("Error al realizar el reporte");
+  }
+}
+
+export async function ReporteOdontogramaPaciente(idPaciente: string) {
+  try {
+    const odontograma = await prisma.odontogramRows.findMany({
+      where: {
+        patientId: idPaciente,
+      },
+    });
+    return odontograma;
+  } catch (error) {
+    console.error(error);
+    throw new Error("Error al realizar el reporte");
   }
 }

@@ -1,35 +1,34 @@
 "use client";
-import Layout from "@/app/paginaweb/components/Layout";
 import {
   Box,
-  Button,
+  Heading,
+  Stack,
   Flex,
   FormControl,
   FormLabel,
-  Heading,
+  SimpleGrid,
+  Select,
+  Button,
   Image,
   Input,
-  Select,
-  SimpleGrid,
-  Spinner,
-  Stack,
   Text,
 } from "@chakra-ui/react";
-import { ChangeEvent, useState } from "react";
-import Swal from "sweetalert2";
+import Breadcrumb from "../../components/Common/Breadcrumb";
+import DefaultLayout from "../../components/Layouts/DefaultLayout";
 import { useRouter } from "next/navigation";
-import { mostrarAlertaError } from "@/utils/show_error_alert";
-import { routes } from "@/config/routes";
-import { createPerson } from "@/controller/paginaweb/inicio_de_sesion/registroController";
+import { ChangeEvent, useState } from "react";
 import { getCaptchaToken } from "@/utils/captcha";
-import SeccionAlergias from "./seccion_alergias";
-import SeccionContactos from "./seccion_contactos";
-
+import { createPerson } from "@/controller/paginaweb/inicio_de_sesion/registroController";
+import Swal from "sweetalert2";
+import { routes } from "@/config/routes";
+import { mostrarAlertaError } from "@/utils/show_error_alert";
+import SeccionAlergias from "@/app/paginaweb/inicio_de_sesion/registro/seccion_alergias";
+import SeccionContactos from "@/app/paginaweb/inicio_de_sesion/registro/seccion_contactos";
+import BotonVolver from "../../components/Common/BotonVolver";
 interface FileWithPreview extends File {
   preview?: string;
 }
-
-export default function PersonForm() {
+export default function Page() {
   const router = useRouter();
   const [image, setImage] = useState<FileWithPreview | null>(null);
   const [errors, setErrors] = useState<any>({});
@@ -53,12 +52,12 @@ export default function PersonForm() {
       if (response.success) {
         Swal.fire({
           title: "Éxito",
-          text: "Bienvenido al centro Ortiz Nosiglia \n se le envio su usuario y contraseña a su correo electrónico",
+          text: "Bienvenido al centro Ortiz Nosiglia \n se ha enviado el usuario y contraseña al correo electrónico ingresado",
           icon: "success",
           confirmButtonText: "Aceptar",
           confirmButtonColor: "#28a745",
         }).then(() => {
-          router.push(routes.login);
+          router.push(routes.pacientes);
         });
       } else {
         if (response.error) {
@@ -75,7 +74,9 @@ export default function PersonForm() {
     }
   };
   return (
-    <Layout>
+    <DefaultLayout>
+      <Breadcrumb pageName="Creación de pacientes" />
+      <BotonVolver direccion={routes.pacientes} />
       <Box
         mx={{ base: 8, sm: 16, md: 40, lg: 60 }}
         my={4}
@@ -274,6 +275,6 @@ export default function PersonForm() {
           </Stack>
         </form>
       </Box>
-    </Layout>
+    </DefaultLayout>
   );
 }

@@ -8,7 +8,8 @@ const personValidation = z.object({
   secondName: z
     .string()
     .min(3, "Debe tener más de 3 caracteres")
-    .max(50, "Debe tener menos de 50 caracteres"),
+    .max(50, "Debe tener menos de 50 caracteres")
+    .optional(),
   familyName: z
     .string()
     .min(3, "Debe tener más de 3 caracteres")

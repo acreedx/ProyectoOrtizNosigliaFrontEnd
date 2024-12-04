@@ -117,8 +117,6 @@ export default function BotonCreacion({
       <Modal isOpen={isOpen} onClose={onClose} isCentered>
         <ModalOverlay />
         <ModalContent p={8} maxWidth="800px">
-          {" "}
-          {/* Fijar el ancho máximo del modal */}
           <ModalHeader>
             <Heading fontSize="2xl" color="black" _dark={{ color: "white" }}>
               Asignar Tratamiento

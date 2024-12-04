@@ -23,15 +23,17 @@ import { routes } from "@/config/routes";
 import { useForm } from "react-hook-form";
 import { editarOdontograma } from "@/controller/dashboard/odontograma/odontogramaController";
 import { mostrarAlertaExito } from "@/utils/show_success_alert";
+import { generarPDFOdontogramaPaciente } from "../../reportes/reporteOdontograma";
 export default function Odontograma({ params }: { params: { id: string } }) {
   const [odontograma, setOdontograma] = useState<OdontogramRows[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isloading, setisLoading] = useState(false);
+  const [isPrintloading, setisPrintloading] = useState(false);
   const { register, handleSubmit, control, reset } = useForm({
     defaultValues: {
       odontograma: [] as OdontogramRows[],
     },
   });
-  const [isloading, setisLoading] = useState(false);
   const onSubmit = async (data: { odontograma: OdontogramRows[] }) => {
     try {
       setisLoading(true);
@@ -42,6 +44,16 @@ export default function Odontograma({ params }: { params: { id: string } }) {
       mostrarAlertaError(e);
     } finally {
       setisLoading(false);
+    }
+  };
+  const handlePrintOdontogram = async () => {
+    try {
+      setisPrintloading(true);
+      await generarPDFOdontogramaPaciente(params.id);
+    } catch (e: any) {
+      mostrarAlertaError(e);
+    } finally {
+      setisPrintloading(false);
     }
   };
   async function fetchData() {
@@ -123,7 +135,18 @@ export default function Odontograma({ params }: { params: { id: string } }) {
               </Tbody>
             </Table>
           </Box>
-          <Box display="flex" justifyContent="end" mt={10} mr={10}>
+          <Box display="flex" justifyContent="end" mt={10} mr={10} gap={4}>
+            <Button
+              type="button"
+              colorScheme="orange"
+              px={4}
+              py={2}
+              onClick={handlePrintOdontogram}
+              _hover={{ bg: "orange.600" }}
+              isLoading={isPrintloading}
+            >
+              Imprimir Odontograma
+            </Button>
             <Button
               type="submit"
               colorScheme="blue"

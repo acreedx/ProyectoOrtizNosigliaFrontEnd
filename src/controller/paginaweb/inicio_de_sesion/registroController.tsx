@@ -1,5 +1,5 @@
 "use server";
-import { Allergy, PrismaClient } from "@prisma/client";
+import { Allergy, Contact, PrismaClient } from "@prisma/client";
 import { sendEmail } from "@/utils/mailer";
 import { odontogramaPorDefecto } from "@/utils/default_odontograma";
 import { accountPorDefecto } from "@/utils/default_account";
@@ -44,6 +44,28 @@ export async function createPerson(token: string | null, formData: FormData) {
       notes,
     } as Allergy);
   }
+  const contacts: Contact[] = [];
+  for (let j = 0; formData.has(`contacts[${j}][relationship]`); j++) {
+    const relationship = formData.get(`contacts[${j}][relationship]`) as string;
+    const name = formData.get(`contacts[${j}][name]`) as string;
+    const phone = formData.get(`contacts[${j}][phone]`) as string;
+    const mobile = formData.get(`contacts[${j}][mobile]`) as string;
+    const email = formData.get(`contacts[${j}][email]`) as string;
+    const addressLine = formData.get(`contacts[${j}][addressLine]`) as string;
+    const addressCity = formData.get(`contacts[${j}][addressCity]`) as string;
+    const gender = formData.get(`contacts[${j}][gender]`) as string;
+    contacts.push({
+      relationship,
+      name,
+      phone,
+      mobile,
+      email,
+      addressLine,
+      addressCity,
+      gender,
+      active: true,
+    } as Contact);
+  }
   const data = {
     firstName: formData.get("firstName")?.toString() || "",
     secondName: formData.get("secondName")?.toString(),
@@ -58,6 +80,7 @@ export async function createPerson(token: string | null, formData: FormData) {
     maritalStatus: formData.get("maritalStatus")?.toString() || "",
     identification: formData.get("identification")?.toString() || "",
     allergies: allergies,
+    contacts: contacts,
   };
   const result = personValidation.safeParse(data);
   if (!result.success) {
@@ -127,6 +150,19 @@ export async function createPerson(token: string | null, formData: FormData) {
               notes: allergy.notes,
             }) as Allergy,
         ),
+      },
+      contacts: {
+        create: data.contacts.map((contact) => ({
+          relationship: contact.relationship,
+          name: contact.name,
+          phone: contact.phone,
+          mobile: contact.mobile,
+          email: contact.email,
+          addressLine: contact.addressLine,
+          addressCity: contact.addressCity,
+          gender: contact.gender,
+          active: true,
+        })),
       },
       odontograma: {
         create: odontogramaPorDefecto,

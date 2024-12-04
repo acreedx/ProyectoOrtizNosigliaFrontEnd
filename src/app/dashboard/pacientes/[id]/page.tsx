@@ -15,92 +15,77 @@ import {
   VStack,
   Spinner,
   HStack,
+  Flex,
+  Heading,
+  SimpleGrid,
+  Stack,
+  Text,
 } from "@chakra-ui/react";
 import BotonVolver from "../../components/Common/BotonVolver";
 import { routes } from "@/config/routes";
-interface patient {
-  _id: String;
-  apellidoPaterno: String;
-  apellidoMaterno: String;
-  primerNombre: String;
-  segundoNombre: String;
-  fechaNacimiento: String;
-  lugarNacimiento: String;
-  sexo: String;
-  carnetIdentidad: String;
-  direccionZona: String;
-  telefono: String;
-  celular: String;
-  email: String;
-  alergiaMedicamento: String;
-}
+import { Allergy, Contact, Patient } from "@prisma/client";
+import {
+  editarPaciente,
+  listarPaciente,
+} from "@/controller/dashboard/pacientes/pacientesController";
+import { mostrarAlertaConfirmacion } from "@/utils/show_question_alert";
+import { mostrarAlertaExito } from "@/utils/show_success_alert";
+import SeccionFoto from "./seccion_foto";
+import SeccionAlergias from "./seccion_alergias";
+import SeccionContactos from "./seccion_contactos";
+import { mostrarAlertaError } from "@/utils/show_error_alert";
 export default function Pacientes({ params }: { params: { id: string } }) {
   const router = useRouter();
-  const [loading, setloading] = useState(false);
-  const [formData, setFormData] = useState({
-    fechaFiliacion: "",
-    apellidoPaterno: "",
-    apellidoMaterno: "",
-    primerNombre: "",
-    segundoNombre: "",
-    fechaNacimiento: "00/00/0000",
-    lugarNacimiento: "",
-    sexo: "",
-    carnetIdentidad: "",
-    direccionZona: "",
-    telefono: "",
-    celular: "",
-    email: "",
-    referidoPor: "",
-    motivoConsulta: "",
-    alergiaMedicamento: "",
-  });
+  const [loading, setloading] = useState(true);
+  const [isLoading, setisloading] = useState(false);
+  const [person, setperson] = useState<
+    Patient & { allergies: Allergy[] } & { contacts: Contact[] }
+  >({} as Patient & { allergies: Allergy[] } & { contacts: Contact[] });
+  const [errors, setErrors] = useState<any>({});
+
+  const [allergies, setAllergies] = useState<Allergy[]>([]);
+  const [contacts, setContacts] = useState<Contact[]>([]);
   useEffect(() => {
-    const url = "" + "person/" + params.id;
-    async function fectchPatient() {
-      setloading(true);
-      const response = await fetch(url, { method: "GET" });
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error("Error al listar al paciente: " + error);
+    const fetchData = async () => {
+      try {
+        const paciente = await listarPaciente(params.id);
+        setperson(paciente);
+        setContacts(paciente.contacts);
+        setAllergies(paciente.allergies);
+      } catch (e: any) {
+        mostrarAlertaError(e);
+      } finally {
+        setloading(false);
       }
-      const data = await response.json();
-      setFormData(data);
-      setloading(false);
-    }
-    fectchPatient();
+    };
+    fetchData();
   }, [params.id]);
-
-  const handleChange = (e: any) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
-
-  const handleSubmit = async (e: any) => {
-    e.preventDefault();
-    const url = "" + "person/" + params.id;
-    const response = await fetch(url, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(formData),
-    });
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error("Error al listar al paciente: " + error);
+  const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    try {
+      setisloading(true);
+      setErrors({});
+      const formData = new FormData(event.currentTarget);
+      const isConfirmed = await mostrarAlertaConfirmacion(
+        "Confirmación",
+        "Esta seguro de editar la información de este paciente",
+      );
+      if (isConfirmed) {
+        const response = await editarPaciente(params.id, formData);
+        if (response.message) {
+          mostrarAlertaExito("Éxito al editar al paciente");
+          router.push(routes.pacientes);
+        } else {
+          if (response.errors) {
+            setErrors(response.errors);
+          }
+        }
+      }
+    } catch (e: any) {
+      mostrarAlertaError(e);
+    } finally {
+      setisloading(false);
     }
-    const data = await response.json();
-    Swal.fire({
-      title: "Éxito",
-      text: "Paciente editado correctamente",
-      icon: "success",
-      confirmButtonText: "Volver al listado",
-      confirmButtonColor: "#28a745",
-    }).then((result) => {
-      router.push(routes.pacientes);
-    });
   };
   return (
     <DefaultLayout>
@@ -110,141 +95,192 @@ export default function Pacientes({ params }: { params: { id: string } }) {
         <Spinner size="xl" />
       ) : (
         <Box
-          mx="12"
-          my="4"
+          mx={{ base: 8, sm: 16, md: 40, lg: 60 }}
+          my={4}
           borderWidth="1px"
-          borderRadius="lg"
-          boxShadow="lg"
+          borderRadius="md"
+          boxShadow="md"
+          p={{ base: 3, md: 5 }}
           bg="white"
-          p="10"
         >
-          <form onSubmit={handleSubmit}>
-            <VStack spacing={6}>
-              <HStack spacing={5}>
-                <FormControl isRequired>
-                  <FormLabel>Apellido Paterno:</FormLabel>
-                  <Input
-                    name="apellidoPaterno"
-                    value={formData.apellidoPaterno}
-                    onChange={handleChange}
-                  />
+          <Heading as="h3" textAlign="center" my={10} color="orange">
+            Editar Paciente
+          </Heading>
+          <form onSubmit={handleFormSubmit}>
+            <input type="hidden" defaultValue={person.id} />
+            <Stack spacing={4}>
+              <SeccionFoto paciente={person} />
+              <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
+                <FormControl id="firstName" isRequired>
+                  <FormLabel>Primer Nombre</FormLabel>
+                  <Input name="firstName" defaultValue={person.firstName} />
+                  {errors.firstName && (
+                    <Text color="red.500">
+                      {errors.firstName._errors.join(", ")}
+                    </Text>
+                  )}
                 </FormControl>
-                <FormControl isRequired>
-                  <FormLabel>Apellido Materno:</FormLabel>
+
+                <FormControl id="secondName">
+                  <FormLabel>Segundo Nombre</FormLabel>
                   <Input
-                    name="apellidoMaterno"
-                    value={formData.apellidoMaterno}
-                    onChange={handleChange}
+                    name="secondName"
+                    defaultValue={person.secondName || ""}
                   />
+                  {errors.secondName && (
+                    <Text color="red.500">
+                      {errors.secondName._errors.join(", ")}
+                    </Text>
+                  )}
                 </FormControl>
-                <FormControl isRequired>
-                  <FormLabel>Primer Nombre:</FormLabel>
-                  <Input
-                    name="primerNombre"
-                    value={formData.primerNombre}
-                    onChange={handleChange}
-                  />
+
+                <FormControl id="familyName" isRequired>
+                  <FormLabel>Apellido</FormLabel>
+                  <Input name="familyName" defaultValue={person.familyName} />
+                  {errors.familyName && (
+                    <Text color="red.500">
+                      {errors.familyName._errors.join(", ")}
+                    </Text>
+                  )}
                 </FormControl>
-                <FormControl>
-                  <FormLabel>Segundo Nombre:</FormLabel>
-                  <Input
-                    name="segundoNombre"
-                    value={formData.segundoNombre}
-                    onChange={handleChange}
-                  />
-                </FormControl>
-              </HStack>
-              <HStack spacing={5}>
-                <FormControl isRequired>
-                  <FormLabel>Fecha de Nacimiento:</FormLabel>
-                  <Input
-                    type="date"
-                    name="fechaNacimiento"
-                    value={formData.fechaNacimiento}
-                    onChange={handleChange}
-                  />
-                </FormControl>
-                <FormControl isRequired>
-                  <FormLabel>Lugar de Nacimiento:</FormLabel>
-                  <Input
-                    name="lugarNacimiento"
-                    value={formData.lugarNacimiento}
-                    onChange={handleChange}
-                  />
-                </FormControl>
-                <FormControl isRequired>
-                  <FormLabel>Sexo:</FormLabel>
+
+                <FormControl id="gender" isRequired>
+                  <FormLabel>Género</FormLabel>
                   <Select
-                    name="sexo"
-                    value={formData.sexo}
-                    onChange={handleChange}
+                    name="gender"
+                    defaultValue={person.gender}
+                    placeholder="Seleccione una opción"
                   >
-                    <option value="">Seleccionar</option>
-                    <option value="Masculino">Masculino</option>
-                    <option value="Femenino">Femenino</option>
+                    <option value="masculino">Masculino</option>
+                    <option value="femenino">Femenino</option>
+                    <option value="otro">Otro</option>
                   </Select>
                 </FormControl>
-                <FormControl isRequired>
-                  <FormLabel>Carnet de Identidad:</FormLabel>
+
+                <FormControl id="phone" isRequired>
+                  <FormLabel>Teléfono</FormLabel>
                   <Input
-                    name="carnetIdentidad"
-                    value={formData.carnetIdentidad}
-                    onChange={handleChange}
+                    type="number"
+                    name="phone"
+                    defaultValue={person.phone}
                   />
+                  {errors.phone && (
+                    <Text color="red.500">
+                      {errors.phone._errors.join(", ")}
+                    </Text>
+                  )}
                 </FormControl>
-              </HStack>
-              <HStack spacing={5}>
-                <FormControl isRequired>
-                  <FormLabel>Dirección/Zona:</FormLabel>
+
+                <FormControl id="mobile" isRequired>
+                  <FormLabel>Celular</FormLabel>
                   <Input
-                    name="direccionZona"
-                    value={formData.direccionZona}
-                    onChange={handleChange}
+                    type="number"
+                    name="mobile"
+                    defaultValue={person.mobile}
                   />
+                  {errors.mobile && (
+                    <Text color="red.500">
+                      {errors.mobile._errors.join(", ")}
+                    </Text>
+                  )}
                 </FormControl>
-                <FormControl>
-                  <FormLabel>Teléfono:</FormLabel>
+
+                <FormControl id="email" isRequired>
+                  <FormLabel>Correo</FormLabel>
+                  <Input type="text" name="email" defaultValue={person.email} />
+                  {errors.email && (
+                    <Text color="red.500">
+                      {errors.email._errors.join(", ")}
+                    </Text>
+                  )}
+                </FormControl>
+
+                <FormControl id="birthDate" isRequired>
+                  <FormLabel>Fecha de Nacimiento</FormLabel>
                   <Input
-                    type="tel"
-                    name="telefono"
-                    value={formData.telefono}
-                    onChange={handleChange}
+                    type="date"
+                    name="birthDate"
+                    defaultValue={
+                      person.birthDate &&
+                      new Date(person.birthDate).toISOString().split("T")[0]
+                    }
                   />
+                  {errors.birthDate && (
+                    <Text color="red.500">
+                      {errors.birthDate._errors.join(", ")}
+                    </Text>
+                  )}
                 </FormControl>
-                <FormControl isRequired>
-                  <FormLabel>Celular:</FormLabel>
+
+                <FormControl id="direccion" isRequired>
+                  <FormLabel>Dirección</FormLabel>
+                  <Input name="addressLine" defaultValue={person.addressLine} />
+                  {errors.addressLine && (
+                    <Text color="red.500">
+                      {errors.addressLine._errors.join(", ")}
+                    </Text>
+                  )}
+                </FormControl>
+
+                <FormControl id="ciudad" isRequired>
+                  <FormLabel>Ciudad</FormLabel>
+                  <Input name="addressCity" defaultValue={person.addressCity} />
+                  {errors.addressCity && (
+                    <Text color="red.500">
+                      {errors.addressCity._errors.join(", ")}
+                    </Text>
+                  )}
+                </FormControl>
+
+                <FormControl id="estadoCivil" isRequired>
+                  <FormLabel>Estado Civil</FormLabel>
+                  <Select
+                    name="maritalStatus"
+                    defaultValue={person.maritalStatus}
+                    placeholder="Seleccione una opción"
+                  >
+                    <option value="soltero">Soltero</option>
+                    <option value="casado">Casado</option>
+                  </Select>
+                </FormControl>
+
+                <FormControl id="identification" isRequired>
+                  <FormLabel>Carnet De Identidad</FormLabel>
                   <Input
-                    type="tel"
-                    name="celular"
-                    value={formData.celular}
-                    onChange={handleChange}
+                    type="number"
+                    name="identification"
+                    defaultValue={person.identification}
                   />
+                  {errors.identification && (
+                    <Text color="red.500">
+                      {errors.identification._errors.join(", ")}
+                    </Text>
+                  )}
                 </FormControl>
-              </HStack>
-              <HStack spacing={5}>
-                <FormControl>
-                  <FormLabel>Email:</FormLabel>
-                  <Input
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                  />
-                </FormControl>
-                <FormControl>
-                  <FormLabel>Alergia a algún medicamento:</FormLabel>
-                  <Textarea
-                    name="alergiaMedicamento"
-                    rows={4}
-                    value={formData.alergiaMedicamento}
-                    onChange={handleChange}
-                  />
-                </FormControl>
-              </HStack>
-              <Button type="submit" colorScheme="blue" width="full" mt="4">
-                Enviar
-              </Button>
-            </VStack>
+              </SimpleGrid>
+              <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
+                <SeccionAlergias
+                  allergies={allergies}
+                  setAllergies={setAllergies}
+                />
+                <SeccionContactos
+                  contacts={contacts}
+                  setContacts={setContacts}
+                />
+              </SimpleGrid>
+              <Flex justifyContent="center" gap={4} mt={4}>
+                <Button
+                  colorScheme="orange"
+                  type="submit"
+                  isDisabled={isLoading}
+                  width="auto"
+                  maxWidth="150px"
+                  isLoading={isLoading}
+                >
+                  Editar
+                </Button>
+              </Flex>
+            </Stack>
           </form>
         </Box>
       )}

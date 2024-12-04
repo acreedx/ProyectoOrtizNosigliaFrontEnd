@@ -49,6 +49,7 @@ import { useRouter } from "next/navigation";
 import { routes } from "@/config/routes";
 import { generarPDFHistorialCitasPaciente } from "./reportes/reporteHistorialCitas";
 import { personFullNameFormater } from "@/utils/format_person_full_name";
+import { mostrarAlertaConfirmacion } from "@/utils/show_question_alert";
 
 const ListadoPacientes = () => {
   const [patients, setpatients] = useState<(Patient & { user: User })[]>([]);
@@ -60,14 +61,6 @@ const ListadoPacientes = () => {
     setpatients(await listarPacientes());
     setloading(false);
   }
-  const handleUpdate = async (patient: Patient) => {
-    setselectedPatient(patient);
-  };
-  const handleRestore = async (e: number) => {};
-  const handleDelete = async (e: number) => {};
-  const handleShowInformation = async (patient: Patient) => {
-    setselectedPatient(patient);
-  };
   const handleHistoryCreate = async (
     event: React.FormEvent<HTMLFormElement>,
   ) => {
@@ -143,37 +136,32 @@ const ListadoPacientes = () => {
           <>
             {row.user.status === userStatus.ACTIVO && (
               <>
-                {/* 
                 <IconButton
                   aria-label="Editar"
                   title="Editar"
                   icon={<EditIcon color={"blue"} />}
-                  onClick={() => {}}
-                />*/}
+                  onClick={() => {
+                    router.push(routes.pacientes + "/" + row.id);
+                  }}
+                />
                 <IconButton
                   aria-label="Eliminar"
                   title="Eliminar"
                   icon={<DeleteIcon color="#dc3545" />}
-                  onClick={() => {
-                    Swal.fire({
-                      title: "Confirmación",
-                      text: "Esta seguro de deshabilitar este paciente ?",
-                      icon: "question",
-                      showCancelButton: true,
-                      confirmButtonText: "Sí",
-                      cancelButtonText: "No, cancelar",
-                      confirmButtonColor: "#28a745",
-                      cancelButtonColor: "#dc3545",
-                    }).then(async (result) => {
+                  onClick={async () => {
+                    const isConfirmed = await mostrarAlertaConfirmacion(
+                      "Confirmación",
+                      "Esta seguro de deshabilitar este paciente?",
+                    );
+                    if (isConfirmed) {
                       try {
-                        mostrarAlertaExito(
-                          (await deshabilitarPaciente(row.id)).message,
-                        );
+                        const response = await deshabilitarPaciente(row.id);
+                        mostrarAlertaExito(response.message);
                         await fetchData();
                       } catch (e: any) {
                         mostrarAlertaError(e);
                       }
-                    });
+                    }
                   }}
                 />
                 <IconButton
@@ -192,41 +180,34 @@ const ListadoPacientes = () => {
                 aria-label="Habilitar"
                 title="Habilitar"
                 icon={<RestoreIcon />}
-                onClick={() => {
-                  Swal.fire({
-                    title: "Confirmación",
-                    text: "¿Está seguro de habilitar este paciente?",
-                    icon: "question",
-                    showCancelButton: true,
-                    confirmButtonText: "Sí",
-                    cancelButtonText: "No, cancelar",
-                    confirmButtonColor: "#28a745",
-                    cancelButtonColor: "#dc3545",
-                  }).then(async (result) => {
-                    if (result.isConfirmed) {
-                      try {
-                        mostrarAlertaExito(
-                          (await habilitarPaciente(row.id)).message,
-                        );
-                        await fetchData();
-                      } catch (e: any) {
-                        mostrarAlertaError(e);
-                      }
+                onClick={async () => {
+                  const isConfirmed = await mostrarAlertaConfirmacion(
+                    "Confirmación",
+                    "¿Está seguro de habilitar este paciente?",
+                  );
+                  if (isConfirmed) {
+                    try {
+                      const response = await habilitarPaciente(row.id);
+                      mostrarAlertaExito(response.message);
+                      await fetchData();
+                    } catch (e: any) {
+                      mostrarAlertaError(e);
                     }
-                  });
+                  }
                 }}
               />
             )}
-            <VerPaciente paciente={row} />
-            <IconButton
-              aria-label="Historial"
-              title="Historial de citas"
-              icon={<MdHistory color={"blue"} />}
-              onClick={() => {
-                setselectedPatient(row);
-                onOpen();
-              }}
-            />
+            {row.user.status === userStatus.ACTIVO && (
+              <IconButton
+                aria-label="Historial"
+                title="Historial de citas"
+                icon={<MdHistory color={"blue"} />}
+                onClick={() => {
+                  setselectedPatient(row);
+                  onOpen();
+                }}
+              />
+            )}
           </>
         </div>
       ),
