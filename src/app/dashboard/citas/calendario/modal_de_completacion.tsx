@@ -39,16 +39,16 @@ export default function ModalDeCompletacion({
   onCloseSecondModal: () => void;
   reloadData: Function;
 }) {
-  const [errors, setErrors] = useState<any>({});
   const [isloading, setisloading] = useState(false);
   const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setisloading(true);
-    setErrors({});
     const formData = new FormData(event.currentTarget);
     try {
       const response = await completarCita(selectedAppointment!.id, formData);
+      onCloseSecondModal();
       mostrarAlertaExito(response.message);
+      reloadData();
     } catch (e: any) {
       onCloseSecondModal();
       mostrarAlertaError(e.message);

@@ -1,18 +1,42 @@
 "use server";
+import { authOptions } from "@/config/authOptions";
 import { prisma } from "@/config/prisma";
+import {
+  auditEventTypes,
+  auditEventAction,
+  modulos,
+  auditEventOutcome,
+} from "@/enums/auditEventTypes";
 import { userStatus } from "@/enums/userStatus";
 import { accountPorDefecto } from "@/utils/default_account";
 import { odontogramaPorDefecto } from "@/utils/default_odontograma";
+import { personFullNameFormater } from "@/utils/format_person_full_name";
 import { getPasswordExpiration } from "@/utils/generate_password_expiration";
+import { logEvent } from "@/utils/logger";
 import { hashPassword } from "@/utils/password_hasher";
 import { Allergy, Contact, OdontogramRows, Person } from "@prisma/client";
+import { getServerSession } from "next-auth";
 
 export async function listarOdontrograma(pacienteId: string) {
   try {
+    const session = await getServerSession(authOptions);
+    if (!session) {
+      throw new Error("No se ha encontrado la sesión.");
+    }
     const odontograma = await prisma.odontogramRows.findMany({
       where: {
         patientId: pacienteId,
       },
+    });
+    await logEvent({
+      type: auditEventTypes.SYSTEM,
+      action: auditEventAction.ACCION_LEER,
+      moduleName: modulos.MODULO_PACIENTES,
+      personName: personFullNameFormater(session.user),
+      personRole: "Usuario",
+      detail: "Listado de odontograma de paciente",
+      personId: session.user.id,
+      outcome: auditEventOutcome.OUTCOME_EXITO,
     });
     return odontograma;
   } catch (error) {
@@ -23,6 +47,10 @@ export async function listarOdontrograma(pacienteId: string) {
 
 export async function editarOdontograma(odontogram: OdontogramRows[]) {
   try {
+    const session = await getServerSession(authOptions);
+    if (!session) {
+      throw new Error("No se ha encontrado la sesión.");
+    }
     await prisma.$transaction(
       odontogram.map((row) =>
         prisma.odontogramRows.update({
@@ -35,6 +63,16 @@ export async function editarOdontograma(odontogram: OdontogramRows[]) {
         }),
       ),
     );
+    await logEvent({
+      type: auditEventTypes.SYSTEM,
+      action: auditEventAction.ACCION_EDITAR,
+      moduleName: modulos.MODULO_PACIENTES,
+      personName: personFullNameFormater(session.user),
+      personRole: "Usuario",
+      detail: "Editar odontograma de paciente",
+      personId: session.user.id,
+      outcome: auditEventOutcome.OUTCOME_EXITO,
+    });
     return {
       success: true,
       message: "Exito al editar los datos",

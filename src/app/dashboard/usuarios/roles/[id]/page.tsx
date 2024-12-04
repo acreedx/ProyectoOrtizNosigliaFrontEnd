@@ -27,13 +27,14 @@ import { mostrarAlertaExito } from "@/utils/show_success_alert";
 import { mostrarAlertaError } from "@/utils/show_error_alert";
 import { routes } from "@/config/routes";
 import { mostrarAlertaConfirmacion } from "@/utils/show_question_alert";
+import { useRouter } from "next/navigation";
 
 export default function EditarRolPage({ params }: { params: { id: string } }) {
   const [loading, setLoading] = useState(true);
   const [permissions, setPermissions] = useState<any[]>([]);
   const [rol, setrol] = useState<Rol>();
   const [isLoading, setisLoading] = useState(false);
-
+  const router = useRouter();
   const fetchData = async () => {
     try {
       setLoading(true);
@@ -57,9 +58,10 @@ export default function EditarRolPage({ params }: { params: { id: string } }) {
         "Confirma los datos modificados del rol?",
       );
       if (isConfirmed) {
+        const response = await editarRol(rol!.id, formData);
+        mostrarAlertaExito(response.message);
+        router.push(routes.roles);
       }
-      const response = await editarRol(rol!.id, formData);
-      mostrarAlertaExito(response.message);
     } catch (error: any) {
       console.error(error);
       mostrarAlertaError(error);

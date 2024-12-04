@@ -7,13 +7,35 @@ import {
   AppointmentSpecialty,
   AppointmentStatus,
 } from "@/enums/appointmentsStatus";
+import {
+  auditEventAction,
+  auditEventOutcome,
+  auditEventTypes,
+  modulos,
+} from "@/enums/auditEventTypes";
 import { appointmentDentistValidation } from "@/models/dashboard/appointmentValidation";
+import { personFullNameFormater } from "@/utils/format_person_full_name";
+import { logEvent } from "@/utils/logger";
 import { Appointment } from "@prisma/client";
 import { getServerSession } from "next-auth";
 
 export async function listarCitas() {
   try {
+    const session = await getServerSession(authOptions);
+    if (!session) {
+      throw new Error("No se ha encontrado la sesión.");
+    }
     const appointments = await prisma.appointment.findMany();
+    await logEvent({
+      type: auditEventTypes.SYSTEM,
+      action: auditEventAction.ACCION_LEER,
+      moduleName: modulos.MODULO_CITAS,
+      personName: personFullNameFormater(session.user),
+      personRole: "Usuario",
+      detail: "Listado de citas completo",
+      personId: session.user.id,
+      outcome: auditEventOutcome.OUTCOME_EXITO,
+    });
     return appointments;
   } catch (error) {
     throw new Error("Error al listar las citas");
@@ -34,6 +56,16 @@ export async function listarCitasPorDentista() {
         subject: true,
       },
     });
+    await logEvent({
+      type: auditEventTypes.SYSTEM,
+      action: auditEventAction.ACCION_LEER,
+      moduleName: modulos.MODULO_CITAS,
+      personName: personFullNameFormater(session.user),
+      personRole: "Usuario",
+      detail: "Listado de citas por dentista",
+      personId: session.user.id,
+      outcome: auditEventOutcome.OUTCOME_EXITO,
+    });
     return appointments;
   } catch (error) {
     throw new Error("Error al listar las citas");
@@ -42,6 +74,10 @@ export async function listarCitasPorDentista() {
 
 export async function listarCitasPorPaciente(idPaciente: string) {
   try {
+    const session = await getServerSession(authOptions);
+    if (!session) {
+      throw new Error("No se ha encontrado la sesión.");
+    }
     const appointments = await prisma.appointment.findMany({
       where: {
         subjectId: idPaciente,
@@ -49,6 +85,16 @@ export async function listarCitasPorPaciente(idPaciente: string) {
       include: {
         practitioner: true,
       },
+    });
+    await logEvent({
+      type: auditEventTypes.SYSTEM,
+      action: auditEventAction.ACCION_LEER,
+      moduleName: modulos.MODULO_CITAS,
+      personName: personFullNameFormater(session.user),
+      personRole: "Usuario",
+      detail: "Listado de citas por paciente",
+      personId: session.user.id,
+      outcome: auditEventOutcome.OUTCOME_EXITO,
     });
     return appointments;
   } catch (error) {
@@ -132,6 +178,16 @@ export async function crearCitaDentista(formData: FormData) {
         status: AppointmentStatus.STATUS_PENDIENTE,
       },
     });
+    await logEvent({
+      type: auditEventTypes.SYSTEM,
+      action: auditEventAction.ACCION_CREAR,
+      moduleName: modulos.MODULO_CITAS,
+      personName: personFullNameFormater(session.user),
+      personRole: "Usuario",
+      detail: "Creación de citas",
+      personId: session.user.id,
+      outcome: auditEventOutcome.OUTCOME_EXITO,
+    });
     return {
       success: true,
       message: "Cita registrada con éxito",
@@ -144,11 +200,25 @@ export async function crearCitaDentista(formData: FormData) {
 
 export async function editarCita(id: string, appointment: Appointment) {
   try {
+    const session = await getServerSession(authOptions);
+    if (!session) {
+      throw new Error("No se ha encontrado la sesión.");
+    }
     await prisma.appointment.update({
       where: {
         id: id,
       },
       data: appointment,
+    });
+    await logEvent({
+      type: auditEventTypes.SYSTEM,
+      action: auditEventAction.ACCION_EDITAR,
+      moduleName: modulos.MODULO_CITAS,
+      personName: personFullNameFormater(session.user),
+      personRole: "Usuario",
+      detail: "Edición de citas",
+      personId: session.user.id,
+      outcome: auditEventOutcome.OUTCOME_EXITO,
     });
     return { message: "Éxito al actualizar la cita" };
   } catch (error) {
@@ -158,6 +228,10 @@ export async function editarCita(id: string, appointment: Appointment) {
 
 export async function deshabilitarCita(id: string) {
   try {
+    const session = await getServerSession(authOptions);
+    if (!session) {
+      throw new Error("No se ha encontrado la sesión.");
+    }
     await prisma.appointment.update({
       where: {
         id: id,
@@ -165,6 +239,16 @@ export async function deshabilitarCita(id: string) {
       data: {
         status: AppointmentStatus.STATUS_CANCELADA,
       },
+    });
+    await logEvent({
+      type: auditEventTypes.SYSTEM,
+      action: auditEventAction.ACCION_EDITAR,
+      moduleName: modulos.MODULO_CITAS,
+      personName: personFullNameFormater(session.user),
+      personRole: "Usuario",
+      detail: "Deshabilitación de citas",
+      personId: session.user.id,
+      outcome: auditEventOutcome.OUTCOME_EXITO,
     });
     return { message: "Éxito al deshabilitar la cita" };
   } catch (error) {
@@ -174,6 +258,10 @@ export async function deshabilitarCita(id: string) {
 
 export async function rehabilitarCita(id: string) {
   try {
+    const session = await getServerSession(authOptions);
+    if (!session) {
+      throw new Error("No se ha encontrado la sesión.");
+    }
     await prisma.appointment.update({
       where: {
         id: id,
@@ -181,6 +269,16 @@ export async function rehabilitarCita(id: string) {
       data: {
         status: AppointmentStatus.STATUS_PENDIENTE,
       },
+    });
+    await logEvent({
+      type: auditEventTypes.SYSTEM,
+      action: auditEventAction.ACCION_EDITAR,
+      moduleName: modulos.MODULO_CITAS,
+      personName: personFullNameFormater(session.user),
+      personRole: "Usuario",
+      detail: "Rehabilitación de citas",
+      personId: session.user.id,
+      outcome: auditEventOutcome.OUTCOME_EXITO,
     });
     return { message: "Éxito al habilitar la cita" };
   } catch (error) {
@@ -190,6 +288,10 @@ export async function rehabilitarCita(id: string) {
 
 export async function confirmarCita(id: string) {
   try {
+    const session = await getServerSession(authOptions);
+    if (!session) {
+      throw new Error("No se ha encontrado la sesión.");
+    }
     await prisma.appointment.update({
       where: {
         id: id,
@@ -198,6 +300,16 @@ export async function confirmarCita(id: string) {
         status: AppointmentStatus.STATUS_CONFIRMADA,
       },
     });
+    await logEvent({
+      type: auditEventTypes.SYSTEM,
+      action: auditEventAction.ACCION_EDITAR,
+      moduleName: modulos.MODULO_CITAS,
+      personName: personFullNameFormater(session.user),
+      personRole: "Usuario",
+      detail: "Confirmación de citas",
+      personId: session.user.id,
+      outcome: auditEventOutcome.OUTCOME_EXITO,
+    });
     return { message: "Éxito al confirmar la cita" };
   } catch (error) {
     throw new Error("Error al habilitar la cita");
@@ -205,6 +317,10 @@ export async function confirmarCita(id: string) {
 }
 export async function cancelarCita(id: string) {
   try {
+    const session = await getServerSession(authOptions);
+    if (!session) {
+      throw new Error("No se ha encontrado la sesión.");
+    }
     await prisma.appointment.update({
       where: {
         id: id,
@@ -213,14 +329,29 @@ export async function cancelarCita(id: string) {
         status: AppointmentStatus.STATUS_CANCELADA,
       },
     });
+    await logEvent({
+      type: auditEventTypes.SYSTEM,
+      action: auditEventAction.ACCION_EDITAR,
+      moduleName: modulos.MODULO_CITAS,
+      personName: personFullNameFormater(session.user),
+      personRole: "Usuario",
+      detail: "Cancelación de citas",
+      personId: session.user.id,
+      outcome: auditEventOutcome.OUTCOME_EXITO,
+    });
     return { message: "Éxito al cancelar la cita" };
   } catch (error) {
     throw new Error("Error al habilitar la cita");
   }
 }
 
-export async function completarCita(id: string, form: FormData) {
+export async function completarCita(id: string, formData: FormData) {
   try {
+    const session = await getServerSession(authOptions);
+    if (!session) {
+      throw new Error("No se ha encontrado la sesión.");
+    }
+    const diagnostico = formData.get("diagnostico")?.toString() || "";
     const updatedAppointment = await prisma.appointment.update({
       where: {
         id: id,
@@ -235,7 +366,7 @@ export async function completarCita(id: string, form: FormData) {
         start: updatedAppointment.start,
         end: updatedAppointment.end,
         reason: updatedAppointment.reason,
-        diagnosis: "",
+        diagnosis: diagnostico,
         subjectId: updatedAppointment.subjectId,
         practitionerId: updatedAppointment.practitionerId,
         appointmentId: updatedAppointment.id,
@@ -257,6 +388,16 @@ export async function completarCita(id: string, form: FormData) {
           },
         },
       },
+    });
+    await logEvent({
+      type: auditEventTypes.SYSTEM,
+      action: auditEventAction.ACCION_EDITAR,
+      moduleName: modulos.MODULO_CITAS,
+      personName: personFullNameFormater(session.user),
+      personRole: "Usuario",
+      detail: "Completación de citas",
+      personId: session.user.id,
+      outcome: auditEventOutcome.OUTCOME_EXITO,
     });
     return { message: "Éxito al completar la cita" };
   } catch (error) {

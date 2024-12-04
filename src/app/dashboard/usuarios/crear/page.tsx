@@ -72,7 +72,7 @@ export default function Page() {
           confirmButtonText: "Aceptar",
           confirmButtonColor: "#28a745",
         }).then(() => {
-          router.push(routes.login);
+          router.push(routes.usuarios);
         });
       } else {
         if (response.error) {

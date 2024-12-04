@@ -71,8 +71,9 @@ export default function Page() {
                 );
                 if (isConfirmed) {
                   try {
-                    const response = await pagarDeuda(row.id);
+                    const response = await pagarDeuda(row.accountId);
                     mostrarAlertaExito(response.message);
+                    fetchData();
                   } catch (e: any) {
                     mostrarAlertaError(e);
                   }

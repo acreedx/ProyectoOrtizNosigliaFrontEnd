@@ -14,6 +14,7 @@ import {
   Stack,
   Heading,
   Spinner,
+  IconButton,
 } from "@chakra-ui/react";
 import BotonHabilitar from "./botonHabilitar";
 import { prisma } from "@/config/prisma";
@@ -25,11 +26,13 @@ import { listarRoles } from "@/controller/dashboard/roles/rolesController";
 import { useState, useEffect } from "react";
 import { Rol } from "@prisma/client";
 import { routes } from "@/config/routes";
+import { EditIcon } from "@chakra-ui/icons";
+import { useRouter } from "next/navigation";
 
 export default function Roles() {
   const [roles, setRoles] = useState<Rol[]>([]);
   const [loading, setLoading] = useState(true);
-
+  const router = useRouter();
   const fetchData = async () => {
     try {
       const rolesData = await listarRoles();
@@ -74,14 +77,22 @@ export default function Roles() {
       name: "Acciones",
       cell: (row) => (
         <HStack spacing={4}>
-          <BotonHabilitar
-            rolId={row.id}
-            active={row.active}
-            reloadData={fetchData}
-          />
-          <Button colorScheme="blue" as="a" href={`${routes.roles}/${row.id}`}>
-            Editar
-          </Button>
+          {row.roleName != "Administrador" && (
+            <>
+              <BotonHabilitar
+                rolId={row.id}
+                active={row.active}
+                reloadData={fetchData}
+              />
+              <IconButton
+                aria-label="Editar"
+                icon={<EditIcon color="blue" />}
+                onClick={() => {
+                  router.push(`${routes.roles}/${row.id}`);
+                }}
+              />
+            </>
+          )}
         </HStack>
       ),
     },

@@ -6,8 +6,10 @@ import {
 import { mostrarAlertaError } from "@/utils/show_error_alert";
 import { mostrarAlertaConfirmacion } from "@/utils/show_question_alert";
 import { mostrarAlertaExito } from "@/utils/show_success_alert";
-import { Button } from "@chakra-ui/react";
+import { DeleteIcon } from "@chakra-ui/icons";
+import { Button, IconButton } from "@chakra-ui/react";
 import Swal from "sweetalert2";
+import RestoreIcon from "../../components/Icons/RestoreIcon";
 
 export default function BotonHabilitar({
   rolId,
@@ -46,8 +48,20 @@ export default function BotonHabilitar({
     }
   };
   return (
-    <Button colorScheme={active ? "red" : "green"} onClick={handleClick}>
-      {active ? "Deshabilitar" : "Habilitar"}
-    </Button>
+    <>
+      {active ? (
+        <IconButton
+          aria-label="Deshabilitar"
+          icon={<DeleteIcon color="red" />}
+          onClick={handleClick}
+        />
+      ) : (
+        <IconButton
+          aria-label="Habilitar"
+          icon={<RestoreIcon />}
+          onClick={handleClick}
+        />
+      )}
+    </>
   );
 }

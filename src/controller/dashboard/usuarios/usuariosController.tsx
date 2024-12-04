@@ -1,14 +1,23 @@
 "use server";
+import { authOptions } from "@/config/authOptions";
 import { prisma } from "@/config/prisma";
+import {
+  auditEventTypes,
+  auditEventAction,
+  modulos,
+  auditEventOutcome,
+} from "@/enums/auditEventTypes";
 import { userStatus } from "@/enums/userStatus";
 import personValidation from "@/models/dashboard/personValidation";
 import { personFullNameFormater } from "@/utils/format_person_full_name";
 import { getPasswordExpiration } from "@/utils/generate_password_expiration";
+import { logEvent } from "@/utils/logger";
 import { sendEmail } from "@/utils/mailer";
 import { generatePassword } from "@/utils/password_generator";
 import { hashPassword } from "@/utils/password_hasher";
 import { subirFotoDePerfil } from "@/utils/upload_image";
 import { Allergy, Person } from "@prisma/client";
+import { getServerSession } from "next-auth";
 
 export async function listarUsuarios() {
   try {
@@ -37,6 +46,10 @@ export async function listarUsuario(id: string) {
   }
 }
 export async function crearUsuario(formData: FormData) {
+  const session = await getServerSession(authOptions);
+  if (!session) {
+    throw new Error("No se ha encontrado la sesión.");
+  }
   const profilePicture = formData.get("photoUrl") as File | undefined;
   const data = {
     firstName: formData.get("firstName")?.toString() || "",
@@ -121,6 +134,16 @@ export async function crearUsuario(formData: FormData) {
       user: true,
     },
   });
+  await logEvent({
+    type: auditEventTypes.SYSTEM,
+    action: auditEventAction.ACCION_CREAR,
+    moduleName: modulos.MODULO_USUARIOS,
+    personName: personFullNameFormater(session.user),
+    personRole: "Usuario",
+    detail: "Creación de usuario",
+    personId: session.user.id,
+    outcome: auditEventOutcome.OUTCOME_EXITO,
+  });
   await sendEmail({
     email: newPerson.email,
     subject: "Creación exitosa de cuenta",
@@ -144,6 +167,10 @@ export async function crearUsuario(formData: FormData) {
 
 export async function editarUsuario(id: string, formData: FormData) {
   try {
+    const session = await getServerSession(authOptions);
+    if (!session) {
+      throw new Error("No se ha encontrado la sesión.");
+    }
     const profilePicture = formData.get("photoUrl") as File | undefined;
     const data = {
       firstName: formData.get("firstName")?.toString() || "",
@@ -179,6 +206,16 @@ export async function editarUsuario(id: string, formData: FormData) {
       if (!updatedUser) {
         throw new Error("Error al editar el usuario");
       }
+      await logEvent({
+        type: auditEventTypes.SYSTEM,
+        action: auditEventAction.ACCION_EDITAR,
+        moduleName: modulos.MODULO_USUARIOS,
+        personName: personFullNameFormater(session.user),
+        personRole: "Usuario",
+        detail: "Edición de usuario",
+        personId: session.user.id,
+        outcome: auditEventOutcome.OUTCOME_EXITO,
+      });
       return {
         success: true,
         message: "Éxito al editar el usuario",
@@ -195,6 +232,16 @@ export async function editarUsuario(id: string, formData: FormData) {
       if (!updatedUser) {
         throw new Error("Error al editar el usuario");
       }
+      await logEvent({
+        type: auditEventTypes.SYSTEM,
+        action: auditEventAction.ACCION_EDITAR,
+        moduleName: modulos.MODULO_USUARIOS,
+        personName: personFullNameFormater(session.user),
+        personRole: "Usuario",
+        detail: "Edición de usuario",
+        personId: session.user.id,
+        outcome: auditEventOutcome.OUTCOME_EXITO,
+      });
       return {
         success: true,
         message: "Éxito al editar el usuario",
@@ -208,6 +255,10 @@ export async function editarUsuario(id: string, formData: FormData) {
 
 export async function habilitarUsuario(id: string) {
   try {
+    const session = await getServerSession(authOptions);
+    if (!session) {
+      throw new Error("No se ha encontrado la sesión.");
+    }
     await prisma.person.update({
       where: {
         id: id,
@@ -220,6 +271,16 @@ export async function habilitarUsuario(id: string) {
         },
       },
     });
+    await logEvent({
+      type: auditEventTypes.SYSTEM,
+      action: auditEventAction.ACCION_EDITAR,
+      moduleName: modulos.MODULO_USUARIOS,
+      personName: personFullNameFormater(session.user),
+      personRole: "Usuario",
+      detail: "Habilitar Usuarios",
+      personId: session.user.id,
+      outcome: auditEventOutcome.OUTCOME_EXITO,
+    });
     return { message: "Éxito al actualizar los datos" };
   } catch (error) {
     throw new Error("Error al listar los datos");
@@ -228,6 +289,10 @@ export async function habilitarUsuario(id: string) {
 
 export async function deshabilitarUsuario(id: string) {
   try {
+    const session = await getServerSession(authOptions);
+    if (!session) {
+      throw new Error("No se ha encontrado la sesión.");
+    }
     await prisma.person.update({
       where: {
         id: id,
@@ -239,6 +304,16 @@ export async function deshabilitarUsuario(id: string) {
           },
         },
       },
+    });
+    await logEvent({
+      type: auditEventTypes.SYSTEM,
+      action: auditEventAction.ACCION_ELIMINAR,
+      moduleName: modulos.MODULO_USUARIOS,
+      personName: personFullNameFormater(session.user),
+      personRole: "Usuario",
+      detail: "Deshabilitar Usuarios",
+      personId: session.user.id,
+      outcome: auditEventOutcome.OUTCOME_EXITO,
     });
     return { message: "Éxito al actualizar los datos" };
   } catch (error) {

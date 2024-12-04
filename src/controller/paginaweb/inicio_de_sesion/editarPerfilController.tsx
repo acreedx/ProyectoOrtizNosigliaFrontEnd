@@ -153,6 +153,7 @@ export async function editarPerfil(id: string, formData: FormData) {
       if (!updatedUser) {
         throw new Error("Error al editar el perfil");
       }
+
       return {
         success: true,
         message: "Éxito al editar el perfil",
