@@ -38,7 +38,6 @@ export const authOptions: NextAuthOptions = {
         if (!response) {
           throw new Error("Credenciales inválidas");
         }
-        console.log(response);
         return response;
       },
     }),

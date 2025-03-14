@@ -2,7 +2,12 @@ import CitasIcon from "../app/dashboard/components/Icons/CitasIcon";
 import DashboardIcon from "../app/dashboard/components/Icons/DashboardIcon";
 import PacienteIcon from "../app/dashboard/components/Icons/PacienteIcon";
 import UserIcon from "../app/dashboard/components/Icons/UserIcon";
-import { MdMedicalServices, MdMoney } from "react-icons/md";
+import {
+  MdMedicalServices,
+  MdMoney,
+  MdPanTool,
+  MdSettings,
+} from "react-icons/md";
 import { routes } from "./routes";
 import { permissionsList } from "@/enums/permissionsList";
 
@@ -123,6 +128,18 @@ export const menuOptions = [
           {
             label: "Panel de deudas",
             route: routes.deudas,
+            permission: permissionsList.TRATAMIENTOS,
+          },
+        ],
+      },
+      {
+        icon: <MdSettings />,
+        label: "Configuración",
+        route: "#",
+        children: [
+          {
+            label: "Importar Datos",
+            route: routes.configurarimportardatos,
             permission: permissionsList.TRATAMIENTOS,
           },
         ],

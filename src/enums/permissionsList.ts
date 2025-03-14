@@ -11,4 +11,5 @@ export enum permissionsList {
   LOGS = "dsh_log_adm",
   TRATAMIENTOS = "dsh_trs_adm",
   TIPOS_TRATAMIENTO = "dsh_ttrs_adm",
+  CONFIGURACION = "dsh_imp_dat",
 }

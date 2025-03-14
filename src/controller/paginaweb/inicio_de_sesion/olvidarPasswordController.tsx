@@ -22,7 +22,6 @@ export async function forgetPassword(token: string | null, formData: FormData) {
     };
   }
   const captchaData = await verifyCaptchaToken(token);
-  console.log(token);
   if (!captchaData) {
     return {
       success: false,
@@ -39,7 +38,13 @@ export async function forgetPassword(token: string | null, formData: FormData) {
     username: formData.get("username")?.toString() || "",
     email: formData.get("email")?.toString() || "",
   };
-
+  console.log(
+    await prisma.patient.findMany({
+      include: {
+        user: true,
+      },
+    }),
+  );
   const person = await prisma.patient.findFirst({
     where: {
       user: {

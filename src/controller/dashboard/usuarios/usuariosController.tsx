@@ -187,7 +187,6 @@ export async function editarUsuario(id: string, formData: FormData) {
       identification: formData.get("identification")?.toString() || "",
       rolId: formData.get("rol")?.toString() || "",
     };
-    console.log(data);
     const result = personValidation.safeParse(data);
     if (!result.success) {
       return {

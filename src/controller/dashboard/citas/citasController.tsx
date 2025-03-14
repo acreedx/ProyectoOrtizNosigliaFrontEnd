@@ -193,7 +193,6 @@ export async function crearCitaDentista(formData: FormData) {
       message: "Cita registrada con éxito",
     };
   } catch (error: any) {
-    console.log(error);
     throw new Error("Error al crear la cita");
   }
 }

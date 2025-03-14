@@ -34,7 +34,6 @@ export async function GET(req: Request) {
         practitioner: true,
       },
     });
-    console.log(citas);
     citas.forEach(async (e) => {
       await sendEmail({
         email: e.subject.email,
@@ -63,7 +62,6 @@ export async function GET(req: Request) {
     });
     return NextResponse.json({ ok: true });
   } catch (error: any) {
-    console.log(error);
     return NextResponse.json({ ok: false });
   }
 }

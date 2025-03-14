@@ -30,8 +30,6 @@ export async function POST(req: NextRequest) {
         user.rol.permissions,
         permissionsList.APLICACION_MOVIL,
       );
-      console.log(user.rol.permissions);
-      console.log(permissionsList.APLICACION_MOVIL);
 
       if (isPermited) {
         const token = jwt.sign({ access_token: user }, key, {

@@ -95,7 +95,6 @@ export async function GET(req: Request) {
     }
     return new Response(`Envio de notificaciones exitoso`);
   } catch (error: any) {
-    console.log(error);
     return new Response(`Error al enviar las notificaciones`);
   }
 }

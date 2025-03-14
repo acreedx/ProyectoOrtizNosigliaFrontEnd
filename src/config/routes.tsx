@@ -23,4 +23,5 @@ export const routes = {
   reportecitas: "/dashboard/citas/reportes",
   reporteusuarios: "/dashboard/usuarios/reportes",
   reportestratamiento: "/dashboard/tratamientos/reportes",
+  configurarimportardatos: "/dashboard/configuracion/importar",
 };
